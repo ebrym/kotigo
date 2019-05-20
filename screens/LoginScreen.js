@@ -15,6 +15,7 @@ import {
   import { Block, Button, Text, theme,Input } from 'galio-framework';
 import Loader from '../components/Loader';
 
+import materialTheme from '../constants/Theme';
 const { height, width } = Dimensions.get('screen');
 const ACCESS_TOKEN = 'access_token';
 const Errors = (props) => {
@@ -175,7 +176,8 @@ export default class LoginScreen extends React.Component {
                             secureTextEntry/>
 
                 <TouchableOpacity style={styles.button} 
-                                    onPress={this.onLoginButtonPress.bind(this)}>
+                                    onPress={this.onLoginButtonPress.bind(this)}
+                                    color={materialTheme.COLORS.BUTTON_COLOR}>
                             <Text  style={styles.buttonText}>LOGIN</Text>
                 </TouchableOpacity> 
            

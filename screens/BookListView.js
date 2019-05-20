@@ -1,15 +1,16 @@
 import React from "react";
 import { View,StyleSheet,ScrollView,Dimensions,
-    TouchableOpacity,ImageBackground,
+    TouchableOpacity,ImageBackground, Platform,
      Icon, Image} from 'react-native';
   //import { ListItem,Card } from 'react-native-elements'
 import { Button, Block, Text, Input, theme } from 'galio-framework';
   import { Audio } from "expo";
-
   import { Ionicons } from '@expo/vector-icons';
 
-  const { width } = Dimensions.get('screen');
-
+  import { Images, materialTheme } from '../constants';
+  import { HeaderHeight } from "../constants/utils";
+  
+  const { width, height } = Dimensions.get('screen');
 
   export default class BooKListDetails extends React.Component {
    
@@ -97,15 +98,17 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
         return (
         <ScrollView>
             <Block flex style={styles.group}>
-            <Text bold size={16} style={styles.title}>{bookDetails.Title}</Text>
             <Block flex>
+
               <Block style={{ paddingHorizontal: theme.SIZES.BASE }}>
                 
+            <Text bold size={16} style={styles.title}>{bookDetails.Title}</Text>
                 <Block flex card shadow style={styles.category}>
                   <ImageBackground
                     source={{ uri: bookDetails.ImageURL }}
                     style={[styles.imageBlock, { width: width - (theme.SIZES.BASE * 2), height: 252 }]}
-                    imageStyle={{ width: width - (theme.SIZES.BASE * 2), height: 252 }}>
+                    imageStyle={{ width: width - (theme.SIZES.BASE * 2), height: 252 }}
+                    resizeMode="stretch">
                     
                   </ImageBackground>
                   <Block style={styles.categoryTitle}>
@@ -116,8 +119,9 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
                       <Text>Narrator: {bookDetails.Narrator}</Text>
                       <Text>Category: {bookDetails.Category}</Text>
                       <Text>Summary: {bookDetails.Summary}</Text>
+                      <Text color="green">Price : N{bookDetails.Price}</Text>
                     </Block>
-                  <Block flex row>
+                    <Block flex  row space="between">
                   {this.props.isPlaying ? (
                     <TouchableOpacity style={{marginHorizontal:20}} onPress={() => this.pause()}>
                      
@@ -130,7 +134,6 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
                     </TouchableOpacity>}
                     <Text >Play Review</Text>
 
-
                   <Text ><Ionicons name="md-download" size={20} color="#2e78b7" />   
                   {bookDetails.DownloadCount} 
                   <Ionicons name="md-heart" size={20} color="#2e78b7" />
@@ -140,7 +143,7 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
             </Block>
             <View style={{ flexDirection: 'row', alignSelf: 'stretch', justifyContent: 'space-around' }}>
              
-           
+           {bookDetails.Price >0 ? 
              <Button
                 shadowless
                 style={styles.button}
@@ -148,7 +151,13 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
                  color='green'>
                 BUY NOW
               </Button>
-             
+             : <Button
+             shadowless
+             style={styles.button}
+             onPress={()=> this.props.navigation.navigate('Payment',{paymentDetails:bookDetails})} 
+              color='green'>
+             DOWNLOAD
+           </Button>}
              </View>
                 </Block>
               </Block>
@@ -180,11 +189,37 @@ const styles = StyleSheet.create({
     contentContainer: {
       paddingTop: 30,
     },
-    welcomeContainer: {
-      alignItems: 'center',
-      marginTop: 10,
-      marginBottom: 20,
-    },title: {
+    profile: {
+      marginTop: Platform.OS === 'android' ? -HeaderHeight : 0,
+      marginBottom: -HeaderHeight * 2,
+    },
+    profileImage: {
+      width: width * 1.1,
+      height: 'auto',
+    },
+    profileContainer: {
+      width: width,
+      height: height / 2,
+    },
+    profileDetails: {
+      paddingTop: theme.SIZES.BASE * 4,
+      justifyContent: 'flex-end',
+      position: 'relative',
+    },
+    profileTexts: {
+      paddingHorizontal: theme.SIZES.BASE * 2,
+      paddingVertical: theme.SIZES.BASE * 2,
+      zIndex: 2
+    },
+    pro: {
+      backgroundColor: materialTheme.COLORS.LABEL,
+      paddingHorizontal: 6,
+      marginRight: theme.SIZES.BASE / 2,
+      borderRadius: 4,
+      height: 19,
+      width: 38,
+    },
+    title: {
       paddingVertical: theme.SIZES.BASE,
       paddingHorizontal: theme.SIZES.BASE * 2,
     },

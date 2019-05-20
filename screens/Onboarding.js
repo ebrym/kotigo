@@ -184,7 +184,7 @@ _handleHelpPress() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#ffb74d",
+    backgroundColor: "#ffffff",
   },
   padded: {
     paddingHorizontal: theme.SIZES.BASE * 2,
