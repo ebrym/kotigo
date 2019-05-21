@@ -176,7 +176,7 @@ export default class LoginScreen extends React.Component {
 
                 <TouchableOpacity style={styles.button} 
                                     onPress={this.onLoginButtonPress.bind(this)}>
-                            <Text  style={styles.buttonText}>LOGIN</Text>
+                            <Text  style={styles.button}>LOGIN</Text>
                 </TouchableOpacity> 
            
           </View>

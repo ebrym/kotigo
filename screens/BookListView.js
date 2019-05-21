@@ -105,42 +105,40 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
                   <ImageBackground
                     source={{ uri: bookDetails.ImageURL }}
                     style={[styles.imageBlock, { width: width - (theme.SIZES.BASE * 2), height: 252 }]}
-                    imageStyle={{ width: width - (theme.SIZES.BASE * 2), height: 252 }}>
+                    imageStyle={{ width: width - (theme.SIZES.BASE * 2), height: 252 }}
+                    resizeMode="stretch">
                     
                   </ImageBackground>
                   <Block style={styles.categoryTitle}>
-                      <Text size={18} bold color={theme.COLORS.WHITE}>Accessories</Text>
+                      <Text size={18} bold color={theme.COLORS.WHITE}>Book Details</Text>
                       <Text>Title: {bookDetails.Title}</Text>
                       <Text>Gerne: {bookDetails.Gernes}</Text>
                       <Text>Author: {bookDetails.Author}</Text>
                       <Text>Narrator: {bookDetails.Narrator}</Text>
                       <Text>Category: {bookDetails.Category}</Text>
                       <Text>Summary: {bookDetails.Summary}</Text>
+                      <Text>Price: N{bookDetails.Price}</Text>
                     </Block>
                   <Block flex row>
-                  {this.props.isPlaying ? (
+                 {this.props.isPlaying ? (
                     <TouchableOpacity style={{marginHorizontal:20}} onPress={() => this.pause()}>
-                     
-                             <Ionicons name="md-pause-circle" size={30} color="#2e78b7" />
-                        
+                       <Ionicons name="md-pause-circle" size={30} color="#2e78b7" /> 
                     </TouchableOpacity>) :
                     <TouchableOpacity style={{marginHorizontal:20}} onPress={() => this.play(bookDetails.AudioURL)}>
                         {/* <Image source={img_play} style={{width:30, height:30}}/>    */}
                          <Ionicons name="md-play-circle" size={30} color="#2e78b7" />
                     </TouchableOpacity>}
-                    <Text >Play Review</Text>
+                    <Text > Play Review</Text>
 
 
-                  <Text ><Ionicons name="md-download" size={20} color="#2e78b7" />   
+                  <Text ><Ionicons name="md-download" size={30} color="#2e78b7" />   
                   {bookDetails.DownloadCount} 
-                  <Ionicons name="md-heart" size={20} color="#2e78b7" />
+                  <Ionicons name="md-heart" size={30} color="#2e78b7" />
                   {bookDetails.LikeCount} 
                   </Text>
-            
             </Block>
             <View style={{ flexDirection: 'row', alignSelf: 'stretch', justifyContent: 'space-around' }}>
              
-           
              <Button
                 shadowless
                 style={styles.button}
