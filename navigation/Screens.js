@@ -115,7 +115,7 @@ const HomeStack = createStackNavigator({
   BookDetails: {
     screen: BookListDetails,
     navigationOptions: ({navigation}) => ({
-      header: <Header back white transparent title="Book Details" navigation={navigation} />,
+      header: <Header back black transparent title="Book Details" navigation={navigation} />,
       headerTransparent: true,
     })
   },
@@ -190,38 +190,31 @@ const AppStack = createDrawerNavigator(
         ),
       }),
     },
-    Library: {
-      screen: ProfileStack,
-      navigationOptions: (navOpt) => ({
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Library" title="Library" />
-        ),
-      }),
-    },
+    
     Profile: {
       screen: ProfileStack,
       navigationOptions: (navOpt) => ({
         drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Profile" title="Profile" />
+          <Drawer focused={focused} screen="Profile" title="My Account" />
         ),
       }),
     },
-    Settings: {
-      screen: SettingsScreen,
-      navigationOptions: (navOpt) => ({
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Settings" title="Settings" />
-        ),
-      }),
-    },
-    Components: {
-      screen: ComponentsStack,
-      navigationOptions: (navOpt) => ({
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Components" title="Components" />
-        ),
-      }),
-    },
+    // Settings: {
+    //   screen: SettingsScreen,
+    //   navigationOptions: (navOpt) => ({
+    //     drawerLabel: ({focused}) => (
+    //       <Drawer focused={focused} screen="Settings" title="Settings" />
+    //     ),
+    //   }),
+    // },
+    // Components: {
+    //   screen: ComponentsStack,
+    //   navigationOptions: (navOpt) => ({
+    //     drawerLabel: ({focused}) => (
+    //       <Drawer focused={focused} screen="Components" title="Components" />
+    //     ),
+    //   }),
+    // },
     MenuDivider: {
       screen: HomeStack,
       navigationOptions: {
