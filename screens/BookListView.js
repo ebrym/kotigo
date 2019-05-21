@@ -112,27 +112,26 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
                     
                   </ImageBackground>
                   <Block style={styles.categoryTitle}>
-                      <Text size={18} bold color={theme.COLORS.WHITE}>Accessories</Text>
+                      <Text size={18} bold color={theme.COLORS.MAIN}>Details</Text>
                       <Text>Title: {bookDetails.Title}</Text>
                       <Text>Gerne: {bookDetails.Gernes}</Text>
                       <Text>Author: {bookDetails.Author}</Text>
                       <Text>Narrator: {bookDetails.Narrator}</Text>
                       <Text>Category: {bookDetails.Category}</Text>
                       <Text>Summary: {bookDetails.Summary}</Text>
-                      <Text color="green">Price : N{bookDetails.Price}</Text>
+                      <Text color="green">Price : {bookDetails.Price >0 ? "N"+bookDetails.Price : "Free"}</Text>
                     </Block>
                     <Block flex  row space="between">
                   {this.props.isPlaying ? (
                     <TouchableOpacity style={{marginHorizontal:20}} onPress={() => this.pause()}>
-                     
                              <Ionicons name="md-pause-circle" size={30} color="#2e78b7" />
-                        
+                             <Text >Pause</Text>
                     </TouchableOpacity>) :
                     <TouchableOpacity style={{marginHorizontal:20}} onPress={() => this.play(bookDetails.AudioURL)}>
                         {/* <Image source={img_play} style={{width:30, height:30}}/>    */}
                          <Ionicons name="md-play-circle" size={30} color="#2e78b7" />
-                    </TouchableOpacity>}
                     <Text >Play Review</Text>
+                    </TouchableOpacity>}
 
                   <Text ><Ionicons name="md-download" size={20} color="#2e78b7" />   
                   {bookDetails.DownloadCount} 
@@ -164,18 +163,6 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
             </Block>
           </Block>
         </ScrollView>
-
-
-
-         
-            
-            
-           
-       
-       
-    
-    
- 
         );
     }
 }
@@ -222,6 +209,7 @@ const styles = StyleSheet.create({
     title: {
       paddingVertical: theme.SIZES.BASE,
       paddingHorizontal: theme.SIZES.BASE * 2,
+      color:theme.COLORS.BUTTON_COLOR
     },
     group: {
       paddingTop: theme.SIZES.BASE * 3.75,

@@ -4,6 +4,7 @@ import { Text, View, StyleSheet, FlatList, Image,Alert,
 AsyncStorage,TouchableOpacity} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import LibraryCarousel from '../components/LibraryCarousel';
+import { Block } from 'galio-framework';
 //import RNFetchBlob from 'react-native-fetch-blob'
 
 const ACCESS_TOKEN = 'access_token';
@@ -102,7 +103,7 @@ async _fetchData  (callback) {
       );
     } else {
       return (
-        <View style={styles.detailCell}>
+        <Block flex center backgroundColor="white" style={styles.detailCell} >
                 <LibraryCarousel book={this.state._data} />
        
                 {/* <TouchableOpacity onPress={()=> this.props.navigation.navigate('Player')}>
@@ -158,7 +159,7 @@ async _fetchData  (callback) {
           //   );
           // }}
         /> */}
-       </View>
+       </Block>
       );
     }
   }
@@ -218,7 +219,7 @@ detailCell: {
   marginRight: 4,
   padding: 5,
   borderBottomWidth: .5,
-  borderColor: 'lightgray'
+  borderColor: 'lightgray',
 },
 bookTitle: {
   fontSize: 13,

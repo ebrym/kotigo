@@ -34,12 +34,13 @@ const BasketButton = ({isWhite, style, navigation}) => (
 );
 
 const SearchButton = ({isWhite, style, navigation}) => (
-  <TouchableOpacity style={[styles.button, style]} onPress={() => navigation.navigate('Pro')}>
+  <TouchableOpacity style={[styles.button, style]} >
     <Icon
       size={16}
       family="Galio"
       name="zoom-split"
       color={theme.COLORS[isWhite ? 'WHITE' : 'ICON']}
+      // onPress={() => navigation.navigate('Pro')}
     />
   </TouchableOpacity>
 );
@@ -115,7 +116,7 @@ class Header extends React.Component {
         color="black"
         style={styles.search}
         placeholder="Search for books?"
-        onFocus={() => navigation.navigate('Pro')}
+        // onFocus={() => navigation.navigate('Pro')}
         iconContent={<Icon size={16} color={theme.COLORS.MUTED} name="zoom-split" family="Galio" />}
       />
     )

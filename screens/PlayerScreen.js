@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Image, Text, Slider, TouchableOpacity, Platform, Alert,ImageBackground} from 'react-native';
+import { View, Image, Text, Slider, 
+    TouchableOpacity, Platform, Alert,ImageBackground} from 'react-native';
 import { Audio } from "expo";
 import { Ionicons } from '@expo/vector-icons';
 // import Sound from 'react-native-sound';
@@ -11,9 +12,9 @@ const img_playjumpleft = require('../assets/resources/ui_playjumpleft.png');
 const img_playjumpright = require('../assets/resources/ui_playjumpright.png');
 
 export default class PlayerScreen extends React.Component{
-    static navigationOptions = {
-        title: 'Player',
-      };
+    // static navigationOptions = {
+    //     title: 'Player',
+    //   };
     // static navigationOptions = props => ({
     //     title:props.navigation.state.params.title,
     // })
@@ -42,7 +43,7 @@ export default class PlayerScreen extends React.Component{
     // }
     componentWillUnmount(){
         if(this.soundObject){
-            this.soundObject.release();
+            //this.soundObject.stop();
             this.soundObject = null;
         }
         if(this.timeout){

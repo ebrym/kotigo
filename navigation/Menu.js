@@ -12,9 +12,10 @@ const { width } = Dimensions.get('screen');
 const Drawer = (props) => (
   <Block style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
     <Block flex={0.2} style={styles.header}>
-      <TouchableWithoutFeedback onPress={() => props.navigation.navigate('Profile')} >
+      <TouchableWithoutFeedback  >
         <Block style={styles.profile}>
-          {/* <Image source={{ uri: props.profile.avatar}} style={styles.avatar} /> */}
+          {/* <Image source={{ uri: props.profile.avatar}} style={styles.avatar} /> 
+        onPress={() => props.navigation.navigate('Profile')}*/}
           <Text h5 color="white">Welcome {props.profile.FirstName}!</Text>
         </Block>
       </TouchableWithoutFeedback>
@@ -48,13 +49,13 @@ const profile = {
 const Menu = {
   contentComponent: props => <Drawer {...props} profile={JSON.parse(global.userDetails)} />,
   drawerBackgroundColor: 'white',
-  drawerWidth: width * 0.8,
+  drawerWidth: width * 0.6,
   contentOptions: {
     activeTintColor: 'white',
     inactiveTintColor: '#000',
     activeBackgroundColor: 'transparent',
     itemStyle: {
-      width: width * 0.75,
+      width: width * 0.55,
       backgroundColor: 'transparent',
     },
     labelStyle: {

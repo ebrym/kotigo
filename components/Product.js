@@ -28,7 +28,7 @@ console.log("Something went wrong" + product.Title);
             <Text size={14} style={styles.productTitle}>{product.Title}</Text>
             <Block flex  row space="between">
               <Text size={12} muted={!priceColor} color={priceColor} >{product.Author}</Text>
-              <Text size={10} muted={!priceColor} color="green">N{product.Price}</Text>
+              <Text size={10} muted={!priceColor} color="green">{product.Price >0 ? "N"+product.Price : "Free"}</Text>
             </Block>
           </Block>
         </TouchableWithoutFeedback>

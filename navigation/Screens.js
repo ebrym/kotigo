@@ -1,5 +1,5 @@
 import React from 'react';
-import { Easing, Animated, Platform } from 'react-native';
+import { Easing, Animated, Platform, AsyncStorage } from 'react-native';
 import { createSwitchNavigator, createStackNavigator, createDrawerNavigator } from 'react-navigation';
 
 import { Block, Text, theme } from "galio-framework";
@@ -14,6 +14,8 @@ import ProScreen from '../screens/Pro';
 import SettingsScreen from '../screens/Settings';
 import BookListDetails from '../screens/BookListView';
 import PaymentScreen from '../screens/PaymentScreen';
+import BookShelfScreen from '../screens/LibraryScreen';
+import PlayScreen from '../screens/PlayerScreen';
 
 import Menu from './Menu';
 import Header from '../components/Header';
@@ -67,6 +69,27 @@ const ProfileStack = createStackNavigator({
   transitionConfig,
 })
 
+const BookShelfStach = createStackNavigator({
+  BookShelf: {
+    screen: BookShelfScreen,
+    navigationOptions: ({ navigation }) => ({
+      header: <Header  transparent title="My Book Shelf" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+  Player: {
+    screen: PlayScreen,
+    navigationOptions: ({ navigation }) => ({
+      header: <Header back black transparent title="Player" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+}, {
+  cardStyle: { backgroundColor: '#EEEEEE', },
+  transitionConfig,
+})
+
+
 const ComponentsStack = createStackNavigator({
   Components: {
     screen: ComponentsScreen,
@@ -98,20 +121,20 @@ const HomeStack = createStackNavigator({
       header: <Header title="Components" navigation={navigation} />,
     })
   },
-  Profile: {
-    screen: ProfileScreen,
-    navigationOptions: ({navigation}) => ({
-      header: <Header white transparent title="Profile" navigation={navigation} />,
-      headerTransparent: true,
-    })
-  },
-  Pro: {
-    screen: ProScreen,
-    navigationOptions: ({navigation}) => ({
-      header: <Header back white transparent title="" navigation={navigation} />,
-      headerTransparent: true,
-    })
-  },
+  // Profile: {
+  //   screen: ProfileScreen,
+  //   navigationOptions: ({navigation}) => ({
+  //     header: <Header white transparent title="Profile" navigation={navigation} />,
+  //     headerTransparent: true,
+  //   })
+  // },
+  // Pro: {
+  //   screen: ProScreen,
+  //   navigationOptions: ({navigation}) => ({
+  //     header: <Header back white transparent title="" navigation={navigation} />,
+  //     headerTransparent: true,
+  //   })
+  // },
   BookDetails: {
     screen: BookListDetails,
     navigationOptions: ({navigation}) => ({
@@ -122,10 +145,17 @@ const HomeStack = createStackNavigator({
   Payment: {
     screen: PaymentScreen,
     navigationOptions: ({navigation}) => ({
-      header: <Header back white transparent title="Payment" navigation={navigation} />,
+      header: <Header back black transparent title="Payment" navigation={navigation} />,
       headerTransparent: true,
     })
   },
+  
+  // BookShelf: {
+  //   screen: LibraryScreen,
+  //   navigationOptions: ({navigation}) => ({
+  //     header: <Header back title="My Book Shelf" navigation={navigation} />,
+  //   })
+  // },
 },
 {
   cardStyle: { 
@@ -183,14 +213,14 @@ const AppStack = createDrawerNavigator(
     //   }),
     // },
     BookShelf: {
-      screen: ProfileStack,
+      screen: BookShelfStach,
       navigationOptions: (navOpt) => ({
         drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Library" title="My BookShelf" />
+          <Drawer focused={focused} screen="BookShelfScreen" title="My Book Shelf" />
         ),
       }),
     },
-    
+  
     Profile: {
       screen: ProfileStack,
       navigationOptions: (navOpt) => ({
@@ -221,14 +251,17 @@ const AppStack = createDrawerNavigator(
         drawerLabel: () => <Block style={{marginVertical: 8}}><Text>{` `}</Text></Block>,
       },
     },
-    // SignIn: {
-    //   screen: LoginScreen,
-    //   navigationOptions: (navOpt) => ({
-    //     drawerLabel: ({focused}) => (
-    //       <Drawer focused={focused} screen="SignIn" title="Sign In" />
-    //     ),
-    //   }),
-    // },
+    SignOut: {
+      screen: LoginScreen,
+      navigationOptions: (navOpt) => ({
+        addListener: () => {
+          AsyncStorage.clear(); 
+        },
+        drawerLabel: ({focused}) => (
+          <Drawer focused={focused} screen="SignIn" title="Sign Out" />
+        ),
+      }),
+    },
     // SignUp: {
     //   screen: RegisterScreen,
     //   navigationOptions: (navOpt) => ({
@@ -255,7 +288,7 @@ const AppStack = createDrawerNavigator(
       screen: RegisterScreen,
       navigationOptions: (navOpt) => ({
         drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="" title="About GoSmarticle" />
+          <Drawer focused={focused} screen="" title="About" />
         ),
       }),
     },

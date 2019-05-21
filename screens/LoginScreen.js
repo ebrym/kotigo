@@ -151,7 +151,7 @@ export default class LoginScreen extends React.Component {
           loading={this.state.loading} />
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         
-          <View style={styles.welcomeContainer}>
+          <Block flex center>
             <Image
               source={require('../assets/images/gosmarticlelogo.png')
               }
@@ -159,29 +159,29 @@ export default class LoginScreen extends React.Component {
             />
            
             <Text style={styles.helpLinkText}>Login</Text>
-          </View>
-          <View style={styles.getStartedContainer}>
+          </Block>
+          <Block flex center>
           <Input style = {styles.input} 
                             onChangeText={(val) => this.setState({username: val})} 
                             keyboardType='email-address' 
                             placeholder='Email or UserName' 
-                            placeholderTextColor='#2e78b7'
+                            placeholderTextColor={materialTheme.COLORS.MAIN}
                             underlineColorAndroid='transparent'/>
             
              <Input style = {styles.input} 
                             onChangeText={(val) => this.setState({password: val})}  
                             placeholder='Password' 
-                            placeholderTextColor='#2e78b7' 
+                        placeholderTextColor={materialTheme.COLORS.MAIN}
                             underlineColorAndroid='transparent'
                             secureTextEntry/>
 
-                <TouchableOpacity style={styles.button} 
-                                    onPress={this.onLoginButtonPress.bind(this)}
-                                    color={materialTheme.COLORS.BUTTON_COLOR}>
+
+                <TouchableOpacity style={styles.buttonContainer} 
+                                    onPress={this.onLoginButtonPress.bind(this)}>
                             <Text  style={styles.buttonText}>LOGIN</Text>
                 </TouchableOpacity> 
            
-          </View>
+          </Block>
 
           <View style={styles.helpContainer}>
             <Text style={styles.helpLinkText}>Don't have an account yet!</Text>
@@ -213,6 +213,7 @@ const styles = StyleSheet.create({
     shadowRadius: 0,
     shadowOpacity: 0,
     borderRadius: 25,
+    color: materialTheme.COLORS.MAIN
   },
   contentContainer: {
     paddingTop: 30,
@@ -251,13 +252,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(225,225,225,0.2)',
     marginBottom: 10,
     padding: 10,
-    color: '#2e78b7',
+    color: materialTheme.COLORS.MAIN,
     borderRadius: 25,
     width:300,
     fontSize:16,
 },
 buttonContainer:{
-    backgroundColor: '#2980b6',
+    backgroundColor: materialTheme.COLORS.MAIN,
     paddingVertical: 15,
     borderRadius: 25,
     width:300,
