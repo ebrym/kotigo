@@ -98,16 +98,16 @@ export default class LoginScreen extends React.Component {
             if (response.status >= 200 && response.status < 300) {
                 this.setState({loading: false, error: ""});
                 let accessToken = res.access_token;
-                
 
                 //store user details
                 AsyncStorage.setItem('UserDetails', JSON.stringify(res));
 
+                global.userDetails = JSON.stringify(res);
                 let tokenValidity = res.access_token;
                 this.storeToken(accessToken);          
                 await AsyncStorage.setItem('Token_Validity',tokenValidity);                  
                 //console.log("Response success is: " + accessToken); 
-                console.log("tokenValidity is: " + tokenValidity); 
+                //console.log("tokenValidity is: " + tokenValidity); 
 
                 this.props.navigation.navigate('App');
             } else {
@@ -165,12 +165,14 @@ export default class LoginScreen extends React.Component {
                             onChangeText={(val) => this.setState({username: val})} 
                             keyboardType='email-address' 
                             placeholder='Email or UserName' 
+                            color={materialTheme.COLORS.MAIN}
                             placeholderTextColor={materialTheme.COLORS.MAIN}
                             underlineColorAndroid='transparent'/>
             
              <Input style = {styles.input} 
                             onChangeText={(val) => this.setState({password: val})}  
                             placeholder='Password' 
+                            color={materialTheme.COLORS.MAIN}
                         placeholderTextColor={materialTheme.COLORS.MAIN}
                             underlineColorAndroid='transparent'
                             secureTextEntry/>
@@ -185,7 +187,7 @@ export default class LoginScreen extends React.Component {
 
           <View style={styles.helpContainer}>
             <Text style={styles.helpLinkText}>Don't have an account yet!</Text>
-            <TouchableOpacity onPress={this._handleHelpPress.bind(this)} style={styles.helpLink}>
+            <TouchableOpacity onPress={()=> this.props.navigation.navigate('Register')} style={styles.helpLink}>
               <Text style={styles.helpLinkText}>Sign Up</Text>
             </TouchableOpacity>
           </View>
@@ -207,14 +209,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     bottom: theme.SIZES.BASE,
   },
-  button: {
-    width: width - theme.SIZES.BASE * 4,
-    height: theme.SIZES.BASE * 3,
-    shadowRadius: 0,
-    shadowOpacity: 0,
-    borderRadius: 25,
-    color: materialTheme.COLORS.MAIN
-  },
+
   contentContainer: {
     paddingTop: 30,
     justifyContent: 'center',
@@ -252,7 +247,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(225,225,225,0.2)',
     marginBottom: 10,
     padding: 10,
-    color: materialTheme.COLORS.MAIN,
+    color: '#2e78b7',
     borderRadius: 25,
     width:300,
     fontSize:16,

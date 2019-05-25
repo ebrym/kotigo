@@ -7,7 +7,6 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
 import { Icon, Product } from '../components/';
 
 const { width } = Dimensions.get('screen');
-import products from '../constants/products';
 
 const ACCESS_TOKEN = 'access_token';
 export default class Home extends React.Component {
@@ -22,9 +21,7 @@ export default class Home extends React.Component {
   async _fetchData() {
         
     let token =  await AsyncStorage.getItem(ACCESS_TOKEN);
-    // global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
-    // global.userDetails = await AsyncStorage.getItem("UserDetails");
-    //console.log( global.userDetails);
+  
     fetch('http://216.10.247.42:8089/api/BookStore/GetBooks',{
         method: 'GET',
                 headers: {
@@ -52,42 +49,9 @@ export default class Home extends React.Component {
     this._fetchData();
   }
 
-  // renderSearch = () => {
-  //   const { navigation } = this.props;
-  //   const iconCamera = <Icon size={16} color={theme.COLORS.MUTED} name="camera-18" family="GalioExtra" />
 
-  //   return (
-  //     <Input
-  //       right
-  //       color="black"
-  //       style={styles.search}
-  //       iconContent={iconCamera}
-  //       placeholder="What are you looking for?"
-  //       onFocus={() => navigation.navigate('Pro')}
-  //     />
-  //   )
-  // }
   
-  // renderTabs = () => {
-  //   const { navigation } = this.props;
 
-  //   return (
-  //     <Block row style={styles.tabs}>
-  //       <Button shadowless style={[styles.tab, styles.divider]} onPress={() => navigation.navigate('Pro')}>
-  //         <Block row middle>
-  //           <Icon name="grid-square" family="Galio" style={{ paddingRight: 8 }} />
-  //           <Text size={16} style={styles.tabTitle}>Categories</Text>
-  //         </Block>
-  //       </Button>
-  //       <Button shadowless style={styles.tab} onPress={() => navigation.navigate('Pro')}>
-  //         <Block row middle>
-  //           <Icon size={16} name="camera-18" family="GalioExtra" style={{ paddingRight: 8 }} />
-  //           <Text size={16} style={styles.tabTitle}>Best Deals</Text>
-  //         </Block>
-  //       </Button>
-  //     </Block>
-  //   )
-  // }
 
   renderProducts = () => {
     return (

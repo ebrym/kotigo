@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { View, ScrollView, Image, StyleSheet, 
           Dimensions, 
-          Text,
           TouchableOpacity, 
           Alert,
           Slider } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FileSystem, Constants, Notifications } from 'expo';
+import { Button, Block, Text, Input, theme } from 'galio-framework';
 // import { Card } from 'react-native-elements';
 // import { Player } from 'react-native-audio-player-recorder-no-linking';
 
@@ -71,7 +71,7 @@ class LibraryCarousel extends React.Component {
     //console.log('images =:' +  this.props);
     if (book && book.length) {
       return (
-        <View
+        <Block flex center
           style={styles.scrollContainer}
         >
           <ScrollView
@@ -105,7 +105,7 @@ class LibraryCarousel extends React.Component {
      
             ))}
           </ScrollView>
-        </View>
+        </Block>
       );
     }
     Alert.alert('You have no books in your library!!');

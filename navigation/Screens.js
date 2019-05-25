@@ -16,6 +16,8 @@ import BookListDetails from '../screens/BookListView';
 import PaymentScreen from '../screens/PaymentScreen';
 import BookShelfScreen from '../screens/LibraryScreen';
 import PlayScreen from '../screens/PlayerScreen';
+import SearchScreen from '../screens/SearchScreen';
+import AccountScreen from '../screens/AccountScreen';
 
 import Menu from './Menu';
 import Header from '../components/Header';
@@ -69,6 +71,32 @@ const ProfileStack = createStackNavigator({
   transitionConfig,
 })
 
+const AccountStack = createStackNavigator({
+  Profile: {
+    screen: AccountScreen,
+    navigationOptions: ({ navigation }) => ({
+      header: <Header transparent title="My Account" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+}, {
+  cardStyle: { backgroundColor: '#EEEEEE', },
+  transitionConfig,
+})
+
+const SettingStack = createStackNavigator({
+  Profile: {
+    screen: SettingsScreen,
+    navigationOptions: ({ navigation }) => ({
+      header: <Header transparent title="Settings" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+}, {
+  cardStyle: { backgroundColor: '#EEEEEE', },
+  transitionConfig,
+})
+
 const BookShelfStach = createStackNavigator({
   BookShelf: {
     screen: BookShelfScreen,
@@ -102,6 +130,7 @@ const ComponentsStack = createStackNavigator({
   transitionConfig,
 })
 
+
 const HomeStack = createStackNavigator({
   Home: {
     screen: HomeScreen,
@@ -115,19 +144,19 @@ const HomeStack = createStackNavigator({
   //     header: <Header back title="Settings" navigation={navigation} />,
   //   })
   // },
-  Components: {
-    screen: ComponentsScreen,
-    navigationOptions: ({navigation}) => ({
-      header: <Header title="Components" navigation={navigation} />,
-    })
-  },
-  // Profile: {
-  //   screen: ProfileScreen,
+  // Components: {
+  //   screen: ComponentsScreen,
   //   navigationOptions: ({navigation}) => ({
-  //     header: <Header white transparent title="Profile" navigation={navigation} />,
-  //     headerTransparent: true,
+  //     header: <Header title="Components" navigation={navigation} />,
   //   })
   // },
+  Search: {
+    screen: SearchScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black title="Search" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
   // Pro: {
   //   screen: ProScreen,
   //   navigationOptions: ({navigation}) => ({
@@ -222,21 +251,21 @@ const AppStack = createDrawerNavigator(
     },
   
     Profile: {
-      screen: ProfileStack,
+      screen: AccountStack,
       navigationOptions: (navOpt) => ({
         drawerLabel: ({focused}) => (
           <Drawer focused={focused} screen="Profile" title="My Account" />
         ),
       }),
     },
-    // Settings: {
-    //   screen: SettingsScreen,
-    //   navigationOptions: (navOpt) => ({
-    //     drawerLabel: ({focused}) => (
-    //       <Drawer focused={focused} screen="Settings" title="Settings" />
-    //     ),
-    //   }),
-    // },
+    Settings: {
+      screen: SettingStack,
+      navigationOptions: (navOpt) => ({
+        drawerLabel: ({focused}) => (
+          <Drawer focused={focused} screen="Settings" title="Settings" />
+        ),
+      }),
+    },
     // Components: {
     //   screen: ComponentsStack,
     //   navigationOptions: (navOpt) => ({
@@ -254,11 +283,12 @@ const AppStack = createDrawerNavigator(
     SignOut: {
       screen: LoginScreen,
       navigationOptions: (navOpt) => ({
-        addListener: () => {
-          AsyncStorage.clear(); 
-        },
+        // addListener: () => {
+        //   AsyncStorage.clear(); 
+        //   this.props.navigation.navigate('Auth')
+        // },
         drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="SignIn" title="Sign Out" />
+          <Drawer focused={focused}  title="Sign Out" />
         ),
       }),
     },

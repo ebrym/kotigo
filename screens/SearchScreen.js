@@ -1,231 +1,164 @@
 import React from 'react';
-import { Text, View, StyleSheet, FlatList, Image,
-        ActivityIndicator, Platform, ScrollView,
-    AsyncStorage,TouchableOpacity} from 'react-native';
+import { StyleSheet, Dimensions, ScrollView,
+  ActivityIndicator,ListView,View,FlatList,
+  AsyncStorage, } from 'react-native';
+import { Button, Block, Text, Input, theme } from 'galio-framework';
 
-import { SearchBar } from 'react-native-elements';
+import { Icon, Product } from '../components/';
 
-
-
+const { width } = Dimensions.get('screen');
 
 const ACCESS_TOKEN = 'access_token';
-
-export default class SearchScreen extends React.Component {
-    static navigationOptions = {
-      title: 'Browse Books',
+export default class Home extends React.Component {
+  constructor(props){
+    super(props);
+    
+    this.state = {
+      dataSource: null,
+      isLoading: true,
     };
-  
-    constructor(props) {
-        super(props);
-        //setting default state
-        this.state = { isLoading: true, search: '' };
-        this.arrayholder = [];
-      }
+  }
 
-    componentDidMount() {
-       this._fetchData();
-      }
-
-      async _fetchData() {
-        
-        let token =  await AsyncStorage.getItem(ACCESS_TOKEN);
-        fetch('http://216.10.247.42:8089/api/BookStore/GetBooks',{
-            method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token,
-                    }})
-          .then(response => response.json())
-          .then(responseJson => {
-            this.setState(
-              {
-                isLoading: false,
-                dataSource: responseJson.BookStore,
-              },
-              function() {
-                this.arrayholder = responseJson.BookStore;
-                console.log("rese is:" + responseJson);
-              }
-            );
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      }
-      
-      search = text => {
-        console.log(text);
-      };
-      clear = () => {
-        this.search.clear();
-      };
-      SearchFilterFunction(text) {
-        //passing the inserted text in textinput
-        const newData = this.arrayholder.filter(function(item) {
-          //applying filter for the inserted text in search bar
-          const itemData = item.Title ? item.Title.toUpperCase() : ''.toUpperCase();
-          const textData = text.toUpperCase();
-          return itemData.indexOf(textData) > -1;
-        });
-        this.setState({
-          //setting the filtered newData on datasource
-          //After setting the data it will automatically re-render the view
-          dataSource: newData,
-          search:text,
-        });
-      }
-    //   ListViewItemSeparator = () => {
-    //     //Item sparator view
-    //     return (
-    //       <View
-    //         style={{
-    //           height: 0.3,
-    //           width: '90%',
-    //           backgroundColor: '#080808',
-    //         }}
-    //       />
-    //     );
-    //   };
+  async _fetchData() {
+    const { navigation } = this.props;
+    const keyword = navigation.getParam('search');
+    //const keyword = navigation.state.SearchText;
+    //console.log("SearchText : " +keyword);
+    
+    let token =  await AsyncStorage.getItem(ACCESS_TOKEN);
+    // global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    // global.userDetails = await AsyncStorage.getItem("UserDetails");
    
-  render() {
-    if (this.state.isLoading) {
-      //Loading View while data is loading
-      return (
-        <View style={{ flex: 1, paddingTop: 20 }}>
-          <ActivityIndicator size="large"  />
-        </View>
-      );
-    }
-    return (
-      //ListView to show with textinput used as search bar
-      <View style={styles.viewStyle}>
-        <SearchBar
-          round
-          searchIcon={{ size: 24 }}
-          onChangeText={text => this.SearchFilterFunction(text)}
-          onClear={text => this.SearchFilterFunction('')}
-          placeholder="Type Here..."
-          value={this.state.search}
-          />
-             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    fetch('http://216.10.247.42:8089/api/BookStore/SearchBooks/' + keyword ,{
+        method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token,
+                }})
+      .then(response => response.json())
+      .then(responseJson => {
+        this.setState(
+          {
+            isLoading: false,
+            dataSource: responseJson.BookStore,
+          },
         
-          <FlatList style={styles.list}  
-          numColumns='2'
+        );
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+ 
+  componentDidMount() {
+    this._fetchData();
+  }
+
+
+
+  renderProducts = () => {
+    
+    return (
+      <Block flex style={styles.options}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.products}>
+        <Block flex>
+          {/* <Product product={products[0]} horizontal /> */}
+          <Block flex row>
+          <FlatList  
           data={this.state.dataSource}
-          //ItemSeparatorComponent={this.ListViewItemSeparator}
-          //Item Separator View
+          numColumns='2'
     
           renderItem={({ item }) => (
-            // Single Comes here which will be repeatative for the FlatListItems
-            <TouchableOpacity style={styles.card}  
-            onPress={()=> this.props.navigation.navigate('BookDetails',{bookList:item})} 
-                
-                //onPress={this._gotoDetialsScreen(item)}
-                key = {item.Id}>
-                <View style={styles.listItem}>
-                  <View style={styles.imageWrapper}>
-                    <Image  style={styles.cardImage}
-                      source={{
-                        uri: item.ImageURL === '' ||
-                        item.ImageURL === null
-                          ? 'https://via.placeholder.com/70x70.jpg'
-                          : item.ImageURL,
-                      }}
-                    />
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.cardText}>
-                      {item.Title}
-                    </Text>
-                    <View style={styles.cardTextDetails}>
-                    <Text  style={styles.cardTextTiny}>{item.Author}</Text>
-                      <Text style={styles.cardTextTiny}>N{item.Price}</Text>
-                    </View>
-                  </View>
-                </View>
-                </TouchableOpacity>
-          )}
-          enableEmptySections={true}
-          style={{ marginTop: 5 }}
-          keyExtractor={(item, index) => index.toString()}
-        />
-        </ScrollView>
-      </View>
+              
+                <Product product={item} style={{ margin: 5 }}/>
+               
+               
+                )}
+                enableEmptySections={true}
+                style={{ marginTop: 5 }}
+                keyExtractor={(item, index) => index.toString()}
+              />
+            </Block>
+          </Block>
+          {/* <Product product={products[3]} horizontal />
+          <Product product={products[4]} full /> */}
+        
+      </ScrollView>
+      </Block>
+    )
+  }
+
+  render() {
+    if (this.state.isLoading) {
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator size="large" />
+        </View>
+      );
+    } else {
+    return (
+      <Block flex center style={styles.home}>
+        {this.renderProducts()}
+      </Block>
     );
     }
+  }
 }
- 
 
-  
-  const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-      },
-      contentContainer: {
-        paddingTop: 30,
-      },
-    viewStyle: {
-        justifyContent: 'center',
-        flex: 1,
-        backgroundColor:'white',
-        marginTop: Platform.OS == 'ios'? 30 : 0
-      },
-      textStyle: {
-        padding: 7,
-      },
-      card:{
-        backgroundColor:'#fff',
-        marginBottom:10,
-        marginLeft:'2%',
-        width: '45%', 
-        aspectRatio: 1,
-        shadowColor:'#000',
-        shadowOpacity:0.2,
-        shadowRadius:1,
-        borderRadius: 5,
-        shadowOffset:{
-          width:3,
-          height:3
-        }
-      },
-      cardImage:{
-        width:'100%',
-        height:'90%',
-        resizeMode:"stretch",
-        borderRadius: 5,
-      },
-      cardText : {
-        padding:5,
-        fontSize:10
-      },cardTextDetails : {
-        flexDirection: 'row',
-        alignContent:'space-between',
-        alignItems:'stretch'
-      },
-      cardTextTiny : {
-        padding:5,
-        fontSize:8
-      },list: {
-        flex:1,
-        flexDirection: 'row',
-        flexWrap: 'wrap'
-      },
-      cardViewStyle:{
-       
-        width: '98%',
-        height:'90%',
-      
-      },
-      
-      cardView_InsideText:{
-      
-        fontSize: 20, 
-        color: '#000', 
-        textAlign: 'center', 
-        marginTop: 50    
-      
-      }
-  });
-  
+const styles = StyleSheet.create({
+  home: {
+    width: width,    
+  },
+  search: {
+    height: 48,
+    width: width - 32,
+    marginHorizontal: 16,
+    borderWidth: 1,
+    borderRadius: 3,
+  },
+  header: {
+    backgroundColor: theme.COLORS.WHITE,
+    shadowColor: theme.COLORS.BLACK,
+    marginTop: theme.SIZES.BASE * 7,
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowRadius: 8,
+    shadowOpacity: 0.2,
+    elevation: 4,
+    zIndex: 2,
+  },
+  tabs: {
+    marginBottom: 24,
+    marginTop: 10,
+    elevation: 4,
+  },
+  tab: {
+    backgroundColor: theme.COLORS.TRANSPARENT,
+    width: width * 0.50,
+    borderRadius: 0,
+    borderWidth: 0,
+    height: 24,
+    elevation: 0,
+  },
+  tabTitle: {
+    lineHeight: 19,
+    fontWeight: '300'
+  },
+  divider: {
+    borderRightWidth: 0.3,
+    borderRightColor: theme.COLORS.MUTED,
+  },
+  products: {
+    width: width - theme.SIZES.BASE * 2,
+    paddingVertical: theme.SIZES.BASE * 2,
+  },
+  options: {
+    marginTop: theme.SIZES.BASE * 7,
+  },
+});

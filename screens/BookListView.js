@@ -1,23 +1,26 @@
 import React from "react";
 import { View,StyleSheet,ScrollView,Dimensions,
     TouchableOpacity,ImageBackground, Platform,
-     Icon, Image} from 'react-native';
-  //import { ListItem,Card } from 'react-native-elements'
+     Icon, Image, Slider,Alert,AsyncStorage} from 'react-native';
 import { Button, Block, Text, Input, theme } from 'galio-framework';
   import { Audio } from "expo";
   import { Ionicons } from '@expo/vector-icons';
 
   import { Images, materialTheme } from '../constants';
   import { HeaderHeight } from "../constants/utils";
-  
-  const { width, height } = Dimensions.get('screen');
+  import {Recorder, Player} from 'react-native-audio-player-recorder-no-linking';
 
+
+  const { width, height } = Dimensions.get('screen');
+  const thumbMeasure = (width - 48 - 32) / 3;
+
+const ACCESS_TOKEN = 'access_token';
   export default class BooKListDetails extends React.Component {
    
       constructor(props) {
         super(props);
         this.soundObject = new Audio.Sound();
-        this.state = { isPlaying: false };
+        this.state = { isPlaying: false, isLoading: false };
         // this.loadAudio = this.loadAudio.bind(this);
         // this.toggleAudioPlayback = this.toggleAudioPlayback.bind(this);
       }
@@ -51,7 +54,8 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
     //   }
 
     componentWillUnmount(){
-     this.soundObject.stopAsync();
+     //this.soundObject.stopAsync();
+     //this.Player.stopAsync();
 
   }
 
@@ -88,21 +92,95 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
       }
       this.setState({isPlaying:false});
     }
+    async _freebookAdd(book) {
+      this.state = { isLoading: true };
+      //let token =  await AsyncStorage.getItem(ACCESS_TOKEN);
+      // global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
+      // global.userDetails = await AsyncStorage.getItem("UserDetails");
+      //console.log( global.userDetails);
+      const userDetails = JSON.parse(global.userDetails);
+     // console.error('book :    '+book.ImageURL);
+     let payload = JSON.stringify({
+      BookID: book.Id,
+      Reference: Math.floor(Math.random() * 10000000000) + 1 ,
+      UserName: userDetails.Email,
+      Amount: 0,
+      PaymentMode: "Free",
+      Status: "success"
+  });
+  console.log('payload :    '+payload);
+try{
+      let response = await fetch('http://216.10.247.42:8089/api/Payment/PaymentUpdate',{
+                  method: 'POST',
+                  headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json',
+                      'Authorization': 'Bearer ' + global.token,
+                  },
+                  body: payload,
+                });
+                console.log('Status :    '+response.status);
+                if (response.status >= 200 && response.status < 300) {
+                  this.setState(
+                    {
+                      isLoading: false
+                    },
+                    
+                  );
+                  Alert.alert('Book Added to your library');
+                }else{
+                  Alert.alert('Can not download book at this time.');
+                }
+        // .then(response => response.json())
+        // .then(responseJson => {
+        //   this.setState(
+        //     {
+        //       isLoading: false
+        //     },
+            
+        //   );
+         
+        // })
+        // .catch(error => {
+        //   console.error(error);
+          
+        // });
+      } catch(error){
+        console.log("catch error: " + error);
+       
+        let formError = JSON.parse(error);
+        let errorArray = [];
+        for(let key in formError) {
+            if(formError[key].length > 1){
+                formError[key].map(error => errorArray.push(`${key} ${error}`))
+            } else {
+                errorArray.push(`${key} ${formError[key]}`)
+            }
+        }
+        this.setState({isLoading: false, error: errorArray});
+
+        Alert.alert('Can not login at this time!');
+
+    }
+    }
+
     render() {
         const { navigation } = this.props;
         const bookDetails=navigation.getParam('book');
-        console.log('Details view props: ', bookDetails);
+        //console.log('Details view props: ', bookDetails);
         //console.log('Details view : ', bookDetails.BookDetails);
-     
+        if(this.state.isLoading){
+          return( 
+            <View style={styles.loader}> 
+              <ActivityIndicator size="large" color="#0c9"/>
+            </View>
+        )}
 
         return (
-        <ScrollView>
-            <Block flex style={styles.group}>
-            <Block flex>
-
-              <Block style={{ paddingHorizontal: theme.SIZES.BASE }}>
-                
-            <Text bold size={16} style={styles.title}>{bookDetails.Title}</Text>
+       
+        <Block flex style={styles.options}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+        <Text bold size={16} style={styles.title}>{bookDetails.Title}</Text>
                 <Block flex card shadow style={styles.category}>
                   <ImageBackground
                     source={{ uri: bookDetails.ImageURL }}
@@ -121,48 +199,77 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
                       <Text>Summary: {bookDetails.Summary}</Text>
                       <Text color="green">Price : {bookDetails.Price >0 ? "N"+bookDetails.Price : "Free"}</Text>
                     </Block>
-                    <Block flex  row space="between">
-                  {this.props.isPlaying ? (
-                    <TouchableOpacity style={{marginHorizontal:20}} onPress={() => this.pause()}>
-                             <Ionicons name="md-pause-circle" size={30} color="#2e78b7" />
-                             <Text >Pause</Text>
-                    </TouchableOpacity>) :
-                    <TouchableOpacity style={{marginHorizontal:20}} onPress={() => this.play(bookDetails.AudioURL)}>
-                        {/* <Image source={img_play} style={{width:30, height:30}}/>    */}
-                         <Ionicons name="md-play-circle" size={30} color="#2e78b7" />
-                    <Text >Play Review</Text>
-                    </TouchableOpacity>}
-
-                  <Text ><Ionicons name="md-download" size={20} color="#2e78b7" />   
-                  {bookDetails.DownloadCount} 
-                  <Ionicons name="md-heart" size={20} color="#2e78b7" />
-                  {bookDetails.LikeCount} 
-                  </Text>
+               
+                    <Block flex  center space="between">
+                    <Text>Play Review</Text>
+                    <Player
+                            style={{ flex: 1 }}
+                            //onComplete={this.playerComplete.bind(this)}
+                            //completeButtonText={'Return Home'}
+                            uri={bookDetails.ShortAudioURL}
+                            showDebug={false}
+                            showBackButton={false}
+                            playbackSlider={(renderProps) => {
+                                return ( 
+                                <Slider
+                                    minimimValue={0}
+                                    maximumValue={renderProps.maximumValue}
+                                    onValueChange={renderProps.onSliderValueChange}
+                                    value={renderProps.value}
+                                    style={{
+                                    width: '100%'
+                                    }}
+                                />
+                                );
+                            }}
+                        /> 
+                  
             
             </Block>
-            <View style={{ flexDirection: 'row', alignSelf: 'stretch', justifyContent: 'space-around' }}>
-             
-           {bookDetails.Price >0 ? 
-             <Button
-                shadowless
-                style={styles.button}
-                onPress={()=> this.props.navigation.navigate('Payment',{paymentDetails:bookDetails})} 
-                 color='green'>
-                BUY NOW
-              </Button>
-             : <Button
-             shadowless
-             style={styles.button}
-             onPress={()=> this.props.navigation.navigate('Payment',{paymentDetails:bookDetails})} 
-              color='green'>
-             DOWNLOAD
-           </Button>}
-             </View>
-                </Block>
-              </Block>
+           <Block flex center space="between">
+                {bookDetails.Price >0 ? 
+                  <Button
+                      shadowless
+                      style={styles.button}
+                      onPress={()=> this.props.navigation.navigate('Payment',{paymentDetails:bookDetails})} 
+                      color='green'>
+                      BUY NOW
+                    </Button>
+                  : <Button
+                  shadowless
+                  style={styles.button}
+                  onPress={()=> this._freebookAdd(bookDetails)} 
+                    color='green'>
+                  DOWNLOAD
+                  
+                </Button>}
+             </Block>
+           </Block>
+
+
+
+          <Block row space="between" style={{ padding: theme.SIZES.BASE, }}>
+            <Block middle>
+              <Text bold size={12} style={{marginBottom: 8}}>{bookDetails.DownloadCount} </Text>
+              <Text muted size={12}><Ionicons name="md-download" size={20} color="#2e78b7" /> </Text>
+            </Block>
+            {/* <Block middle>
+              <Text bold size={12} style={{marginBottom: 8}}>5</Text>
+              <Text muted size={12}>Bids & Offers</Text>
+            </Block> */}
+            <Block middle>
+              <Text bold size={12} style={{marginBottom: 8}}>{bookDetails.LikeCount}</Text>
+              <Text muted size={12}><Ionicons name="md-heart" size={20} color="#2e78b7" /></Text>
             </Block>
           </Block>
+
+          {/* <Block row space="between" style={{ paddingVertical: 16, alignItems: 'baseline' }}>
+            <Text size={16}>Recently viewed</Text>
+            <Text size={12} color={theme.COLORS.PRIMARY} onPress={() => this.props.navigation.navigate('Home')}>View All</Text>
+          </Block> */}
+         
         </ScrollView>
+      </Block>
         );
     }
 }
@@ -281,6 +388,38 @@ const styles = StyleSheet.create({
     height: theme.SIZES.BASE * 3,
     shadowRadius: 0,
     shadowOpacity: 0,
+  },
+  options: {
+    position: 'relative',
+    padding: theme.SIZES.BASE,
+    marginHorizontal: theme.SIZES.BASE,
+    marginTop: theme.SIZES.BASE * 7,
+    marginBottom: theme.SIZES.BASE,
+    borderTopLeftRadius: 13,
+    borderTopRightRadius: 13,
+    borderBottomRightRadius: 13,
+    borderBottomLeftRadius: 13,
+    backgroundColor: theme.COLORS.WHITE,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 8,
+    shadowOpacity: 0.2,
+    zIndex: 2,
+  },
+  thumb: {
+    borderRadius: 4,
+    marginVertical: 4,
+    alignSelf: 'center',
+    width: thumbMeasure,
+    height: thumbMeasure
+  },
+  gradient: {
+    zIndex: 1,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '30%',
+    position: 'absolute',
   },
   });
   

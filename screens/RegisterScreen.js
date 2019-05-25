@@ -103,12 +103,18 @@ export default class RegisterScreen extends React.Component {
         //       </View>
         //     );
         //   } else {
+            if(this.state.loading){
+                return( 
+                  <View style={styles.loader}> 
+                    <ActivityIndicator size="large" color="#0c9"/>
+                  </View>
+              )}
         return(
             <View style = {styles.container}>
                
-
-               <Loader
-          loading={this.state.loading} />
+             
+               {/* <Loader
+          loading={this.state.loading} /> */}
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             
             <Image
@@ -118,23 +124,26 @@ export default class RegisterScreen extends React.Component {
             />
             <Text style={styles.helpLinkText}>SignUp</Text>
            
-                <TextInput style = {styles.input}  
+                <Input style = {styles.input}  
                     onChangeText={(val) => this.setState({firstname: val})}
                     placeholder='First Name' 
+                    color={materialTheme.COLORS.MAIN}
                     placeholderTextColor={materialTheme.COLORS.MAIN}
                     underlineColorAndroid='transparent'/>
-                <TextInput style = {styles.input}  
+                <Input style = {styles.input}  
                     onChangeText={(val) => this.setState({lastname: val})}
                     placeholder='Last Name' 
+                    color={materialTheme.COLORS.MAIN}
                     placeholderTextColor={materialTheme.COLORS.MAIN}
                     underlineColorAndroid='transparent'/>
-                <TextInput style = {styles.input}  
+                <Input style = {styles.input}  
                     onChangeText={(val) => this.setState({phoneno: val})}
                     placeholder='Phone Number' 
+                    color={materialTheme.COLORS.MAIN}
                     placeholderTextColor={materialTheme.COLORS.MAIN}
                     underlineColorAndroid='transparent'/>
 
-                <TextInput style = {styles.input} 
+                <Input style = {styles.input} 
                     onChangeText={(val) => this.setState({email: val})}
                     autoCapitalize="none" 
                     onSubmitEditing={() => this.passwordInput.focus()} 
@@ -144,21 +153,23 @@ export default class RegisterScreen extends React.Component {
                     placeholder='Email Address' 
                     placeholderTextColor={materialTheme.COLORS.MAIN}
                     underlineColorAndroid='transparent'/>   
-                <TextInput style = {styles.input} 
+                <Input style = {styles.input} 
                     onChangeText={(val) => this.setState({username: val})}
                     autoCapitalize="none" 
                     onSubmitEditing={() => this.passwordInput.focus()} 
                     autoCorrect={false} 
                     returnKeyType="next" 
+                    color={materialTheme.COLORS.MAIN}
                     placeholder='Prefered User Name' 
                     placeholderTextColor={materialTheme.COLORS.MAIN}
                     underlineColorAndroid='transparent'/>
 
-                <TextInput style = {styles.input}
+                <Input style = {styles.input}
                     onChangeText={(val) => this.setState({password: val})}   
                     returnKeyType="go" 
                     ref={(input)=> this.passwordInput = input} 
                     placeholder='Password' 
+                    color={materialTheme.COLORS.MAIN}
                     placeholderTextColor={materialTheme.COLORS.MAIN}
                     underlineColorAndroid='transparent'
                     secureTextEntry/>
