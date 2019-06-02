@@ -166,7 +166,6 @@ const styles = StyleSheet.create({
   },
   
   cardView_InsideText:{
-  
     fontSize: 20, 
     color: '#000', 
     textAlign: 'center', 

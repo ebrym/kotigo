@@ -24,34 +24,7 @@ const ACCESS_TOKEN = 'access_token';
         // this.loadAudio = this.loadAudio.bind(this);
         // this.toggleAudioPlayback = this.toggleAudioPlayback.bind(this);
       }
-    //   async loadAudio(bookDetails){
-    //     const soundObject = new Audio.Sound();
-    //         try {
-    //         await soundObject.loadAsync(require({uri: bookDetails.ShortAudioURL}));
-    //         await soundObject.playAsync();
-    //         // Your sound is playing!
-    //         } catch (error) {
-    //         // An error occurred!
-    //         }
-    //     // Player.play(bookDetails.ShortAudioURL, {
-    //     //   title: bookDetails.Title,
-    //     //   artist: bookDetails.Narrator,
-    //     //   album_art_uri: bookDetails.ImageURL,
-    //     // });
-    //   }
-    //   componentWillUnmount() {
-    //     this.soundObject.stopAsync();
-    //   }
-    //   toggleAudioPlayback() {
-    //     this.setState({
-    //       isPlaying: !this.state.isPlaying,
-    //     }, () => (this.state.isPlaying
-    //       ? this.soundObject.playAsync()
-    //       : this.soundObject.stopAsync()));
-    //   }
-    //   onPause() {
-    //     Player.pause();
-    //   }
+
 
     componentWillUnmount(){
      //this.soundObject.stopAsync();
@@ -59,39 +32,9 @@ const ACCESS_TOKEN = 'access_token';
 
   }
 
-    play = async (audioPath) => {
-      if(this.state.isPlaying) {
-          await this.soundObject.pauseAsync();
-          const milliseconds= await this.soundObject.getStatusAsync();
-          console.log(milliseconds.durationMillis);
-          console.log(this.state.isPlaying);
-          return milliseconds.durationMillis;
-      } else {
-          if(this.soundObject._loaded) {
-              await this.soundObject.playAsync();
-              this.setState({isPlaying:true});
-              console.log(this.state.isPlaying);
-          } else {
+   
 
-              await this.soundObject.loadAsync({uri: audioPath});
-              await this.soundObject.playAsync();
-              const milliseconds= await this.soundObject.getStatusAsync();
-              this.setState({isPlaying:true});
-              console.log(milliseconds.durationMillis)
-              
-          console.log(this.state.isPlaying);
-              return milliseconds.durationMillis;
-          }
-          
-      }
-    }
-
-    pause = async  () => {
-      if(this.soundObject){
-          await this.soundObject.pauseAsync();
-      }
-      this.setState({isPlaying:false});
-    }
+  
     async _freebookAdd(book) {
       this.state = { isLoading: true };
       //let token =  await AsyncStorage.getItem(ACCESS_TOKEN);

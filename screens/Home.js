@@ -31,6 +31,7 @@ export default class Home extends React.Component {
                 }})
       .then(response => response.json())
       .then(responseJson => {
+        //console.error('RESPONSE  : ' + responseJson);
         this.setState(
           {
             isLoading: false,
@@ -40,7 +41,7 @@ export default class Home extends React.Component {
         );
       })
       .catch(error => {
-        console.error(error);
+        console.error('HOME  : ' + error);
       });
   }
 

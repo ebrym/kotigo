@@ -1,98 +1,102 @@
 import React from 'react';
-import { Text, View, StyleSheet, FlatList, Image,Alert,
+import {  View, StyleSheet, FlatList, Image,Alert,
   ActivityIndicator, Platform, ScrollView,ListView,
-AsyncStorage,TouchableOpacity} from 'react-native';
+AsyncStorage,TouchableOpacity, Dimensions, NetInfo} from 'react-native';
+import { FileSystem, Constants, Notifications,SQLite } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import LibraryCarousel from '../components/LibraryCarousel';
-import { Block } from 'galio-framework';
+
+//import { sliderWidth, itemWidth } from '../constants/SliderEntry.Style';
 //import RNFetchBlob from 'react-native-fetch-blob'
+import { Button, Block, Text, Input, theme } from 'galio-framework';
+import { Images, materialTheme } from '../constants';
+
+
+
+const { width, height } = Dimensions.get('screen');
 
 const ACCESS_TOKEN = 'access_token';
+
+
+
+const db = SQLite.openDatabase('gosmarticle.db');
+
 export default class LibraryScreen extends React.Component {
   static navigationOptions = {
     title: 'MY BOOKS',
   };
   constructor(props) {
     super(props);
-    this.fetchMore = this._fetchMore.bind(this);
-    this.fetchData = this._fetchData.bind(this);
     this.state = {
-      dataSource: null,
+      data: null,
       isLoading: true,
-      isLoadingMore: false,
-      _data: null,
-      _dataAfter: '',
     };
-
-  }
-  
-
-  
-async _fetchData  (callback) {
-        let token =  await AsyncStorage.getItem(ACCESS_TOKEN);
-        //Limits fetches to 15 so there's lesser items from the get go
-        global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
-
-     const userDetails = JSON.parse(global.userDetails);
-        try{ 
-          fetch('http://216.10.247.42:8089/api/BookShelf/GetUserBooks/' + userDetails.Email,{
-          method: 'GET',
-                  headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                      'Authorization': 'Bearer ' + token,
-                  }
-        })
-          .then(response => response.json())
-          .then(callback)
-          .catch(error => {
-            console.error(error);
-          });
-        }
-        catch(error) {
-          Alert.alert('Connection Error, Try again later!!');
-                  
-          console.log("Something went wrong");
-      }
-         // console.log(response.json())
-      }
-    
-      _fetchMore() {
-      try{
-        this.fetchData(responseJson => {
-          const data = this.state._data.concat(responseJson.BookStore);
-          this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(data),
-            isLoadingMore: false,
-            _data: data,
-            _dataAfter: responseJson.BookStore.after,
-          });
-        });
-      }
-    catch(error) {
-      Alert.alert('Connection Erro, Try again later!!');
-              
-      console.log("Something went wrong")
-    }
-  }
-  componentDidMount() {
-    //Start getting the first batch of data from reddit
-    this.fetchData(responseJson => {
+}
+async _fetchData() {
       
-      let ds = new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 !== r2,
-      });
-      const data = responseJson.BookStore;
-      //console.log('data =:' +  data);
-      this.setState({
-        dataSource: ds.cloneWithRows(data),
-        isLoading: false,
-        _data: data,
-        _dataAfter: responseJson.BookStore.after,
-      });
+  let token =  await AsyncStorage.getItem(ACCESS_TOKEN);
+  //Limits fetches to 15 so there's lesser items from the get go
+  //global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
+  let userDetail =  await AsyncStorage.getItem('UserDetails');
+ 
+const userDetails = JSON.parse(userDetail);
+console.log('Library Screen : ' + userDetails.Email);
+
+fetch('http://216.10.247.42:8089/api/BookShelf/GetUserBooks/' + userDetails.Email,{
+      method: 'GET',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + token,
+              }})
+    .then(response => response.json())
+    .then(responseJson => {
+      this.setState(
+        {
+          isLoading: false,
+          data: responseJson.BookStore,
+        }
+      );
+    })
+    .catch(error => {
+      Alert.alert('Connection Error, Try again later!!');
+      console.error(error);
     });
-  }    
-  
+}
+
+
+componentDidMount() {
+  console.log(global.connectionState);
+  if (global.connectionState){
+    this._fetchData();
+  }else{
+   this._fetchOfflineData();
+  }
+}
+
+
+    //(_, { rows: { _array } }) => this.setState({ items: _array })
+    // console.log(JSON.stringify(_array))
+  _fetchOfflineData(){
+   db.transaction((tx) => {
+    tx.executeSql('select * from Library', [], (_, { rows }) =>
+    this.setState(
+      {
+        isLoading: false,
+        data: rows._array,
+      }
+    )
+      );
+    
+    console.log('table created');
+  }, null, function () {
+    console.log('done?.');
+  });
+ }
+
+ 
+
+
 
   render() {
     if (this.state.isLoading) {
@@ -103,62 +107,8 @@ async _fetchData  (callback) {
       );
     } else {
       return (
-        <Block flex center backgroundColor="white" style={styles.detailCell} >
-                <LibraryCarousel book={this.state._data} />
-       
-                {/* <TouchableOpacity onPress={()=> this.props.navigation.navigate('Player')}>
-                        <Ionicons name="md-play-circle" size={30} color="#2e78b7" />
-                    </TouchableOpacity> */}
-        {/* <ListView style={styles.list} contentContainerStyle={{}}
-          dataSource={this.state.dataSource}
-          renderRow={rowData => {
-            return (
-
-                <View style={styles.detailCell}>
-                <Image  style={styles.photo}
-                                source={{
-                                  uri: rowData.ImageURL === '' ||
-                                    rowData.ImageURL === null
-                                    ? 'https://via.placeholder.com/70x70.jpg'
-                                    : rowData.ImageURL,
-                                }}
-                              />
-                  <View style={styles.rightContainer}>
-                    <Text style={styles.bookTitle}>{rowData.Title}</Text>
-                    <Text style={styles.bookAuthor}> Author: {rowData.Author} narrated by : {rowData.Narrator}</Text>
-                  </View>
-                  <View style={styles.downloadSection}>
-                    <TouchableOpacity >
-                        <Ionicons name="md-play-circle" size={30} color="#2e78b7" />
-                    </TouchableOpacity>
-                    <Text>   </Text>
-                    <TouchableOpacity 
-                    onPress={()=> this._downloadBook(rowData)} >
-                        <Ionicons name="md-download" size={30} color="#2e78b7" />
-                    </TouchableOpacity>
-                </View>
-
-                </View>
-
-
-
-                
-           
-            );
-          }}
-          renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
-      
-          // onEndReached={() =>
-          //   this.setState({ isLoadingMore: true }, () => this.fetchMore())}
-          // renderFooter={() => {
-          //   return (
-          //     this.state.isLoadingMore &&
-          //     <View style={{ flex: 1, padding: 10 }}>
-          //       <ActivityIndicator size="small" />
-          //     </View>
-          //   );
-          // }}
-        /> */}
+        <Block flex style={styles.options}>
+                <LibraryCarousel book={this.state.data} />
        </Block>
       );
     }
@@ -172,6 +122,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 12,
     paddingTop: 20,
+    marginTop:theme.SIZES.BASE * 7,
   },
   contentContainer: {
     paddingTop: 30,
@@ -237,6 +188,23 @@ rightContainer: {
 downloadSection: {
   flexDirection: 'row', 
   padding:5,
+},
+options: {
+  position: 'relative',
+  padding: theme.SIZES.BASE,
+  marginHorizontal: theme.SIZES.BASE,
+  marginTop: theme.SIZES.BASE * 7,
+  marginBottom: theme.SIZES.BASE*7, 
+  borderTopLeftRadius: 13,
+  borderTopRightRadius: 13,
+  borderBottomRightRadius: 13,
+  borderBottomLeftRadius: 13,
+  backgroundColor: theme.COLORS.WHITE,
+  shadowColor: 'black',
+  shadowOffset: { width: 0, height: 0 },
+  shadowRadius: 8,
+  shadowOpacity: 0.2,
+  zIndex: 2,
 },
 });
 

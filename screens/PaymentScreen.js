@@ -5,6 +5,7 @@ import { View,ScrollView, StyleSheet,WebView,
 
 
 
+    import { Button, Block, Text, Input, theme } from 'galio-framework';
  
 const ACCESS_TOKEN = 'access_token';
 
@@ -95,7 +96,7 @@ export default class PaymentScreen extends React.Component {
 
                                                             console.log(htmlContent);  
         return (  
-        
+        <Block flect style={styles.container}>
             <WebView
             originWhitelist={['*']}
             source={{html: htmlContent}}
@@ -103,18 +104,9 @@ export default class PaymentScreen extends React.Component {
             scalesPageToFit={(Platform.OS === 'ios') ? false : true}
           />
        
-           
+       </Block>  
        
-    //   <ScrollView style={styles.container}>
-    //     {/* Go ahead and delete ExpoLinksView and replace it with your
-    //        * content, we just wanted to provide you with some helpful links */}
-    //     {/* <ExpoLinksView /> */}
-
-    //     {/* <HTML html={htmlContent} /> */}
-      
-    
-
-    //   </ScrollView>
+   
     );
   }
 }
@@ -124,5 +116,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 15,
     backgroundColor: '#fff',
+    marginTop: theme.SIZES.BASE * 7,
   },
 });

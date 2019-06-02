@@ -12,12 +12,16 @@
 */
 
 import React from 'react';
-import { Platform, StatusBar, Image } from 'react-native';
+import { Platform, StatusBar, Image,NetInfo } from 'react-native';
 import { AppLoading, Asset } from 'expo';
 import { Block, GalioProvider } from 'galio-framework';
 
 import Screens from './navigation/Screens';
+import Offline from './navigation/OfflineNav';
 import { Images, products, materialTheme } from './constants/';
+import Toast, {DURATION} from 'react-native-easy-toast'
+
+
 
 // cache app images
 const assetImages = [
@@ -44,6 +48,7 @@ function cacheImages(images) {
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
+      connection: false,
   };
 
   render() {
@@ -58,14 +63,46 @@ export default class App extends React.Component {
     } else {
       return (
         <GalioProvider theme={materialTheme}>
+        <Toast ref="toast"/>
           <Block flex>
             {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-            <Screens />
+            {this.state.connection  ? <Screens /> : <Offline />}
           </Block>
         </GalioProvider>
       );
     }
   }
+
+  componentDidMount() {
+    NetInfo.isConnected.addEventListener(
+      'connectionChange',
+      this.handleConnectionChange
+    );
+
+   
+  }
+  
+
+  componentWillUnmount() {
+    NetInfo.isConnected.removeEventListener(
+      'connectionChange',
+      this.handleConnectionChange
+    );
+  }
+
+  handleConnectionChange = isConnected => {
+    console.log('Connection state : ' + isConnected); // gives undefined in log
+    if(!isConnected){
+      this.refs.toast.show('No Internet Connection!');
+    }else{
+      this.refs.toast.show('Internet Connection!');
+     
+    }
+    this.setState({
+      connection: isConnected,
+    });
+    global.connectionState = isConnected;
+  };
 
   _loadResourcesAsync = async () => {
     return Promise.all([
