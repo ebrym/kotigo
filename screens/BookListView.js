@@ -68,7 +68,6 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
               this.setState({isPlaying:true});
               console.log(this.state.isPlaying);
           } else {
-
               await this.soundObject.loadAsync({uri: audioPath});
               await this.soundObject.playAsync();
               const milliseconds= await this.soundObject.getStatusAsync();
@@ -119,43 +118,28 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
                       <Text>Narrator: {bookDetails.Narrator}</Text>
                       <Text>Category: {bookDetails.Category}</Text>
                       <Text>Summary: {bookDetails.Summary}</Text>
-<<<<<<< HEAD
-                      <Text>Price: N{bookDetails.Price}</Text>
-                    </Block>
-                  <Block flex row>
-                 {this.props.isPlaying ? (
-=======
                       <Text color="green">Price : N{bookDetails.Price}</Text>
                     </Block>
                     <Block flex  row space="between">
                   {this.props.isPlaying ? (
->>>>>>> af66c83a013a209fc21961f25b73e1a9356038f6
                     <TouchableOpacity style={{marginHorizontal:20}} onPress={() => this.pause()}>
                        <Ionicons name="md-pause-circle" size={30} color="#2e78b7" /> 
                     </TouchableOpacity>) :
-                    <TouchableOpacity style={{marginHorizontal:20}} onPress={() => this.play(bookDetails.AudioURL)}>
+                    <TouchableOpacity style={{marginHorizontal:20}} onPress={() => this.play(bookDetails.ShortAudioURL)}>
                         {/* <Image source={img_play} style={{width:30, height:30}}/>    */}
                          <Ionicons name="md-play-circle" size={30} color="#2e78b7" />
                     </TouchableOpacity>}
                     <Text > Play Review</Text>
 
-<<<<<<< HEAD
-
-                  <Text ><Ionicons name="md-download" size={30} color="#2e78b7" />   
-=======
                   <Text ><Ionicons name="md-download" size={20} color="#2e78b7" />   
->>>>>>> af66c83a013a209fc21961f25b73e1a9356038f6
                   {bookDetails.DownloadCount} 
                   <Ionicons name="md-heart" size={30} color="#2e78b7" />
                   {bookDetails.LikeCount} 
                   </Text>
             </Block>
-            <View style={{ flexDirection: 'row', alignSelf: 'stretch', justifyContent: 'space-around' }}>
-             
-<<<<<<< HEAD
-=======
-           {bookDetails.Price >0 ? 
->>>>>>> af66c83a013a209fc21961f25b73e1a9356038f6
+            {/* <View style={{ flexDirection: 'row', alignSelf: 'stretch', justifyContent: 'space-around' }}> */}
+             <Block flex row space="between">
+             {bookDetails.Price >0 ? 
              <Button
                 shadowless
                 style={styles.button}
@@ -170,23 +154,13 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
               color='green'>
              DOWNLOAD
            </Button>}
-             </View>
+             </Block>
+          
                 </Block>
               </Block>
             </Block>
           </Block>
         </ScrollView>
-
-
-
-         
-            
-            
-           
-       
-       
-    
-    
  
         );
     }

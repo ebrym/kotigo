@@ -49,7 +49,7 @@ export default class LoginScreen extends React.Component {
     _loadInitialState = async () => {
         let token = await AsyncStorage.getItem(ACCESS_TOKEN);
         global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
-    global.userDetails = await AsyncStorage.getItem("UserDetails");
+        global.userDetails = await AsyncStorage.getItem("UserDetails");
         //let expires = await AsyncStorage.getItem(TOKEN_VALIDITY);  
         if (token !== null) {
            this.setState({loading: false});
@@ -176,14 +176,9 @@ export default class LoginScreen extends React.Component {
                             secureTextEntry/>
 
                 <TouchableOpacity style={styles.button} 
-<<<<<<< HEAD
-                                    onPress={this.onLoginButtonPress.bind(this)}>
-                            <Text  style={styles.button}>LOGIN</Text>
-=======
                                     onPress={this.onLoginButtonPress.bind(this)}
                                     color={materialTheme.COLORS.BUTTON_COLOR}>
                             <Text  style={styles.buttonText}>LOGIN</Text>
->>>>>>> af66c83a013a209fc21961f25b73e1a9356038f6
                 </TouchableOpacity> 
            
           </View>
