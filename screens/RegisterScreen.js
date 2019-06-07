@@ -4,15 +4,18 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text, 
   TextInput, 
   TouchableOpacity, 
   AsyncStorage,
   ActivityIndicator,
   View,
   Alert,
+  Dimensions,
 } from 'react-native';
+import { Block, Button, Text, theme,Input } from 'galio-framework';
 
+const { height, width } = Dimensions.get('screen');
+import materialTheme from '../constants/Theme';
 import Loader from '../components/Loader';
 import PropTypes from 'prop-types';
 
@@ -100,12 +103,18 @@ export default class RegisterScreen extends React.Component {
         //       </View>
         //     );
         //   } else {
+            if(this.state.loading){
+                return( 
+                  <View style={styles.loader}> 
+                    <ActivityIndicator size="large" color="#0c9"/>
+                  </View>
+              )}
         return(
             <View style = {styles.container}>
                
-
-               <Loader
-          loading={this.state.loading} />
+             
+               {/* <Loader
+          loading={this.state.loading} /> */}
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             
             <Image
@@ -115,23 +124,26 @@ export default class RegisterScreen extends React.Component {
             />
             <Text style={styles.helpLinkText}>SignUp</Text>
            
-                <TextInput style = {styles.input}  
+                <Input style = {styles.input}  
                     onChangeText={(val) => this.setState({firstname: val})}
                     placeholder='First Name' 
-                    placeholderTextColor='#2e78b7'
+                    color={materialTheme.COLORS.MAIN}
+                    placeholderTextColor={materialTheme.COLORS.MAIN}
                     underlineColorAndroid='transparent'/>
-                <TextInput style = {styles.input}  
+                <Input style = {styles.input}  
                     onChangeText={(val) => this.setState({lastname: val})}
                     placeholder='Last Name' 
-                    placeholderTextColor='#2e78b7'
+                    color={materialTheme.COLORS.MAIN}
+                    placeholderTextColor={materialTheme.COLORS.MAIN}
                     underlineColorAndroid='transparent'/>
-                <TextInput style = {styles.input}  
+                <Input style = {styles.input}  
                     onChangeText={(val) => this.setState({phoneno: val})}
                     placeholder='Phone Number' 
-                    placeholderTextColor='#2e78b7'
+                    color={materialTheme.COLORS.MAIN}
+                    placeholderTextColor={materialTheme.COLORS.MAIN}
                     underlineColorAndroid='transparent'/>
 
-                <TextInput style = {styles.input} 
+                <Input style = {styles.input} 
                     onChangeText={(val) => this.setState({email: val})}
                     autoCapitalize="none" 
                     onSubmitEditing={() => this.passwordInput.focus()} 
@@ -139,24 +151,26 @@ export default class RegisterScreen extends React.Component {
                     keyboardType='email-address' 
                     returnKeyType="next" 
                     placeholder='Email Address' 
-                    placeholderTextColor='#2e78b7'
+                    placeholderTextColor={materialTheme.COLORS.MAIN}
                     underlineColorAndroid='transparent'/>   
-                <TextInput style = {styles.input} 
+                <Input style = {styles.input} 
                     onChangeText={(val) => this.setState({username: val})}
                     autoCapitalize="none" 
                     onSubmitEditing={() => this.passwordInput.focus()} 
                     autoCorrect={false} 
                     returnKeyType="next" 
+                    color={materialTheme.COLORS.MAIN}
                     placeholder='Prefered User Name' 
-                    placeholderTextColor='#2e78b7'
+                    placeholderTextColor={materialTheme.COLORS.MAIN}
                     underlineColorAndroid='transparent'/>
 
-                <TextInput style = {styles.input}
+                <Input style = {styles.input}
                     onChangeText={(val) => this.setState({password: val})}   
                     returnKeyType="go" 
                     ref={(input)=> this.passwordInput = input} 
                     placeholder='Password' 
-                    placeholderTextColor='#2e78b7' 
+                    color={materialTheme.COLORS.MAIN}
+                    placeholderTextColor={materialTheme.COLORS.MAIN}
                     underlineColorAndroid='transparent'
                     secureTextEntry/>
                 <TouchableOpacity style={styles.buttonContainer} onPress={this.onRegistrationButtonPress.bind(this)}>
@@ -214,20 +228,20 @@ const styles = StyleSheet.create({
    
     helpLinkText: {
       fontSize: 14,
-      color: '#2e78b7',
+      color: materialTheme.COLORS.MAIN,
     },
     input:{
       height: 40,
       backgroundColor: 'rgba(225,225,225,0.2)',
       marginBottom: 10,
       padding: 10,
-      color: '#2e78b7',
+      color: materialTheme.COLORS.MAIN,
       borderRadius: 25,
       width:300,
       fontSize:16,
   },
   buttonContainer:{
-      backgroundColor: '#2980b6',
+      backgroundColor: materialTheme.COLORS.MAIN,
       paddingVertical: 15,
       borderRadius: 25,
       width:300,

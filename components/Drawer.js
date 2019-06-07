@@ -38,15 +38,15 @@ class DrawerItem extends React.Component {
       //       family="Galio"
       //       color={focused ? 'white' : materialTheme.COLORS.MUTED} />
       //   );
-      case 'Help and Support':
-        return (
-          <Ionicons
-            size={16}
-            name={Platform.OS === 'ios' ? 'ios-help' : 'md-help'}
-            family="GalioExtra"
-            color={focused ? 'white' : materialTheme.COLORS.MUTED} />
-        );
-      case 'My BookShelf':
+      // case 'Help and Support':
+      //   return (
+      //     <Ionicons
+      //       size={16}
+      //       name={Platform.OS === 'ios' ? 'ios-help' : 'md-help'}
+      //       family="GalioExtra"
+      //       color={focused ? 'white' : materialTheme.COLORS.MUTED} />
+      //   );
+      case 'My Book Shelf':
         return (
           <Ionicons
             size={16}
@@ -54,7 +54,7 @@ class DrawerItem extends React.Component {
             family="Galio"
             color={focused ? 'white' : materialTheme.COLORS.MUTED} />
         );
-      case 'Profile':
+      case 'My Account':
         return (
           <Icon
             size={16}
@@ -70,7 +70,7 @@ class DrawerItem extends React.Component {
             family="Galio"
             color={focused ? 'white' : materialTheme.COLORS.MUTED} />
         );
-      case 'Components':
+      case 'Help and Support':
         return (
           <Icon
             size={16}
@@ -78,7 +78,7 @@ class DrawerItem extends React.Component {
             family="Galio"
             color={focused ? 'white' : materialTheme.COLORS.MUTED} />
         );
-      case 'Sign In':
+      case 'Sign Out':
         return (
           <Icon
             size={16}
@@ -86,7 +86,7 @@ class DrawerItem extends React.Component {
             family="Galio"
             color={focused ? 'white' : materialTheme.COLORS.MUTED} />
         );
-      case 'Sign Up':
+      case 'About':
         return (
           <Icon
             size={16}

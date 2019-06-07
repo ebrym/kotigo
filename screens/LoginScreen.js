@@ -98,16 +98,16 @@ export default class LoginScreen extends React.Component {
             if (response.status >= 200 && response.status < 300) {
                 this.setState({loading: false, error: ""});
                 let accessToken = res.access_token;
-                
 
                 //store user details
                 AsyncStorage.setItem('UserDetails', JSON.stringify(res));
 
+                global.userDetails = JSON.stringify(res);
                 let tokenValidity = res.access_token;
                 this.storeToken(accessToken);          
                 await AsyncStorage.setItem('Token_Validity',tokenValidity);                  
                 //console.log("Response success is: " + accessToken); 
-                console.log("tokenValidity is: " + tokenValidity); 
+                //console.log("tokenValidity is: " + tokenValidity); 
 
                 this.props.navigation.navigate('App');
             } else {
@@ -151,7 +151,7 @@ export default class LoginScreen extends React.Component {
           loading={this.state.loading} />
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         
-          <View style={styles.welcomeContainer}>
+          <Block flex center>
             <Image
               source={require('../assets/images/gosmarticlelogo.png')
               }
@@ -159,33 +159,35 @@ export default class LoginScreen extends React.Component {
             />
            
             <Text style={styles.helpLinkText}>Login</Text>
-          </View>
-          <View style={styles.getStartedContainer}>
+          </Block>
+          <Block flex center>
           <Input style = {styles.input} 
                             onChangeText={(val) => this.setState({username: val})} 
                             keyboardType='email-address' 
                             placeholder='Email or UserName' 
-                            placeholderTextColor='#2e78b7'
+                            color={materialTheme.COLORS.MAIN}
+                            placeholderTextColor={materialTheme.COLORS.MAIN}
                             underlineColorAndroid='transparent'/>
             
              <Input style = {styles.input} 
                             onChangeText={(val) => this.setState({password: val})}  
                             placeholder='Password' 
-                            placeholderTextColor='#2e78b7' 
+                            color={materialTheme.COLORS.MAIN}
+                        placeholderTextColor={materialTheme.COLORS.MAIN}
                             underlineColorAndroid='transparent'
                             secureTextEntry/>
 
-                <TouchableOpacity style={styles.button} 
-                                    onPress={this.onLoginButtonPress.bind(this)}
-                                    color={materialTheme.COLORS.BUTTON_COLOR}>
+
+                <TouchableOpacity style={styles.buttonContainer} 
+                                    onPress={this.onLoginButtonPress.bind(this)}>
                             <Text  style={styles.buttonText}>LOGIN</Text>
                 </TouchableOpacity> 
            
-          </View>
+          </Block>
 
           <View style={styles.helpContainer}>
             <Text style={styles.helpLinkText}>Don't have an account yet!</Text>
-            <TouchableOpacity onPress={this._handleHelpPress.bind(this)} style={styles.helpLink}>
+            <TouchableOpacity onPress={()=> this.props.navigation.navigate('Register')} style={styles.helpLink}>
               <Text style={styles.helpLinkText}>Sign Up</Text>
             </TouchableOpacity>
           </View>
@@ -207,13 +209,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     bottom: theme.SIZES.BASE,
   },
-  button: {
-    width: width - theme.SIZES.BASE * 4,
-    height: theme.SIZES.BASE * 3,
-    shadowRadius: 0,
-    shadowOpacity: 0,
-    borderRadius: 25,
-  },
+
   contentContainer: {
     paddingTop: 30,
     justifyContent: 'center',
@@ -257,7 +253,7 @@ const styles = StyleSheet.create({
     fontSize:16,
 },
 buttonContainer:{
-    backgroundColor: '#2980b6',
+    backgroundColor: materialTheme.COLORS.MAIN,
     paddingVertical: 15,
     borderRadius: 25,
     width:300,

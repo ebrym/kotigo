@@ -1,204 +1,329 @@
-import React from 'react'
-import { View, Image, Text, Slider, TouchableOpacity, Platform, Alert,ImageBackground} from 'react-native';
-import { Audio } from "expo";
-import { Ionicons } from '@expo/vector-icons';
-// import Sound from 'react-native-sound';
+import React from 'react';
+import {  View, TouchableOpacity, 
+    ProgressBarAndroid, Dimensions, StyleSheet,ImageBackground, Image} from 'react-native';
 
-const img_speaker = require('../assets/resources/ui_speaker.png');
-const img_pause = require('../assets/resources/ui_pause.png');
-const img_play = require('../assets/resources/ui_play.png');
-const img_playjumpleft = require('../assets/resources/ui_playjumpleft.png');
-const img_playjumpright = require('../assets/resources/ui_playjumpright.png');
+import { MaterialIcons } from '@expo/vector-icons';
+import AudioPlayer from '../components/AudioPlayer';
+// import MarqueeText from 'react-native-marquee';
 
-export default class PlayerScreen extends React.Component{
-    static navigationOptions = {
-        title: 'Player',
-      };
-    // static navigationOptions = props => ({
-    //     title:props.navigation.state.params.title,
-    // })
+import { Button, Block, Text, theme } from 'galio-framework';
 
-    constructor(){
-        super();
+const ICON_COLOR='#000000';
+const {height,width}=Dimensions.get("window");
+
+
+export default class PlayerScreen extends React.Component {
+
+    AudioPlayer = null;
+
+    constructor(props) {
+        super(props);
+
         this.state = {
-            playState:'paused', //playing, paused
-            playSeconds:0,
-            duration:0
-        }
-        this.sliderEditing = false;
-        this.soundObject = new Audio.Sound();
+            playing: false,
+            name: 'GoSmarticle Audio Book Player',
+            duration:0,
+            point:0,
+            endMin:0,
+            currMin:0,
+            timer:0,
+            count:0,
+            played:false,
+        };
+        this.timer=0;
     }
 
-    // componentDidMount(){
-    //     this.play();
+    componentWillMount() {
+       
         
-    //     this.timeout = setInterval(() => {
-    //         if(this.sound && this.sound.isLoaded() && this.state.playState == 'playing' && !this.sliderEditing){
-    //             this.sound.getCurrentTime((seconds, isPlaying) => {
-    //                 this.setState({playSeconds:seconds});
-    //             })
-    //         }
-    //     }, 100);
-    // }
-    componentWillUnmount(){
-        if(this.soundObject){
-            this.soundObject.release();
-            this.soundObject = null;
-        }
-        if(this.timeout){
-            clearInterval(this.timeout);
-        }
+        this.timer=setInterval(this.empty,1000);
     }
+    empty = () => {
 
-    onSliderEditStart = () => {
-        this.sliderEditing = true;
-    }
-    onSliderEditEnd = () => {
-        this.sliderEditing = false;
-    }
-    onSliderEditing = value => {
-        if(this.soundObject){
-            this.soundObject.setCurrentTime(value);
-            this.setState({playSeconds:value});
-        }
-    }
+    };
 
-    play = async () => {
-        //const index=this.index;
-        //const path = this.list[index].path;
 
-        if(playing) {
-            await this.soundObject.pauseAsync();
-            const milliseconds= await this.soundObject.getStatusAsync();
-            console.log(milliseconds.durationMillis);
-            return milliseconds.durationMillis;
+    progress =() => {
 
-        } else {
-
-            if(this.soundObject._loaded) {
-                await this.soundObject.playAsync();
-            } else {
-                await this.soundObject.loadAsync(path);
-                await this.soundObject.playAsync();
-                const milliseconds= await this.soundObject.getStatusAsync();
-                console.log(milliseconds.durationMillis)
-                return milliseconds.durationMillis;
+        let {point,duration,currMin,timer,count}=this.state;
+        if(timer!=0)
+        {
+            if((timer%60==0 && (timer<100) ) || ((timer-(count*100))%60==0))
+            {
+                count++;
+                timer=count*100;
             }
         }
-        // if(this.sound){
-        //     this.sound.play(this.playComplete);
-        //     this.setState({playState:'playing'});
-        // }else{
-        //     const filepath = this.props.navigation.state.params.filepath;
-        //     console.log('[Play]', filepath);
-    
-        //     this.sound = new Sound(filepath, '', (error) => {
-        //         if (error) {
-        //             console.log('failed to load the sound', error);
-        //             Alert.alert('Notice', 'audio file error. (Error code : 1)');
-        //             this.setState({playState:'paused'});
-        //         }else{
-        //             this.setState({playState:'playing', duration:this.sound.getDuration()});
-        //             this.sound.play(this.playComplete);
-        //         }
-        //     });    
-        // }
-    }
-    // playComplete = (success) => {
-    //     if(this.sound){
-    //         if (success) {
-    //             console.log('successfully finished playing');
-    //         } else {
-    //             console.log('playback failed due to audio decoding errors');
-    //             Alert.alert('Notice', 'audio file error. (Error code : 2)');
-    //         }
-    //         this.setState({playState:'paused', playSeconds:0});
-    //         this.sound.setCurrentTime(0);
-    //     }
-    // }
+        timer= timer+1;
+        currMin= (timer/100).toFixed(2);
+        let currentduration=this.AudioPlayer.CurrentDuration();
+        currentduration.then((resp) =>{
+            point = Math.min((1/duration)*(resp.curr),100);
+            if((resp.curr) == duration)
+            {
+                point=0,timer=0,currMin=0,count=0;
+                clearInterval(this.timer);
+               this.setState({playing:false,endMin:0,point,timer,currMin,count}); 
+            }else{
+               this.setState({point,timer,currMin,count}); 
+            }
+        } )
+    };
 
-    pause = async  () => {
-        if(this.soundObject){
-            await this.soundObject.pauseAsync();
-        }
+    setclear =() => {
+       clearInterval(this.timer);
+       if(this.state.playing)
+        {
+          
+          this.timer= setInterval(() => {
+                    this.progress()
+                     }, 1000);
+        }else{
+            clearInterval(this.timer);
+        }   
+    };
 
-        this.setState({playState:'paused'});
-    }
+    PlayPause = () => {
+     
+        this.AudioPlayer.PlayPause(this.state.playing).then((r) => {
+            this.setState({
+                name:this.AudioPlayer.getSongName(),
+                playing: !this.state.playing,
+                duration:(r===undefined || r===NaN)?this.state.duration:r,
+                played:true,
 
-    jumpPrev15Seconds = () => {this.jumpSeconds(-15);}
-    jumpNext15Seconds = () => {this.jumpSeconds(15);}
-    jumpSeconds = (secsDelta) => {
-        if(this.sound){
-            this.sound.getCurrentTime((secs, isPlaying) => {
-                let nextSecs = secs + secsDelta;
-                if(nextSecs < 0) nextSecs = 0;
-                else if(nextSecs > this.state.duration) nextSecs = this.state.duration;
-                this.soundObject.setCurrentTime(nextSecs);
-                this.setState({playSeconds:nextSecs});
             })
+        }).then(()=>{this.setState({endMin:(this.state.duration/60000).toFixed(2)});}).then(()=>{
+            this.setclear();
+        })
+    
+        
+    };
+
+    NextSong = () => {
+        this.AudioPlayer.NextSong().then((r) => {
+            this.setState({
+                name: this.AudioPlayer.getSongName(),
+                playing:true,
+                duration:(r===undefined || r===NaN)?this.state.duration:r,
+                played:true,
+                
+            });
+        }).then(() => {
+            this.setState({endMin:(this.state.duration/60000).toFixed(2)});
+        }).then(()=>{
+            this.setState({point:0,duration:0,currMin:0,timer:0,count:0});
+            this.setclear();
+        })
+    };
+
+    PreviousSong = () => {
+        this.AudioPlayer.PreviousSong().then((r) => {
+            this.setState({
+                name: this.AudioPlayer.getSongName(),
+                playing:(this.state.played)?true:false,
+                duration:(r===undefined || r===NaN)?this.state.duration:r,
+            });
+        }).then(() => {
+            this.setState({endMin:(this.state.duration/60000).toFixed(2)});
+        }).then(()=>{
+            if(this.state.played)
+            {
+                this.setState({point:0,duration:0,currMin:0,timer:0,count:0});
+                this.setclear();
+            }  
+        })
+    };
+
+    fastForward = () => {  
+        let {timer,count} = this.state;
+        if(timer!=0)
+        { 
+            if(timer>(((count+1)*100)-45))
+            {
+                count++;
+                timer=timer+45;
+            }else {
+                timer=timer+5;
+            }
+            
+            this.AudioPlayer.Fastforward();
         }
+        this.setState({timer,count});
+    };
+
+    fastBackward= () => {
+        let {timer,count} = this.state;
+        if(timer!=0)
+        {
+            if(timer>100 && timer<((count*100)+5))
+            {
+                timer=timer-45;
+                count--;
+            }
+            else if(timer>=5)
+            {
+                timer=timer-5;
+            }else{
+                timer=0;
+            }
+            this.AudioPlayer.Fastbackward();
+        }
+        this.setState({timer,count});
     }
-
-    getAudioTimeString(seconds){
-        const h = parseInt(seconds/(60*60));
-        const m = parseInt(seconds%(60*60)/60);
-        const s = parseInt(seconds%60);
-
-        return ((h<10?'0'+h:h) + ':' + (m<10?'0'+m:m) + ':' + (s<10?'0'+s:s));
-    }
-
-    render(){
+    
+            
+    render() {
         const { navigation } = this.props;
-        const bookDetails=navigation.getParam('book');
-        // const currentTimeString = this.getAudioTimeString(this.state.playSeconds);
-        // const durationString = this.getAudioTimeString(this.state.duration);
-
+        const playlist=navigation.getParam('book');
+        this.AudioPlayer = new AudioPlayer(playlist);
+       // console.log('Playlist : ' + JSON.stringify(playlist));
         return (
-            <View style={{flex:1, justifyContent:'center', backgroundColor:'white'}}>
-                <ImageBackground source={{ uri: bookDetails.ImageURL}} 
+            <Block flex style={styles.options}>
+            <View style={{flex:1,flexDirection:'column'}}>
+            <View style={styles.marquee}>
+            {/* {this.state.played && (
+                
+
+                        // <MarqueeText
+                        //   style={{ fontSize: 24 }}
+                        //   duration={3000}
+                        //   marqueeOnStart
+                        //   loop
+                        //   marqueeDelay={1000}
+                        //   marqueeResetDelay={1000}
+                        // >
+                        //   {this.state.name} 
+                        // </MarqueeText>
+                 )
+            } */}
+            {!this.state.playing && !this.state.played && (<Text style={{fontSize:24,justifyContent:'space-evenly'}}>{playlist.Title}</Text>)}
+             </View>
+            
+             <ImageBackground source={{ uri: playlist.ImageURL}} 
                 style={{width: 300, height:300, alignSelf:'center',
                 resizeMode:"stretch", alignItems:'center' ,justifyContent:'center'}}
                 blurRadius={90}>
-                    <Image  source={{ uri: bookDetails.ImageURL}} 
+                    <Image  source={{ uri: playlist.ImageURL}} 
                             style={{width:200, height:200, marginBottom:15, alignSelf:'center',resizeMode:"stretch"}}
                             />
                 </ImageBackground>
-                
-                <View style={{flexDirection:'row', justifyContent:'center', marginVertical:15}}>
-                    <TouchableOpacity style={{justifyContent:'center'}}>
-                        <Image style={{width:40, height:40}}/>
-                        <Text style={{position:'absolute', alignSelf:'center', marginTop:1, color:'black', fontSize:12}}>15</Text>
-                    </TouchableOpacity>
-                    {this.state.playState == 'playing' && 
-                    <TouchableOpacity  style={{marginHorizontal:20}}>
-                        {/* <Image source={img_pause} style={{width:30, height:30}}/> */}
-                        <Ionicons name="md-pause" size={30}color="#2e78b7" />
-                    </TouchableOpacity>}
-                    {this.state.playState == 'paused' && 
-                    <TouchableOpacity style={{marginHorizontal:20}}>
-                        {/* <Image source={img_play} style={{width:30, height:30}}/>    */}
-                         <Ionicons name="md-play" size={30} color="#2e78b7" />
+                <View style={styles.container}>
+                 <TouchableOpacity style={styles.clickbutton} onPress={this.fastBackward}>
+                    <Text style={styles.buttonText}>
+                      <MaterialIcons name="replay-5" size={40} color={ICON_COLOR} style={styles.iconStyle} />
+                    </Text>
+                  </TouchableOpacity> 
+                  {/* <TouchableOpacity style={styles.clickbutton} onPress={this.PreviousSong}>
+                    <Text style={styles.buttonText}>
+                      <MaterialIcons name="skip-previous" size={40} color={ICON_COLOR} style={styles.iconStyle} />
+                    </Text>
+                  </TouchableOpacity> */}
+
+                  <TouchableOpacity style={styles.button} onPress={this.PlayPause}>
+                        <Text style={styles.buttonText}>
+                        {this.state.playing && (<MaterialIcons name="pause" size={40} color={ICON_COLOR} style={styles.iconStyle} />)}
+                        {!this.state.playing && (<MaterialIcons name="play-arrow" size={40} color={ICON_COLOR} style={styles.iconStyle} />)}
+                          
+                        </Text>
+                      </TouchableOpacity>
+
+
+                  {/* <TouchableOpacity style={styles.clickbutton} onPress={this.NextSong}>
+                    <Text style={styles.buttonText}>
+                      <MaterialIcons name="skip-next" size={40} color={ICON_COLOR} style={styles.iconStyle} />
+                    </Text>
+                  </TouchableOpacity>    */}
+                  <TouchableOpacity style={styles.clickbutton} onPress={this.fastForward}>
+                    <Text style={styles.buttonText}>
                     
-                    </TouchableOpacity>}
-                    <TouchableOpacity style={{justifyContent:'center'}}>
-                        <Image source={img_playjumpright} style={{width:30, height:30}}/>
-                        <Text style={{position:'absolute', alignSelf:'center', marginTop:1, color:'black', fontSize:12}}>15</Text>
-                    </TouchableOpacity>
+                      <MaterialIcons name="forward-5" size={40} color={ICON_COLOR} style={styles.iconStyle} />
+                    </Text>
+                  </TouchableOpacity>  
                 </View>
-                <View style={{marginVertical:15, marginHorizontal:15, flexDirection:'row'}}>
-                    {/* <Text style={{color:'white', alignSelf:'center'}}>{currentTimeString}</Text> */}
-                    <Slider
-                        //onTouchStart={this.onSliderEditStart}
-                        // onTouchMove={() => console.log('onTouchMove')}
-                        //onTouchEnd={this.onSliderEditEnd}
-                        // onTouchEndCapture={() => console.log('onTouchEndCapture')}
-                        // onTouchCancel={() => console.log('onTouchCancel')}
-                        //onValueChange={this.onSliderEditing}
-                        //value={this.state.playSeconds} maximumValue={this.state.duration} maximumTrackTintColor='gray' minimumTrackTintColor='white' thumbTintColor='white' 
-                        style={{flex:1, alignSelf:'center', marginHorizontal:Platform.select({ios:5})}}/>
-                    {/* <Text style={{color:'white', alignSelf:'center'}}>{durationString}</Text> */}
+                <View style={{alignItems:'center',flexDirection:'row',justifyContent:'center'}}>
+                <View style={{flex:1,alignItems:'flex-start'}}>
+                {(this.state.timer === 0)&&(<Text>0.00</Text>)}
+                {(this.state.timer !== 0)&&(<Text>{this.state.currMin}</Text>)}
+                </View>
+                <ProgressBarAndroid
+                      styleAttr="Horizontal"
+                      indeterminate={false}
+                      width={width-60}
+                      progress={this.state.point}
+                    />
+                <View style={{flex:1,alignItems:'flex-end'}}>
+                {(this.state.endMin===0)&&(<Text>0.00</Text>)}
+                {(this.state.endMin!==0)&&(<Text>{this.state.endMin}</Text>)}
+                </View>
                 </View>
             </View>
-        )
+            </Block>
+        );
     }
 }
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      flexDirection:'row',
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'space-evenly',
+    },
+    marquee:{
+      marginTop:100,
+      flex:1,
+      flexDirection:'row',
+      justifyContent: 'center',
+      marginBottom:10,
+    },
+    buttonText: {
+      textAlign: 'center',
+      backgroundColor: 'transparent',
+    },
+    iconStyle:{
+      position:'absolute',
+    },
+     button: {
+      width: 50,
+      height: 100/1.618,
+      margin: 5,
+      borderRadius: 50,
+      backgroundColor: '#fff',
+      justifyContent: 'center',
+    },
+    lefbutton: {
+      width: 50,
+      height: 100/1.618,
+      margin: 5,
+      borderRadius: 50,
+      backgroundColor: '#fff',
+      justifyContent: 'center',
+    },
+    clickbutton:{
+      width: 50,
+      height: 100/1.618,
+      margin: 5,
+      borderRadius: 50,
+      backgroundColor: '#fff',
+      justifyContent: 'center',
+    },
+    options: {
+        position: 'relative',
+        padding: theme.SIZES.BASE,
+        marginHorizontal: theme.SIZES.BASE,
+        marginTop: theme.SIZES.BASE * 7,
+        marginBottom: theme.SIZES.BASE*7, 
+        borderTopLeftRadius: 13,
+        borderTopRightRadius: 13,
+        borderBottomRightRadius: 13,
+        borderBottomLeftRadius: 13,
+        backgroundColor: theme.COLORS.WHITE,
+        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 0 },
+        shadowRadius: 8,
+        shadowOpacity: 0.2,
+        zIndex: 2,
+      },
+  });
+  

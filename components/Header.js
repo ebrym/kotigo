@@ -6,6 +6,8 @@ import { Button, Block, NavBar, Input, Text, theme } from 'galio-framework';
 import Icon from './Icon';
 import materialTheme from '../constants/Theme';
 
+
+
 const { height, width } = Dimensions.get('window');
 const iPhoneX = () => Platform.OS === 'ios' && (height === 812 || width === 812 || height === 896 || width === 896);
 
@@ -34,17 +36,25 @@ const BasketButton = ({isWhite, style, navigation}) => (
 );
 
 const SearchButton = ({isWhite, style, navigation}) => (
-  <TouchableOpacity style={[styles.button, style]} onPress={() => navigation.navigate('Pro')}>
+  <TouchableOpacity style={[styles.button, style]} >
     <Icon
       size={16}
       family="Galio"
       name="zoom-split"
       color={theme.COLORS[isWhite ? 'WHITE' : 'ICON']}
+      // onPress={() => navigation.navigate('Pro')}
+     
     />
   </TouchableOpacity>
 );
 
 class Header extends React.Component {
+  constructor(){
+    super();
+    this.state = {
+        searchText: ""
+    }
+}
   handleLeftPress = () => {
     const { back, navigation } = this.props;
     return (back ? navigation.goBack() : navigation.openDrawer());
@@ -64,6 +74,7 @@ class Header extends React.Component {
     switch (routeName) {
       case 'Home':
         return ([
+          
           // <ChatButton key='chat-home' navigation={navigation} isWhite={white} />,
           // <BasketButton key='basket-home' navigation={navigation} isWhite={white} />
         ]);
@@ -94,8 +105,8 @@ class Header extends React.Component {
         ]);
       case 'Search':
         return ([
-          <ChatButton key='chat-search' navigation={navigation} isWhite={white} />,
-          <BasketButton key='basket-search' navigation={navigation} isWhite={white} />
+          // <ChatButton key='chat-search' navigation={navigation} isWhite={white} />,
+          // <BasketButton key='basket-search' navigation={navigation} isWhite={white} />
         ]);
       case 'Settings':
         return ([
@@ -108,17 +119,33 @@ class Header extends React.Component {
   }
 
   renderSearch = () => {
-    const { navigation } = this.props;
+    const { white,navigation } = this.props;
+
+  //const { searchText } = navigation.state.params ? navigation.state.params : {};
+  //const { searchText } = this.state;
+  //this.state = {searchText:""};
     return (
       <Input
         right
         color="black"
         style={styles.search}
         placeholder="Search for books?"
-        onFocus={() => navigation.navigate('Pro')}
-        iconContent={<Icon size={16} color={theme.COLORS.MUTED} name="zoom-split" family="Galio" />}
+        //value={searchText}
+        // onFocus={() => navigation.navigate('Pro')}
+        //value={this.setState.searchText}
+        onChangeText={(value) => this.setState({searchText: value})} 
+        iconContent={
+          //<SearchButton key='search-product' navigation={navigation} isWhite={white} />
+          // onPress={() => navigation.navigate('Search', { search : this.state.searchText })}>
+          <TouchableOpacity 
+          // onPress={() => this._navigateSearch()}
+          onPress={() => navigation.navigate('Search', { search : this.state.searchText })}>
+          <Icon size={16} color={theme.COLORS.MAIN} name="zoom-split" family="Galio" />
+        </TouchableOpacity>
+      }
       />
     )
+    
   }
 
   renderTabs = () => {
@@ -144,6 +171,7 @@ class Header extends React.Component {
 
   renderHeader = () => {
     const { search, tabs } = this.props;
+   
     if (search || tabs) {
       return (
         <Block center>

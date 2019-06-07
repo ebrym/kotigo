@@ -8,7 +8,11 @@ export default class Settings extends React.Component {
   state = {};
 
   toggleSwitch = switchNumber => this.setState({ [switchNumber]: !this.state[switchNumber] });
-
+  async onLogutPress() {
+    AsyncStorage.clear(); // to clear the token 
+    this.setState({loggedIn:false});
+    this.props.navigation.navigate('Auth')
+    }
   renderItem = ({ item }) => {
     const {navigate} = this.props.navigation;
 
@@ -42,11 +46,11 @@ export default class Settings extends React.Component {
   }
 
   render() {
-    const recommended = [
-      { title: "Use FaceID to sign in", id: "face", type: "switch" },
-      { title: "Auto-Lock security", id: "autolock", type: "switch" },
-      { title: "Notifications", id: "Notifications", type: "button" },
-    ];
+    // const recommended = [
+    //   { title: "Use FaceID to sign in", id: "face", type: "switch" },
+    //   { title: "Auto-Lock security", id: "autolock", type: "switch" },
+    //   { title: "Notifications", id: "Notifications", type: "button" },
+    // ];
 
     const payment = [
       { title: "Manage Payment Options", id: "Payment", type: "button" },
@@ -60,24 +64,11 @@ export default class Settings extends React.Component {
     ];
 
     return (
+      <Block flex style={styles.options}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.settings}>
-        <FlatList
-          data={recommended}
-          keyExtractor={(item, index) => item.id}
-          renderItem={this.renderItem}
-          ListHeaderComponent={
-            <Block style={styles.title}>
-              <Text bold center size={theme.SIZES.BASE} style={{ paddingBottom: 5 }}>
-                Recommended Settings
-              </Text>
-              <Text center muted size={12}>
-                These are the most important settings
-              </Text>
-            </Block>
-          }
-        />
+   
         <Block style={styles.title}>
           <Text bold center size={theme.SIZES.BASE} style={{ paddingBottom: 5 }}>
           Payment Settings
@@ -104,8 +95,11 @@ export default class Settings extends React.Component {
           keyExtractor={(item, index) => item.id}
           renderItem={this.renderItem}
         />
-      </ScrollView>
+
       
+
+      </ScrollView>
+      </Block>
     );
   }
 }
@@ -122,5 +116,22 @@ const styles = StyleSheet.create({
     height: theme.SIZES.BASE * 2,
     paddingHorizontal: theme.SIZES.BASE,
     marginBottom: theme.SIZES.BASE / 2,
-  }
+  },
+  options: {
+    position: 'relative',
+    padding: theme.SIZES.BASE,
+    marginHorizontal: theme.SIZES.BASE,
+    marginTop: theme.SIZES.BASE * 7,
+    marginBottom: theme.SIZES.BASE,
+    borderTopLeftRadius: 13,
+    borderTopRightRadius: 13,
+    borderBottomRightRadius: 13,
+    borderBottomLeftRadius: 13,
+    backgroundColor: theme.COLORS.WHITE,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 8,
+    shadowOpacity: 0.2,
+    zIndex: 2,
+  },
 });
