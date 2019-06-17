@@ -42,7 +42,7 @@ export default class PaymentScreen extends React.Component {
             htmlContent += 'style="text-decoration-color: green"></div> ';
             htmlContent += '<div id="resultFail" style="text-decoration-color: red"></div> ';                     
             htmlContent += '<script>                                ';
-            htmlContent += 'function payWithPaystack(){           ';    
+            htmlContent += 'function payWithPaystack(){';    
                 htmlContent += 'var handler = PaystackPop.setup({      ';
                     htmlContent += 'key: \'pk_test_6021bef74aeb2e8276bf85e3744f5c20a9af29af\',  '; 
                     htmlContent += 'email: \'' + userDetails.Email +'\',    ';      
