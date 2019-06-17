@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { Block, Button, Text, theme,Input } from 'galio-framework';
 
+import { API } from '../constants/globalURL';
 const { height, width } = Dimensions.get('screen');
 import materialTheme from '../constants/Theme';
 import Loader from '../components/Loader';
@@ -44,7 +45,7 @@ export default class RegisterScreen extends React.Component {
           });
         try {
            
-            let response = await fetch('http://216.10.247.42:8089/api/User/register', {
+            let response = await fetch(API.URL + '/User/register', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',

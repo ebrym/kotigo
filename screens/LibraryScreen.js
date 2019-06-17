@@ -11,6 +11,7 @@ import LibraryCarousel from '../components/LibraryCarousel';
 import { Button, Block, Text, Input, theme } from 'galio-framework';
 import { Images, materialTheme } from '../constants';
 
+import { API } from '../constants/globalURL';
 
 
 const { width, height } = Dimensions.get('screen');
@@ -42,7 +43,7 @@ async _fetchData() {
 const userDetails = JSON.parse(userDetail);
 console.log('Library Screen : ' + userDetails.Email);
 
-fetch('http://216.10.247.42:8089/api/BookShelf/GetUserBooks/' + userDetails.Email,{
+fetch(API.URL + '/BookShelf/GetUserBooks/' + userDetails.Email,{
       method: 'GET',
               headers: {
                   'Accept': 'application/json',

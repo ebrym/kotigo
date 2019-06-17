@@ -14,8 +14,9 @@ import {
 
   import { Block, Button, Text, theme,Input } from 'galio-framework';
 import Loader from '../components/Loader';
-
+import { API } from '../constants/globalURL';
 import materialTheme from '../constants/Theme';
+
 const { height, width } = Dimensions.get('screen');
 const ACCESS_TOKEN = 'access_token';
 const Errors = (props) => {
@@ -83,7 +84,7 @@ export default class LoginScreen extends React.Component {
           });
         try {
            
-            let response = await fetch('http://216.10.247.42:8089/api/User/authenticate', {
+            let response = await fetch(API.URL + '/User/authenticate', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',

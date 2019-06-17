@@ -10,6 +10,7 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
   import { HeaderHeight } from "../constants/utils";
   import {Recorder, Player} from 'react-native-audio-player-recorder-no-linking';
 
+  import { API } from '../constants/globalURL';
 
   const { width, height } = Dimensions.get('screen');
   const thumbMeasure = (width - 48 - 32) / 3;
@@ -53,7 +54,7 @@ const ACCESS_TOKEN = 'access_token';
   });
   console.log('payload :    '+payload);
 try{
-      let response = await fetch('http://216.10.247.42:8089/api/Payment/PaymentUpdate',{
+      let response = await fetch(API.URL+'/api/Payment/PaymentUpdate',{
                   method: 'POST',
                   headers: {
                       'Accept': 'application/json',
