@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Dimensions, ScrollView,
   ActivityIndicator,ListView,View,FlatList,
-  AsyncStorage, } from 'react-native';
+  AsyncStorage,Platform } from 'react-native';
 import { Button, Block, Text, Input, theme } from 'galio-framework';
 
 import { Icon, Product } from '../components/';

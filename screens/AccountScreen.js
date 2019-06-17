@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     padding: theme.SIZES.BASE,
     marginHorizontal: theme.SIZES.BASE,
-    marginTop: theme.SIZES.BASE * 7,
+    marginTop: Platform.OS === 'android' ? theme.SIZES.BASE : theme.SIZES.BASE * 7,
     marginBottom: theme.SIZES.BASE,
     borderTopLeftRadius: 13,
     borderTopRightRadius: 13,

@@ -1,6 +1,6 @@
 import React from 'react';
 import {  View, StyleSheet, FlatList, Image,Alert,
-  ActivityIndicator, Platform, ScrollView,ListView,
+  ActivityIndicator, Platform, ScrollView,ListView, 
 AsyncStorage,TouchableOpacity, Dimensions, NetInfo} from 'react-native';
 import { FileSystem, Constants, Notifications,SQLite } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
@@ -193,7 +193,7 @@ options: {
   position: 'relative',
   padding: theme.SIZES.BASE,
   marginHorizontal: theme.SIZES.BASE,
-  marginTop: theme.SIZES.BASE * 7,
+  marginTop: Platform.OS === 'android' ? theme.SIZES.BASE : theme.SIZES.BASE * 7,
   marginBottom: theme.SIZES.BASE*7, 
   borderTopLeftRadius: 13,
   borderTopRightRadius: 13,

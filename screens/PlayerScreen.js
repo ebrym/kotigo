@@ -1,6 +1,8 @@
 import React from 'react';
 import {  View, TouchableOpacity, 
-    ProgressBarAndroid, Dimensions, StyleSheet,ImageBackground, Image} from 'react-native';
+    ProgressBarAndroid, Dimensions, 
+    StyleSheet,ImageBackground, Image,
+    Platform} from 'react-native';
 
 import { MaterialIcons } from '@expo/vector-icons';
 import AudioPlayer from '../components/AudioPlayer';
@@ -180,7 +182,7 @@ export default class PlayerScreen extends React.Component {
        // console.log('Playlist : ' + JSON.stringify(playlist));
         return (
             <Block flex style={styles.options}>
-            <View style={{flex:1,flexDirection:'column'}}>
+            {/* <View style={{flex:1,flexDirection:'column'}}> */}
             <View style={styles.marquee}>
             {/* {this.state.played && (
                 
@@ -257,7 +259,7 @@ export default class PlayerScreen extends React.Component {
                 {(this.state.endMin!==0)&&(<Text>{this.state.endMin}</Text>)}
                 </View>
                 </View>
-            </View>
+            {/* </View> */}
             </Block>
         );
     }
@@ -312,8 +314,8 @@ const styles = StyleSheet.create({
         position: 'relative',
         padding: theme.SIZES.BASE,
         marginHorizontal: theme.SIZES.BASE,
-        marginTop: theme.SIZES.BASE * 7,
-        marginBottom: theme.SIZES.BASE*7, 
+        marginTop: Platform.OS === 'android' ? theme.SIZES.BASE : theme.SIZES.BASE * 7,
+        marginBottom: Platform.OS === 'android' ? theme.SIZES.BASE : theme.SIZES.BASE * 7,
         borderTopLeftRadius: 13,
         borderTopRightRadius: 13,
         borderBottomRightRadius: 13,
