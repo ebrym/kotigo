@@ -6,6 +6,8 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
 
 import { Icon, Product } from '../components/';
 
+import { Images, materialTheme } from '../constants';
+
 const { width } = Dimensions.get('screen');
 
 const ACCESS_TOKEN = 'access_token';

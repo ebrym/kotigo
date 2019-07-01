@@ -1,6 +1,6 @@
 import React from 'react';
 import {  View, StyleSheet, FlatList, Image,Alert,
-  ActivityIndicator, Platform, ScrollView,ListView,
+  ActivityIndicator, Platform, ScrollView,ListView, 
 AsyncStorage,TouchableOpacity, Dimensions, NetInfo} from 'react-native';
 import { FileSystem, Constants, Notifications,SQLite } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,6 +11,7 @@ import LibraryCarousel from '../components/LibraryCarousel';
 import { Button, Block, Text, Input, theme } from 'galio-framework';
 import { Images, materialTheme } from '../constants';
 
+import { API } from '../constants/globalURL';
 
 
 const { width, height } = Dimensions.get('screen');
@@ -42,7 +43,7 @@ async _fetchData() {
 const userDetails = JSON.parse(userDetail);
 console.log('Library Screen : ' + userDetails.Email);
 
-fetch('http://216.10.247.42:8089/api/BookShelf/GetUserBooks/' + userDetails.Email,{
+fetch(API.URL + '/BookShelf/GetUserBooks/' + userDetails.Email,{
       method: 'GET',
               headers: {
                   'Accept': 'application/json',
@@ -193,7 +194,7 @@ options: {
   position: 'relative',
   padding: theme.SIZES.BASE,
   marginHorizontal: theme.SIZES.BASE,
-  marginTop: theme.SIZES.BASE * 7,
+  marginTop: Platform.OS === 'android' ? theme.SIZES.BASE : theme.SIZES.BASE * 7,
   marginBottom: theme.SIZES.BASE*7, 
   borderTopLeftRadius: 13,
   borderTopRightRadius: 13,

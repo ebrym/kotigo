@@ -6,7 +6,7 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
   import { Audio } from "expo";
   import { Ionicons } from '@expo/vector-icons';
 
-  import { Images, materialTheme } from '../constants';
+  import { API } from '../constants/globalURL';
   import { HeaderHeight } from "../constants/utils";
   import {Recorder, Player} from 'react-native-audio-player-recorder-no-linking';
 
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     padding: theme.SIZES.BASE,
     marginHorizontal: theme.SIZES.BASE,
-    marginTop: theme.SIZES.BASE * 7,
+    marginTop: Platform.OS === 'android' ? theme.SIZES.BASE : theme.SIZES.BASE * 7,
     marginBottom: theme.SIZES.BASE,
     borderTopLeftRadius: 13,
     borderTopRightRadius: 13,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Dimensions, ScrollView,
   ActivityIndicator,ListView,View,FlatList,
-  AsyncStorage, } from 'react-native';
+  AsyncStorage,Platform } from 'react-native';
 import { Button, Block, Text, Input, theme } from 'galio-framework';
 
 import { Icon, Product } from '../components/';
@@ -29,7 +29,7 @@ export default class Home extends React.Component {
     // global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
     // global.userDetails = await AsyncStorage.getItem("UserDetails");
    
-    fetch('http://216.10.247.42:8089/api/BookStore/SearchBooks/' + keyword ,{
+    fetch(API.URL + '/api/BookStore/SearchBooks/' + keyword ,{
         method: 'GET',
                 headers: {
                     'Accept': 'application/json',
