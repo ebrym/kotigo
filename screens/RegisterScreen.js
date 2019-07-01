@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { Block, Button, Text, theme,Input } from 'galio-framework';
 
-import { API } from '../constants/globalURL';
+import API  from '../constants/globalURL';
 const { height, width } = Dimensions.get('screen');
 import materialTheme from '../constants/Theme';
 import Loader from '../components/Loader';

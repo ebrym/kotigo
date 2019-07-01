@@ -27,12 +27,13 @@ class LibraryCarousel extends React.Component {
   }
   componentDidMount() {
     this.prepareDb();
-   
+   //this.DropTableDb();
  }
 
   prepareDb() {
     db.transaction((tx) => {
-      tx.executeSql('create table if not exists Library (id INTEGER PRIMARY KEY, BookID INTEGER, Title text, ImageURL text, AudioURL text);');
+      tx.executeSql('create table if not exists Library (id INTEGER PRIMARY KEY, BookID INTEGER, Title text, ImageURL text);');
+      tx.executeSql('create table if not exists BookChapter (id INTEGER PRIMARY KEY, BookID INTEGER, ChapterNo INTEGER,ChapterName TEXT, AudioURL text);');
     //   tx.executeSql('select * from Library', [], (_, { rows: { _array } }) =>
     //   this.setState(
     //   {
@@ -53,6 +54,7 @@ class LibraryCarousel extends React.Component {
   DropTableDb() {
     db.transaction((tx) => {
       tx.executeSql('drop table Library;');
+      //tx.executeSql('drop table BookChapter;');
       console.log('table dropped');
     }, null, function () {
       console.log('done?.');
@@ -91,6 +93,8 @@ class LibraryCarousel extends React.Component {
     db.transaction(
       tx => {
         tx.executeSql('insert into Library (BookID, Title, ImageURL,AudioURL) values (?, ?, ?, ?)', [audioURL.Id,fileName, imagefileUri, fileUri]);
+        
+        
         // tx.executeSql('select * from Library', [], (_, { rows }) =>
         //   console.log(JSON.stringify(rows))
         // );

@@ -19,6 +19,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-audio-player-recorder-no-linking": "^1.0.2",
     "react-native-easy-toast": "^1.2.0",
+    "react-native-fs": "^2.13.3",
     "react-native-modal-dropdown": "^0.6.2",
     "react-native-snap-carousel": "^3.8.0",
     "react-native-track-player": "^1.1.4",

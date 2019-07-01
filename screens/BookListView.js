@@ -5,7 +5,7 @@ import { View,StyleSheet,ScrollView,Dimensions,
 import { Button, Block, Text, Input, theme } from 'galio-framework';
   import { Audio } from "expo";
   import { Ionicons } from '@expo/vector-icons';
-
+  import API from '../constants/globalURL';
   import { Images, materialTheme } from '../constants';
   import { HeaderHeight } from "../constants/utils";
   import {Recorder, Player} from 'react-native-audio-player-recorder-no-linking';
@@ -53,7 +53,7 @@ const ACCESS_TOKEN = 'access_token';
   });
   console.log('payload :    '+payload);
 try{
-      let response = await fetch('http://216.10.247.42:8089/api/Payment/PaymentUpdate',{
+      let response = await fetch(API.URL+'/Payment/PaymentUpdate',{
                   method: 'POST',
                   headers: {
                       'Accept': 'application/json',
@@ -102,7 +102,7 @@ try{
         }
         this.setState({isLoading: false, error: errorArray});
 
-        Alert.alert('Can not login at this time!');
+        Alert.alert('Can not load books at this time!');
 
     }
     }
@@ -134,13 +134,14 @@ try{
                   </ImageBackground>
                   <Block style={styles.categoryTitle}>
                       <Text size={18} bold color={theme.COLORS.MAIN}>Details</Text>
-                      <Text>Title: {bookDetails.Title}</Text>
-                      <Text>Gerne: {bookDetails.Gernes}</Text>
-                      <Text>Author: {bookDetails.Author}</Text>
-                      <Text>Narrator: {bookDetails.Narrator}</Text>
-                      <Text>Category: {bookDetails.Category}</Text>
-                      <Text>Summary: {bookDetails.Summary}</Text>
-                      <Text color="green">Price : {bookDetails.Price >0 ? "N"+bookDetails.Price : "Free"}</Text>
+                      <Text bold >Title: {bookDetails.Title}</Text>
+                      <Text  >Gerne: {bookDetails.Gernes}</Text>
+                      <Text bold >Author: {bookDetails.Author}</Text>
+                      <Text bold >Narrator: {bookDetails.Narrator}</Text>
+                      <Text  >Category: {bookDetails.Category}</Text>
+                      <Text  >Summary: {bookDetails.Summary}</Text>
+                      <Text  >Year Published: {bookDetails.YearPublished}</Text>
+                      <Text bold color="green">Price : {bookDetails.Price >0 ? "N"+bookDetails.Price : "Free"}</Text>
                     </Block>
                
                     <Block flex  center space="between">

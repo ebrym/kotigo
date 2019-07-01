@@ -23,7 +23,7 @@ export default class PlayerScreen extends React.Component {
 
         this.state = {
             playing: false,
-            name: 'GoSmarticle Audio Book Player',
+            name: '-',
             duration:0,
             point:0,
             endMin:0,
@@ -36,8 +36,6 @@ export default class PlayerScreen extends React.Component {
     }
 
     componentWillMount() {
-       
-        
         this.timer=setInterval(this.empty,1000);
     }
     empty = () => {
@@ -76,7 +74,6 @@ export default class PlayerScreen extends React.Component {
        clearInterval(this.timer);
        if(this.state.playing)
         {
-          
           this.timer= setInterval(() => {
                     this.progress()
                      }, 1000);
@@ -109,7 +106,6 @@ export default class PlayerScreen extends React.Component {
                 playing:true,
                 duration:(r===undefined || r===NaN)?this.state.duration:r,
                 played:true,
-                
             });
         }).then(() => {
             this.setState({endMin:(this.state.duration/60000).toFixed(2)});
@@ -176,9 +172,13 @@ export default class PlayerScreen extends React.Component {
     
             
     render() {
+
         const { navigation } = this.props;
         const playlist=navigation.getParam('book');
-        this.AudioPlayer = new AudioPlayer(playlist);
+        const list = playlist.Chapters;
+        //console.log('list : ' + list);
+        // console.log('Playlist : ' + JSON.stringify(playlist.Chapters));
+        this.AudioPlayer = new AudioPlayer(list);
        // console.log('Playlist : ' + JSON.stringify(playlist));
         return (
             <Block flex style={styles.options}>
@@ -199,7 +199,8 @@ export default class PlayerScreen extends React.Component {
                         // </MarqueeText>
                  )
             } */}
-            {!this.state.playing && !this.state.played && (<Text style={{fontSize:24,justifyContent:'space-evenly'}}>{playlist.Title}</Text>)}
+            {/* {!this.state.playing && !this.state.played && (<Text style={{fontSize:24,justifyContent:'space-evenly'}}>{playlist.ChapterName}</Text>)} */}
+            <Text style={{fontSize:24,justifyContent:'space-evenly'}}>{playlist.Title}</Text>
              </View>
             
              <ImageBackground source={{ uri: playlist.ImageURL}} 
@@ -210,18 +211,22 @@ export default class PlayerScreen extends React.Component {
                             style={{width:200, height:200, marginBottom:15, alignSelf:'center',resizeMode:"stretch"}}
                             />
                 </ImageBackground>
+             {/* {!this.state.playing && !this.state.played && (<Text style={{fontSize:10,justifyContent:'space-evenly'}}>{this.state.name}</Text>)} */}
+             <Block flex center>
+                <Text style={{fontSize:10,justifyContent:'space-evenly'}}>{this.state.name || this.AudioPlayer.getSongName()}</Text>
+             </Block>
                 <View style={styles.container}>
                  <TouchableOpacity style={styles.clickbutton} onPress={this.fastBackward}>
                     <Text style={styles.buttonText}>
                       <MaterialIcons name="replay-5" size={40} color={ICON_COLOR} style={styles.iconStyle} />
                     </Text>
                   </TouchableOpacity> 
-                  {/* <TouchableOpacity style={styles.clickbutton} onPress={this.PreviousSong}>
+                   <TouchableOpacity style={styles.clickbutton} onPress={this.PreviousSong}>
                     <Text style={styles.buttonText}>
                       <MaterialIcons name="skip-previous" size={40} color={ICON_COLOR} style={styles.iconStyle} />
                     </Text>
-                  </TouchableOpacity> */}
-
+                  </TouchableOpacity>
+                 
                   <TouchableOpacity style={styles.button} onPress={this.PlayPause}>
                         <Text style={styles.buttonText}>
                         {this.state.playing && (<MaterialIcons name="pause" size={40} color={ICON_COLOR} style={styles.iconStyle} />)}
@@ -231,18 +236,18 @@ export default class PlayerScreen extends React.Component {
                       </TouchableOpacity>
 
 
-                  {/* <TouchableOpacity style={styles.clickbutton} onPress={this.NextSong}>
+                  <TouchableOpacity style={styles.clickbutton} onPress={this.NextSong}>
                     <Text style={styles.buttonText}>
                       <MaterialIcons name="skip-next" size={40} color={ICON_COLOR} style={styles.iconStyle} />
                     </Text>
-                  </TouchableOpacity>    */}
+                  </TouchableOpacity>   
                   <TouchableOpacity style={styles.clickbutton} onPress={this.fastForward}>
                     <Text style={styles.buttonText}>
-                    
                       <MaterialIcons name="forward-5" size={40} color={ICON_COLOR} style={styles.iconStyle} />
                     </Text>
                   </TouchableOpacity>  
                 </View>
+               
                 <View style={{alignItems:'center',flexDirection:'row',justifyContent:'center'}}>
                 <View style={{flex:1,alignItems:'flex-start'}}>
                 {(this.state.timer === 0)&&(<Text>0.00</Text>)}

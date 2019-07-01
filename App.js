@@ -48,7 +48,7 @@ function cacheImages(images) {
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
-      connection: false,
+      connection: false
   };
 
   render() {
@@ -88,6 +88,7 @@ export default class App extends React.Component {
       'connectionChange',
       this.handleConnectionChange
     );
+    
   }
 
   handleConnectionChange = isConnected => {

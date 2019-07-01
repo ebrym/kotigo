@@ -5,7 +5,7 @@ import { StyleSheet, Dimensions, ScrollView,
 import { Button, Block, Text, Input, theme } from 'galio-framework';
 
 import { Icon, Product } from '../components/';
-
+import API from '../constants/globalURL';
 const { width } = Dimensions.get('screen');
 
 const ACCESS_TOKEN = 'access_token';
@@ -29,7 +29,7 @@ export default class Home extends React.Component {
     // global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
     // global.userDetails = await AsyncStorage.getItem("UserDetails");
    
-    fetch(API.URL + '/api/BookStore/SearchBooks/' + keyword ,{
+    fetch(API.URL + '/BookStore/SearchBooks/' + keyword ,{
         method: 'GET',
                 headers: {
                     'Accept': 'application/json',

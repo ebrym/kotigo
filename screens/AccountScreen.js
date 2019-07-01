@@ -6,7 +6,9 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
   import { Audio } from "expo";
   import { Ionicons } from '@expo/vector-icons';
 
-  import { API } from '../constants/globalURL';
+  import { Images, materialTheme } from '../constants';
+
+  import API from '../constants/globalURL';
   import { HeaderHeight } from "../constants/utils";
   import {Recorder, Player} from 'react-native-audio-player-recorder-no-linking';
 

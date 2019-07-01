@@ -11,7 +11,7 @@ import LibraryCarousel from '../components/LibraryCarousel';
 import { Button, Block, Text, Input, theme } from 'galio-framework';
 import { Images, materialTheme } from '../constants';
 
-import { API } from '../constants/globalURL';
+import API  from '../constants/globalURL';
 
 
 const { width, height } = Dimensions.get('screen');
@@ -58,6 +58,9 @@ fetch(API.URL + '/BookShelf/GetUserBooks/' + userDetails.Email,{
           data: responseJson.BookStore,
         }
       );
+      console.log(JSON.stringify(responseJson.BookStore));
+      var bookshelf = JSON.stringify(responseJson.BookStore)
+      
     })
     .catch(error => {
       Alert.alert('Connection Error, Try again later!!');
@@ -100,6 +103,7 @@ componentDidMount() {
 
 
   render() {
+    console.log('table created : ' + this.state.data);
     if (this.state.isLoading) {
       return (
         <View style={styles.container}>

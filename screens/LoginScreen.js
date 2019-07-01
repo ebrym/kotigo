@@ -14,7 +14,7 @@ import {
 
   import { Block, Button, Text, theme,Input } from 'galio-framework';
 import Loader from '../components/Loader';
-import { API } from '../constants/globalURL';
+import  API  from '../constants/globalURL';
 import materialTheme from '../constants/Theme';
 
 const { height, width } = Dimensions.get('screen');
@@ -44,6 +44,7 @@ export default class LoginScreen extends React.Component {
   }
    
   componentDidMount(){
+     // console.log(API.URL);
     this._loadInitialState().done();
     //this.setState({loading: false});
 }
@@ -83,6 +84,7 @@ export default class LoginScreen extends React.Component {
             loading: true
           });
         try {
+
            
             let response = await fetch(API.URL + '/User/authenticate', {
                 method: 'POST',

@@ -1,26 +1,33 @@
+import React from 'react';
 import { Alert } from "react-native";
 import { Audio } from "expo";
 
-
+let index = 0;
 
 export default class AudioPlayer {
 
-    index=0;
+    
+    
 
-    constructor(playlist, initialState = {autoPlay: true }) {
+    constructor(list, initialState = {speed: 1, autoPlay: true }) {
   
         this.soundObject = new Audio.Sound();
-
-        this.list = playlist;
+        // Set speed value
+        this.speed = initialState.speed;
+        
+        this.list = list;
     }
 
 
     getSongName = () => {
-       
-        return this.list.Title;
+        console.log("The list is index : ",this.list[index].ChapterName);
+         return this.list[index].ChapterName;
+        //return this.list.Title;
     };
 
-
+    setSpeed = (speed) => {
+        this.soundObject.setRateAsync(speed);
+    };
     Fastforward = async () => {
           const Mill = await this.soundObject.getStatusAsync();
           let p = Mill.positionMillis;
@@ -36,7 +43,6 @@ export default class AudioPlayer {
    
 
   CurrentDuration = async () => {
-
         const Mill = await this.soundObject.getStatusAsync();
         let p = Mill.positionMillis;
         return {curr:p};
@@ -44,11 +50,21 @@ export default class AudioPlayer {
  
 
     PlayPause = async (playing) => {
-        const index=this.index;
-        const path = this.list.AudioURL;
+        //const index=this.index;
+        
+        //console.log("The list is",this.list[0].AudioURL);
+
+        //console.log("The list is",this.list[index].AudioURL);
+        //Console.log("index : " + index);
+        const path = this.list[index].AudioURL;
+        //console.log("path : " + path);
+        this.index = index;
+       // const path = this.list.AudioURL;
 
         if(playing) {
-            await this.soundObject.pauseAsync();
+            console.log("path : " + path);
+            //await this.soundObject.pauseAsync();
+            await this.soundObject.stopAsync();
             const milliseconds= await this.soundObject.getStatusAsync();
             console.log(milliseconds.durationMillis);
             return milliseconds.durationMillis;
@@ -65,8 +81,6 @@ export default class AudioPlayer {
                     await this.soundObject.loadAsync(path);
                   }
                 
-
-               
                 await this.soundObject.playAsync();
                 const milliseconds= await this.soundObject.getStatusAsync();
                 console.log(milliseconds.durationMillis)
@@ -78,14 +92,18 @@ export default class AudioPlayer {
 
 
     NextSong = async () => {
-
-        if(!this.list[this.index + 1]) {
+        console.log("index : " + index);
+        if(!this.list[index + 1]) {
             Alert.alert('No More Songs...');
         } else {
-            const path = this.list[this.index + 1].path;
-            this.index++;
+            const path = this.list[index + 1].AudioURL;
+            index++;
             await this.soundObject.unloadAsync();
-            await this.soundObject.loadAsync(path);
+            if (global.connectionState){
+                await this.soundObject.loadAsync({uri: path});
+              }else{
+                await this.soundObject.loadAsync(path);
+              }
             await this.soundObject.playAsync();
              const milliseconds= await this.soundObject.getStatusAsync();
             console.log("The duration is",milliseconds.durationMillis)
@@ -96,13 +114,17 @@ export default class AudioPlayer {
 
 
     PreviousSong = async () => {
-        if(!this.list[this.index  - 1]) {
+        if(!this.list[index  - 1]) {
             Alert.alert('No Previous Song Available...');
         } else {
-            const path = this.list[this.index  - 1].path;
-            this.index--;
+            const path = this.list[index  - 1].AudioURL;
+            index--;
             await this.soundObject.unloadAsync();
-            await this.soundObject.loadAsync(path);
+            if (global.connectionState){
+                await this.soundObject.loadAsync({uri: path});
+              }else{
+                await this.soundObject.loadAsync(path);
+              }
             await this.soundObject.playAsync();
             const milliseconds= await this.soundObject.getStatusAsync();
             console.log("The duration is",milliseconds.durationMillis)

@@ -6,7 +6,7 @@ import { View,ScrollView, StyleSheet,WebView,
 
 
     import { Button, Block, Text, Input, theme } from 'galio-framework';
- 
+    import API  from '../constants/globalURL';
 const ACCESS_TOKEN = 'access_token';
 
 export default class PaymentScreen extends React.Component {
@@ -79,7 +79,7 @@ export default class PaymentScreen extends React.Component {
                               
                                             htmlContent += ' function postPaymentData(paymentDetals) {      ';                               
                                                 htmlContent += '$.ajax({                       ';                   
-                                                    htmlContent += '  url: "http://216.10.247.42:8089/api/Payment/PaymentUpdate", '; 
+                                                    htmlContent += '  url: "' + API.URL + '/Payment/PaymentUpdate", '; 
                                                     htmlContent += '  type: "POST",      ';            
                                                     htmlContent += 'data: paymentDetals,    ';      
                                                     htmlContent += 'contentType: "application/json; charset=utf-8",  ';

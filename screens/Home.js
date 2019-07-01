@@ -7,7 +7,8 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
 import { Icon, Product } from '../components/';
 
 import { Images, materialTheme } from '../constants';
-
+import  API  from '../constants/globalURL';
+import Toast, {DURATION} from 'react-native-easy-toast'
 const { width } = Dimensions.get('screen');
 
 const ACCESS_TOKEN = 'access_token';
@@ -24,7 +25,7 @@ export default class Home extends React.Component {
         
     let token =  await AsyncStorage.getItem(ACCESS_TOKEN);
   
-    fetch('http://216.10.247.42:8089/api/BookStore/GetBooks',{
+    fetch(API.URL + '/BookStore/GetBooks',{
         method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -43,12 +44,14 @@ export default class Home extends React.Component {
         );
       })
       .catch(error => {
-        console.error('HOME  : ' + error);
+        this.setState({isLoading: false});
+        this.refs.toast.show('No Internet Connection!');
       });
   }
 
  
   componentDidMount() {
+    //console.log('API : '+ API.URL);
     this._fetchData();
   }
 
