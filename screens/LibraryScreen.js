@@ -58,8 +58,8 @@ fetch(API.URL + '/BookShelf/GetUserBooks/' + userDetails.Email,{
           data: responseJson.BookStore,
         }
       );
-      console.log(JSON.stringify(responseJson.BookStore));
-      var bookshelf = JSON.stringify(responseJson.BookStore)
+      // console.log(JSON.stringify(responseJson.BookStore));
+      // var bookshelf = JSON.stringify(responseJson.BookStore)
       
     })
     .catch(error => {
@@ -69,32 +69,30 @@ fetch(API.URL + '/BookShelf/GetUserBooks/' + userDetails.Email,{
 }
 
 
-componentDidMount() {
-  console.log(global.connectionState);
+componentWillMount() {
+  //console.log(global.connectionState);
   if (global.connectionState){
     this._fetchData();
+
   }else{
    this._fetchOfflineData();
   }
 }
 
-
-    //(_, { rows: { _array } }) => this.setState({ items: _array })
-    // console.log(JSON.stringify(_array))
   _fetchOfflineData(){
    db.transaction((tx) => {
-    tx.executeSql('select * from Library', [], (_, { rows }) =>
+    tx.executeSql('select * from Library', [], (_, { rows: { _array } }) =>
+    //console.log('offline data 1 : ' + JSON.stringify(rows))
     this.setState(
-      {
-        isLoading: false,
-        data: rows._array,
-      }
-    )
-      );
-    
-    console.log('table created');
+        {
+          isLoading: false,
+          data: _array,
+        }
+      )
+    );
+    //console.log('offline data 1 : ' + this.state.data);
   }, null, function () {
-    console.log('done?.');
+  //  console.log('done?.');
   });
  }
 
@@ -103,7 +101,7 @@ componentDidMount() {
 
 
   render() {
-    console.log('table created : ' + this.state.data);
+   // console.log('table created : ' + this.state.data);
     if (this.state.isLoading) {
       return (
         <View style={styles.container}>

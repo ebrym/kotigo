@@ -51,9 +51,86 @@ export default class Home extends React.Component {
       });
   }
 
+  async _fetchGenreData() {
+    const { navigation } = this.props;
+    const keyword = navigation.getParam('genre');
+    //const keyword = navigation.state.SearchText;
+    //console.log("SearchText : " +keyword.Id);
+    
+    let token =  await AsyncStorage.getItem(ACCESS_TOKEN);
+    // global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    // global.userDetails = await AsyncStorage.getItem("UserDetails");
+   
+    fetch(API.URL + '/BookStore/GetBooksByGenre/' + keyword.Id,{
+        method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token,
+                }})
+      .then(response => response.json())
+      .then(responseJson => {
+        this.setState(
+          {
+            isLoading: false,
+            dataSource: responseJson.BookStore,
+          },
+        
+        );
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  async _fetchCategoryData() {
+    const { navigation } = this.props;
+    const keyword = navigation.getParam('genre');
+    //const keyword = navigation.state.SearchText;
+    //console.log("SearchText : " +keyword.Id);
+    
+    let token =  await AsyncStorage.getItem(ACCESS_TOKEN);
+    // global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    // global.userDetails = await AsyncStorage.getItem("UserDetails");
+   
+    fetch(API.URL + '/BookStore/GetBooksByCategory/' + keyword.Id,{
+        method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token,
+                }})
+      .then(response => response.json())
+      .then(responseJson => {
+        this.setState(
+          {
+            isLoading: false,
+            dataSource: responseJson.BookStore,
+          },
+        
+        );
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
  
   componentDidMount() {
-    this._fetchData();
+    const { navigation } = this.props;
+    const searchtype = navigation.getParam('searchtype');
+
+    //console.log("search type : " + searchtype);
+    if(searchtype=="gerne")
+    {
+      this._fetchGenreData();
+    }else if(searchtype=="category")
+    {
+      this._fetchCategoryData();
+    }else{
+      this._fetchData();
+    }
+
+   
   }
 
 

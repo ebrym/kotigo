@@ -7,6 +7,7 @@ import { Block, Text, theme } from "galio-framework";
 import ComponentsScreen from '../screens/Components';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import ResetAccountScreen from '../screens/ResetAccountScreen';
 import HomeScreen from '../screens/Home';
 import OnboardingScreen from '../screens/Onboarding';
 import ProfileScreen from '../screens/Profile';
@@ -14,10 +15,15 @@ import ProScreen from '../screens/Pro';
 import SettingsScreen from '../screens/Settings';
 import BookListDetails from '../screens/BookListView';
 import PaymentScreen from '../screens/PaymentScreen';
+import PaystackPaymentScreen from '../screens/PaystackPaymentScreen';
+import FlutterPaymentScreen from '../screens/FlutterPaymentScreen';
 import BookShelfScreen from '../screens/LibraryScreen';
 import PlayScreen from '../screens/PlayerScreen';
 import SearchScreen from '../screens/SearchScreen';
 import AccountScreen from '../screens/AccountScreen';
+import CategoryScreen from '../screens/BookCategoryScreen';
+import GenreScreen from '../screens/BookGenreScreen';
+
 
 import Menu from './Menu';
 import Header from '../components/Header';
@@ -124,7 +130,7 @@ const HomeStack = createStackNavigator({
   Home: {
     screen: HomeScreen,
     navigationOptions: ({navigation}) => ({
-      header: <Header search tabs title="Home" navigation={navigation} />,
+      header: <Header search title="Home" navigation={navigation} />,
     }),
   },
 
@@ -146,11 +152,24 @@ const HomeStack = createStackNavigator({
   Payment: {
     screen: PaymentScreen,
     navigationOptions: ({navigation}) => ({
-      header: <Header back black transparent title="Payment" navigation={navigation} />,
+      header: <Header back black transparent title="Payment Details" navigation={navigation} />,
       headerTransparent: true,
     })
   },
-  
+  PayStackPayment: {
+    screen: PaystackPaymentScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="Pay with PayStack" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+  FlutterPayment: {
+    screen: FlutterPaymentScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="Pay with Flutter" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
 
 },
 {
@@ -159,6 +178,66 @@ const HomeStack = createStackNavigator({
   },
   transitionConfig,
 });
+
+
+const CategoryStack = createStackNavigator({
+  Category: {
+    screen: CategoryScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header tabs title="Category" navigation={navigation} />,
+    }),
+  },
+  Genre: {
+    screen: GenreScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header tabs title="Genre" navigation={navigation} />,
+    }),
+  },
+  Search: {
+    screen: SearchScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black title="Search" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+
+  BookDetails: {
+    screen: BookListDetails,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="Book Details" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+  Payment: {
+    screen: PaymentScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="Payment Details" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+  PayStackPayment: {
+    screen: PaystackPaymentScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="Pay with PayStack" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+  FlutterPayment: {
+    screen: FlutterPaymentScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="Pay with Flutter" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+
+},
+{
+  cardStyle: { 
+    backgroundColor: '#EEEEEE', //this is the backgroundColor for the app
+  },
+  transitionConfig,
+});
+
 
 const AppStack = createDrawerNavigator(
   {
@@ -176,7 +255,14 @@ const AppStack = createDrawerNavigator(
         ),
       }),
     },
-
+    Category: {
+      screen: CategoryStack,
+      navigationOptions: (navOpt) => ({
+        drawerLabel: ({focused}) => (
+          <Drawer focused={focused} screen="BookCaategoryScreen" title="Browse Category" />
+        ),
+      }),
+    },
     BookShelf: {
       screen: BookShelfStach,
       navigationOptions: (navOpt) => ({
@@ -212,11 +298,15 @@ const AppStack = createDrawerNavigator(
     SignOut: {
       screen: LoginScreen,
       navigationOptions: (navOpt) => ({
-       
         drawerLabel: ({focused}) => (
-          <Drawer focused={focused}  title="Sign Out" />
+          <Drawer focused={focused}  title="Sign Out" onPress={() => {
+            AsyncStorage.clear(); // to clear the token 
+            this.props.navigation.navigate('Auth');
+          }}/>
         ),
+       
       }),
+      
     },
 
     MenuDivider: {
@@ -244,8 +334,19 @@ const AppStack = createDrawerNavigator(
   },
   Menu
 );
-const AuthStack = createStackNavigator({ Login: LoginScreen, 
-  Register : RegisterScreen});
+const AuthStack = createStackNavigator({ 
+  Login: {
+      screen: LoginScreen,
+    },
+    Register: {
+      screen: RegisterScreen,
+    },
+    ResetAccount: {
+      screen: ResetAccountScreen,
+    },
+  // Login: LoginScreen, 
+  // Register : RegisterScreen, ResetAccount : ResetAccountScreen
+});
 
 export default createSwitchNavigator(
   {

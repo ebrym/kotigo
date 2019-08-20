@@ -10,10 +10,12 @@ import AudioPlayer from '../components/AudioPlayer';
 
 import { Button, Block, Text, theme } from 'galio-framework';
 
+import { FileSystem, Constants, Notifications,SQLite } from 'expo';
 const ICON_COLOR='#000000';
 const {height,width}=Dimensions.get("window");
 
 
+const db = SQLite.openDatabase('gosmarticle.db');
 export default class PlayerScreen extends React.Component {
 
     AudioPlayer = null;
@@ -31,13 +33,55 @@ export default class PlayerScreen extends React.Component {
             timer:0,
             count:0,
             played:false,
+            list:null,
+            downloaded:false,
         };
         this.timer=0;
     }
 
-    componentWillMount() {
+    componentWillMount() { 
+        const { navigation } = this.props;
+        const playlist=navigation.getParam('book');
+        console.log('mount list from libray ' + JSON.stringify(playlist));
+            //this.setState({ list: playlist.Chapters });
+            let bookID = 0;
+            if (global.connectionState){
+               bookID = playlist.Id;
+              }else{
+                bookID = playlist.BookID;
+              }
+
+
+          
+            db.transaction(async tx  => {
+                await tx.executeSql('select * from Library where BookID = ' + bookID, [], (_, results) =>
+                {
+                  var len = results.rows.length;
+                  console.log('len', len);
+                  if (len > 0) {
+                      
+                        tx.executeSql('select * from BookChapter where BookID = ?', [bookID], (_, { rows: { _array } }) =>
+                        {
+                            this.AudioPlayer = new AudioPlayer(_array);
+                        }
+                        );
+                    }else{
+                        this.AudioPlayer = new AudioPlayer(playlist.Chapters);
+                    }
+                    
+                }
+                );
+                //console.log('offline data 1 : ' + this.state.data);
+              }, null, function () {
+              //  console.log('done?.');
+              });
+
+
+           
+
         this.timer=setInterval(this.empty,1000);
     }
+
     empty = () => {
 
     };
@@ -169,45 +213,76 @@ export default class PlayerScreen extends React.Component {
         }
         this.setState({timer,count});
     }
-    
-            
+   
+    _fetchOfflineData(bookId){
+        //console.log('the book ID ' + bookId);
+        db.transaction((c) => {
+         c.executeSql('select * from BookChapter where BookID = ?', [bookId], (_, { rows: { _array } }) =>
+         {
+         this.setState(
+             {
+               isLoading: false, 
+               list: _array,
+             }
+           );
+         //console.log('book row : ' + JSON.stringify(_array));
+            }
+         );
+
+       }, null, function () {
+       });
+      }        
+
+      renderBooks = (item) => {
+       //const bk = JSON.parse(item);
+       //console.log('the book ' + JSON.stringify(item));
+        db.transaction((tx) => {
+          tx.executeSql('select * from Library where BookID = ' + item.BookID, [], (_, results) =>
+          {
+            var len = results.rows.length;
+            console.log('len', len);
+            if (len > 0) {
+                //console.log('offline data downloaded : ' + this.state.downloaded);
+                this.setState(
+                    {
+                      downloaded: true
+                    }
+                  );
+                return (
+                    this._fetchOfflineData(item.BookID)
+                )
+              }
+              
+          }
+          );
+          //console.log('offline data 1 : ' + this.state.data);
+        }, null, function () {
+        //  console.log('done?.');
+        });
+      
+        return null;
+      }
+
+
     render() {
 
         const { navigation } = this.props;
-        const playlist=navigation.getParam('book');
-        const list = playlist.Chapters;
-        //console.log('list : ' + list);
-        // console.log('Playlist : ' + JSON.stringify(playlist.Chapters));
-        this.AudioPlayer = new AudioPlayer(list);
-       // console.log('Playlist : ' + JSON.stringify(playlist));
+        const displaylist=navigation.getParam('book');
+
+
         return (
             <Block flex style={styles.options}>
-            {/* <View style={{flex:1,flexDirection:'column'}}> */}
             <View style={styles.marquee}>
-            {/* {this.state.played && (
-                
-
-                        // <MarqueeText
-                        //   style={{ fontSize: 24 }}
-                        //   duration={3000}
-                        //   marqueeOnStart
-                        //   loop
-                        //   marqueeDelay={1000}
-                        //   marqueeResetDelay={1000}
-                        // >
-                        //   {this.state.name} 
-                        // </MarqueeText>
-                 )
-            } */}
+           
             {/* {!this.state.playing && !this.state.played && (<Text style={{fontSize:24,justifyContent:'space-evenly'}}>{playlist.ChapterName}</Text>)} */}
-            <Text style={{fontSize:24,justifyContent:'space-evenly'}}>{playlist.Title}</Text>
+            <Text style={{fontSize:20,justifyContent:'space-evenly'}}>{displaylist.Title}</Text>
              </View>
             
-             <ImageBackground source={{ uri: playlist.ImageURL}} 
+             <ImageBackground source={{ uri: displaylist.ImageURL}} 
                 style={{width: 300, height:300, alignSelf:'center',
                 resizeMode:"stretch", alignItems:'center' ,justifyContent:'center'}}
                 blurRadius={90}>
-                    <Image  source={{ uri: playlist.ImageURL}} 
+                    <Image  source={{ uri: displaylist.ImageURL}} 
                             style={{width:200, height:200, marginBottom:15, alignSelf:'center',resizeMode:"stretch"}}
                             />
                 </ImageBackground>
@@ -264,7 +339,6 @@ export default class PlayerScreen extends React.Component {
                 {(this.state.endMin!==0)&&(<Text>{this.state.endMin}</Text>)}
                 </View>
                 </View>
-            {/* </View> */}
             </Block>
         );
     }
@@ -278,7 +352,7 @@ const styles = StyleSheet.create({
       justifyContent: 'space-evenly',
     },
     marquee:{
-      marginTop:100,
+      marginTop:30,
       flex:1,
       flexDirection:'row',
       justifyContent: 'center',
@@ -319,8 +393,8 @@ const styles = StyleSheet.create({
         position: 'relative',
         padding: theme.SIZES.BASE,
         marginHorizontal: theme.SIZES.BASE,
-        marginTop: Platform.OS === 'android' ? theme.SIZES.BASE : theme.SIZES.BASE * 7,
-        marginBottom: Platform.OS === 'android' ? theme.SIZES.BASE : theme.SIZES.BASE * 7,
+        marginTop: Platform.OS === 'android' ? theme.SIZES.BASE / 2 : theme.SIZES.BASE * 7,
+        marginBottom: Platform.OS === 'android' ? theme.SIZES.BASE / 2 : theme.SIZES.BASE * 7,
         borderTopLeftRadius: 13,
         borderTopRightRadius: 13,
         borderBottomRightRadius: 13,

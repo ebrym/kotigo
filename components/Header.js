@@ -1,6 +1,6 @@
 import React from 'react';
 import { withNavigation } from 'react-navigation';
-import { TouchableOpacity, StyleSheet, Platform, Dimensions } from 'react-native';
+import { TouchableOpacity, StyleSheet, Platform, Dimensions,Image } from 'react-native';
 import { Button, Block, NavBar, Input, Text, theme } from 'galio-framework';
 
 import Icon from './Icon';
@@ -90,8 +90,8 @@ class Header extends React.Component {
         ]);
       case 'Category':
         return ([
-          <ChatButton key='chat-deals' navigation={navigation} isWhite={white} />,
-          <BasketButton key='basket-deals' navigation={navigation} isWhite={white} />
+          // <ChatButton key='chat-deals' navigation={navigation} isWhite={white} />,
+          // <BasketButton key='basket-deals' navigation={navigation} isWhite={white} />
         ]);
       case 'Profile':
         return ([
@@ -137,11 +137,13 @@ class Header extends React.Component {
         iconContent={
           //<SearchButton key='search-product' navigation={navigation} isWhite={white} />
           // onPress={() => navigation.navigate('Search', { search : this.state.searchText })}>
+        
           <TouchableOpacity 
           // onPress={() => this._navigateSearch()}
-          onPress={() => navigation.navigate('Search', { search : this.state.searchText })}>
+          onPress={() => navigation.navigate('Search', { search : this.state.searchText , searchtype:"search"})}>
           <Icon size={16} color={theme.COLORS.MAIN} name="zoom-split" family="Galio" />
         </TouchableOpacity>
+        
       }
       />
     )
@@ -150,36 +152,60 @@ class Header extends React.Component {
 
   renderTabs = () => {
     const { navigation, tabTitleLeft, tabTitleRight } = this.props;
-
     return (
       <Block row style={styles.tabs}>
-        <Button shadowless style={[styles.tab, styles.divider]} onPress={() => navigation.navigate('Pro')}>
+        <Button shadowless style={[styles.tab, styles.divider]} onPress={() => navigation.navigate('Genre')}>
           <Block row middle>
             <Icon name="grid-square" family="Galio" style={{ paddingRight: 8 }} />
-            <Text size={16} style={styles.tabTitle}>{tabTitleLeft || 'Categories'}</Text>
+            <Text size={16} style={styles.tabTitle}>{tabTitleLeft || 'Genre'}</Text>
           </Block>
         </Button>
-        <Button shadowless style={styles.tab} onPress={() => navigation.navigate('Pro')}>
+        <Button shadowless style={styles.tab} onPress={() => navigation.navigate('Category')}>
           <Block row middle>
-            <Icon size={16} name="camera-18" family="GalioExtra" style={{ paddingRight: 8 }} />
-            <Text size={16} style={styles.tabTitle}>{tabTitleRight || 'Best Deals'}</Text>
+            <Icon size={16} name="pin-3" family="Galio" style={{ paddingRight: 8 }} />
+            <Text size={16} style={styles.tabTitle}>{tabTitleRight || 'Category'}</Text>
           </Block>
         </Button>
+      </Block>
+    )
+  }
+  renderBanner = () => {
+    return (
+      <Block row style={styles.tabs}>
+         <Image
+                          alignSelf="center"
+                          source={{uri:"http://admin.gosmarticle.com/upload/mobilebanner.jpg"}}
+                          style={[styles.imageBlock, { width: width - (theme.SIZES.BASE * 2), height: 100 }]}
+                          resizeMode="stretch"
+                          // imageStyle={{ width: width - (theme.SIZES.BASE * 2), height: 344 }}
+                          />
       </Block>
     )
   }
 
   renderHeader = () => {
     const { search, tabs } = this.props;
-   
-    if (search || tabs) {
+    
+    if (search) {
       return (
         <Block center>
           {search ? this.renderSearch() : null}
-          {/* {tabs ? this.renderTabs() : null} */}
+          {/* {tabs ? this.renderBanner() : null} */}
+           {/* {tabs ? this.renderTabs() : null} */}
+           {this.renderBanner()}
         </Block>
       )
     }
+    if (tabs) {
+      return (
+        <Block center>
+          {search ? this.renderSearch() : null}
+           {/* {tabs ? this.renderTabs() : null}  */}
+           {this.renderTabs()}
+        </Block>
+      )
+    }
+    
     return null;
   }
 
@@ -265,7 +291,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   tabs: {
-    marginBottom: 24,
+    marginBottom: 10,
     marginTop: 10,
     elevation: 4,
   },

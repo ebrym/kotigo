@@ -1,6 +1,6 @@
 import React from 'react';
 import { withNavigation } from 'react-navigation';
-import { StyleSheet, Dimensions, Image, TouchableWithoutFeedback,TouchableOpacity } from 'react-native';
+import { StyleSheet, Dimensions, Image, TouchableWithoutFeedback,TouchableOpacity,ImageBackground } from 'react-native';
 import { Block, Text, theme } from 'galio-framework';
 
 import materialTheme from '../constants/Theme';
@@ -8,23 +8,26 @@ import materialTheme from '../constants/Theme';
 const { width } = Dimensions.get('screen');
 
 const thumbMeasure = (width - 48 - 32) / 3;
-class Product extends React.Component {
+class Genre extends React.Component {
   render() {
-    const { navigation, product, horizontal, full, style, priceColor, imageStyle } = this.props;
+    const { navigation, product, horizontal, full, style, imageStyle } = this.props;
     const imageStyles = [styles.image, full ? styles.fullImage : styles.horizontalImage, imageStyle];
-const { book } = this.props;
+
 
     return (
       //book.map((bookDetails, i) => ( 
       <Block row={horizontal} card flex style={[styles.product, styles.shadow, style]}>
      
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('BookDetails', { book: product })}>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('Search', { book: product })}>
           <Block flex style={[styles.imageContainer, styles.shadow]}>
-            {/* <Image source={{ uri: product.image }} style={imageStyles} /> */}
-            <Image source={{ uri: product.ImageURL }} style={imageStyles}/>
+            <ImageBackground source={(product.BannerName != null ? {uri: product.BannerName} : require('../assets/images/gosmarticlelogo.png'))}
+            style={ { width: width - (theme.SIZES.BASE * 2), height: 100 }}>
+            <Text size={12}  >{product.Name}</Text>
+            </ImageBackground>
+            
           </Block>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('BookDetails', { book: product })}>
+        {/* <TouchableWithoutFeedback onPress={() => navigation.navigate('BookDetails', { book: product })}>
           <Block flex space="between" style={styles.productDescription}>
             <Text size={14} style={styles.productTitle}>{product.Title}</Text>
             <Block flex  row space="between">
@@ -35,7 +38,7 @@ const { book } = this.props;
             </TouchableOpacity>}
             </Block>
           </Block>
-        </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback> */}
         
       </Block>
      //  ))
@@ -43,7 +46,7 @@ const { book } = this.props;
   }
 }
 
-export default withNavigation(Product);
+export default withNavigation(Genre);
 
 const styles = StyleSheet.create({
   product: {
@@ -76,7 +79,7 @@ const styles = StyleSheet.create({
     width: 'auto',
   },
   fullImage: {
-    height: 215,
+    height: 100,
     width: width - theme.SIZES.BASE * 3,
   },
   shadow: {
@@ -101,3 +104,4 @@ const styles = StyleSheet.create({
     width:'auto',
   },
 });
+

@@ -10,8 +10,10 @@ const proScreens = ['Woman', 'Man', 'Kids', 'New Collection', 'Sign In', 'Sign U
 
 class DrawerItem extends React.Component {
   renderIcon = () => {
-    const { title, focused } = this.props;
-
+    const { title, focused, signOut } = this.props;
+    if (signOut) {
+      onLogutPress();
+    }
     switch (title) {
       case 'Home':
         return (
@@ -22,14 +24,14 @@ class DrawerItem extends React.Component {
             color={focused ? 'white' : materialTheme.COLORS.MUTED} />
         );
       
-      // case 'Woman':
-      //   return (
-      //     <Icon
-      //       size={16}
-      //       name="users-wm"
-      //       family="Galio"
-      //       color={focused ? 'white' : materialTheme.COLORS.MUTED} />
-      //   );
+      case 'Browse Category':
+        return (
+          <Icon
+            size={16}
+            name="zoom-split"
+            family="Galio"
+            color={focused ? 'white' : materialTheme.COLORS.MUTED} />
+        );
       // case 'Man':
       //   return (
       //     <Icon
@@ -112,10 +114,18 @@ class DrawerItem extends React.Component {
 
   //   return null;
   // }
-
+  async onLogutPress() {
+    AsyncStorage.clear(); // to clear the token 
+    this.setState({loggedIn:false});
+    this.props.navigation.navigate('Auth')
+    }
   render() {
-    const { focused, title } = this.props;
+    const { focused, title, signOut } = this.props;
+
     const proScreen = proScreens.includes(title);
+    if (signOut) {
+      onLogutPress();
+    }
     return (
       <Block flex row style={[styles.defaultStyle, focused ? [styles.activeStyle, styles.shadow] : null]}>
         <Block middle flex={0.1} style={{ marginRight: 28 }}>

@@ -27,7 +27,7 @@ const ACCESS_TOKEN = 'access_token';
 
 
     componentWillUnmount(){
-     //this.soundObject.stopAsync();
+     this.soundObject.stopAsync();
      //this.Player.stopAsync();
 
   }
@@ -124,14 +124,16 @@ try{
         <Block flex style={styles.options}>
         <ScrollView showsVerticalScrollIndicator={false}>
         <Text bold size={16} style={styles.title}>{bookDetails.Title}</Text>
-                <Block flex card shadow style={styles.category}>
-                  <ImageBackground
+                <Block flex  shadow style={styles.category}>
+                  <Image
+                    alignSelf="center"
                     source={{ uri: bookDetails.ImageURL }}
-                    style={[styles.imageBlock, { width: width - (theme.SIZES.BASE * 2), height: 252 }]}
-                    imageStyle={{ width: width - (theme.SIZES.BASE * 2), height: 252 }}
-                    resizeMode="stretch">
+                    style={[styles.imageBlock, { width: 300, height: 300 }]}
+                    resizeMode="contain"
+                    // imageStyle={{ width: width - (theme.SIZES.BASE * 2), height: 344 }}
+                    >
                     
-                  </ImageBackground>
+                  </Image>
                   <Block style={styles.categoryTitle}>
                       <Text size={18} bold color={theme.COLORS.MAIN}>Details</Text>
                       <Text bold >Title: {bookDetails.Title}</Text>
@@ -141,6 +143,7 @@ try{
                       <Text  >Category: {bookDetails.Category}</Text>
                       <Text  >Summary: {bookDetails.Summary}</Text>
                       <Text  >Year Published: {bookDetails.YearPublished}</Text>
+                      <Text  >Duration: {bookDetails.Duration}</Text>
                       <Text bold color="green">Price : {bookDetails.Price >0 ? "N"+bookDetails.Price : "Free"}</Text>
                     </Block>
                
@@ -332,7 +335,19 @@ const styles = StyleSheet.create({
     height: theme.SIZES.BASE * 3,
     shadowRadius: 0,
     shadowOpacity: 0,
+    backgroundColor: materialTheme.COLORS.MAIN,
+    paddingVertical: 15,
+    borderRadius: 25,
+    width:300,
+    fontSize:16,
   },
+  buttonContainer:{
+    backgroundColor: materialTheme.COLORS.MAIN,
+    paddingVertical: 15,
+    borderRadius: 25,
+    width:300,
+    fontSize:16,
+},
   options: {
     position: 'relative',
     padding: theme.SIZES.BASE,

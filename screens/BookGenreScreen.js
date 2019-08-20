@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, Dimensions, ScrollView,Image,
-  ActivityIndicator,ListView,View,FlatList,
+import { StyleSheet, Dimensions, ScrollView,TouchableWithoutFeedback,
+  ActivityIndicator,ListView,View,FlatList,ImageBackground,
   AsyncStorage, } from 'react-native';
 import { Button, Block, Text, Input, theme } from 'galio-framework';
 
-import { Icon, Product } from '../components/';
+import  Genre from '../components/Genre';
 
 import { Images, materialTheme } from '../constants';
 import  API  from '../constants/globalURL';
@@ -12,7 +12,7 @@ import Toast, {DURATION} from 'react-native-easy-toast'
 const { width } = Dimensions.get('screen');
 
 const ACCESS_TOKEN = 'access_token';
-export default class Home extends React.Component {
+export default class BookGenreScreen extends React.Component {
   constructor(props){
     super(props);
     
@@ -25,7 +25,7 @@ export default class Home extends React.Component {
         
     let token =  await AsyncStorage.getItem(ACCESS_TOKEN);
   
-    fetch(API.URL + '/BookStore/GetBooks',{
+    fetch(API.URL + '/setup/gernes',{
         method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -38,7 +38,7 @@ export default class Home extends React.Component {
         this.setState(
           {
             isLoading: false,
-            dataSource: responseJson.BookStore,
+            dataSource: responseJson.Gerne,
           },
         
         );
@@ -55,20 +55,31 @@ export default class Home extends React.Component {
     this._fetchData();
   }
   renderProducts = () => {
+    //console.log(this.state.dataSource);
     return (
       <Block flex>
-      {/* <Product product={products[0]} horizontal /> */}
-      
+   
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.products}>
  
-          <Block flex>
+          <Block flex row>
           <FlatList  
           data={this.state.dataSource}
-          numColumns='2'
+          numColumns='1'
+    
           renderItem={({ item }) => (
-                <Product product={item} style={{ margin: 5 }}/>
+            //<Category category={item} style={{ margin: 5 }} full />
+            // <Genre product={item} horizontal full />
+            <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Search', { genre: item, searchtype:"gerne"})}>
+          <Block flex card style={[styles.imageContainer, styles.shadow]}>
+            <ImageBackground source={(item.BannerName != null ? {uri: item.BannerName} : require('../assets/images/gosmarticlelogo.png'))}
+            style={ { width: width - (theme.SIZES.BASE * 2), height: 100, marginBottom:5, marginTop:5 }}>
+            <Text size={12}  >{item.Name}</Text>
+            </ImageBackground>
+            
+          </Block>
+        </TouchableWithoutFeedback>
                 )}
                 enableEmptySections={true}
                 style={{ marginTop: 5 }}
@@ -148,5 +159,11 @@ const styles = StyleSheet.create({
   products: {
     width: width - theme.SIZES.BASE * 2,
     paddingVertical: theme.SIZES.BASE * 2,
+  },shadow: {
+    shadowColor: theme.COLORS.BLACK,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    shadowOpacity: 0.1,
+    elevation: 2,
   },
 });

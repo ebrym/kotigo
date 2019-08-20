@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity, 
   AsyncStorage,
+  ActivityIndicator,
   View,
   Dimensions,
   StatusBar,
@@ -27,16 +28,14 @@ const Errors = (props) => {
     )
 }
 
-export default class LoginScreen extends React.Component {
+export default class ResetAccountScreen extends React.Component {
 
-  static navigationOptions = {
-    header: null,
-  };
+ 
   constructor(props){
     super(props);
 
     this.state ={
-        username: "",
+        email: "",
         password: "",
         loading: false,//loading: false,
         error: ""
@@ -44,40 +43,12 @@ export default class LoginScreen extends React.Component {
   }
    
   componentDidMount(){
-     // console.log(API.URL);
-    this._loadInitialState().done();
-    //this.setState({loading: false});
 }
-    _loadInitialState = async () => {
-        let token = await AsyncStorage.getItem(ACCESS_TOKEN);
-        global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
-        global.userDetails = await AsyncStorage.getItem("UserDetails");
-        //let expires = await AsyncStorage.getItem(TOKEN_VALIDITY);  
-        if (token !== null) {
-           this.setState({loading: false});
-           console.log("token : " + token)
-            this.props.navigation.navigate('App'); 
-        }
-    }
 
-    async storeToken(accessToken) {
-        try {
-            await AsyncStorage.setItem(ACCESS_TOKEN, accessToken);
-            this.getToken();
-        } catch(error) {
-            console.log("Something went wrong")
-        }
-    }
 
-    async getToken() {
-        try {
-            let token = await AsyncStorage.getItem(ACCESS_TOKEN);            
-            console.log("token is:" + token);
-        } catch(error) {
-            
-            console.log("Something went wrong")
-        }
-    }
+
+
+
 
     async onLoginButtonPress() {
         this.setState({
@@ -86,57 +57,34 @@ export default class LoginScreen extends React.Component {
         try {
 
            
-            let response = await fetch(API.URL + '/User/authenticate', {
+            let response = await fetch(API.URL + '/User/resetaccount', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                },
+                }, 
                 body: JSON.stringify({
-                    username: this.state.username,
-                    password: this.state.password
+                    email: this.state.email
                 })
             });
-            let res = await response.json();
+            //let res = await response.json();
             if (response.status >= 200 && response.status < 300) {
-                this.setState({loading: false, error: ""});
-                let accessToken = res.access_token;
-
-                //store user details
-                AsyncStorage.setItem('UserDetails', JSON.stringify(res));
-
-                global.userDetails = JSON.stringify(res);
-                let tokenValidity = res.access_token;
-                this.storeToken(accessToken);          
-                await AsyncStorage.setItem('Token_Validity',tokenValidity);                  
-                //console.log("Response success is: " + accessToken); 
-                //console.log("tokenValidity is: " + tokenValidity); 
-
-                this.props.navigation.navigate('App');
+                this.setState({loading: false});
+                Alert.alert('kindly check your email for account reset link.');
             } else {
                 let error = res;
 
                 this.setState({loading: false});
-                Alert.alert('Invalid credentials!!');
+                Alert.alert('Invalid email!!');
                 throw error;
             }
 
         this.setState({loading: false});
         } catch(error){
-            console.log("catch error: " + error);
-           
-            let formError = JSON.parse(error);
-            let errorArray = [];
-            for(let key in formError) {
-                if(formError[key].length > 1){
-                    formError[key].map(error => errorArray.push(`${key} ${error}`))
-                } else {
-                    errorArray.push(`${key} ${formError[key]}`)
-                }
-            }
-            this.setState({loading: false, error: errorArray});
+            
+            this.setState({loading: false});
 
-            Alert.alert('Can not login at this time!');
+            Alert.alert('Can not reset account at this time!');
 
         }
     }
@@ -146,12 +94,18 @@ export default class LoginScreen extends React.Component {
       };
 
   render() {
+    if(this.state.loading){
+        return( 
+          <View style={styles.loader}> 
+            <ActivityIndicator size="large" color="#0c9"/>
+          </View>
+      )}
       
     return (
       <View style={styles.container}>
       {/* <Logo/> */}
-      <Loader
-          loading={this.state.loading} />
+      {/* <Loader
+          loading={this.state.loading} /> */}
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         
           <Block flex center>
@@ -161,29 +115,20 @@ export default class LoginScreen extends React.Component {
               style={styles.welcomeImage}
             />
            
-            <Text style={styles.helpLinkText}>Login</Text>
+            <Text style={styles.helpLinkText}>Reset Account</Text>
           </Block>
           <Block flex center>
           <Input style = {styles.input} 
-                            onChangeText={(val) => this.setState({username: val})} 
+                            onChangeText={(val) => this.setState({email: val})} 
                             keyboardType='email-address' 
-                            placeholder='Email or UserName' 
+                            placeholder='Email' 
                             color={materialTheme.COLORS.MAIN}
                             placeholderTextColor={materialTheme.COLORS.MAIN}
                             underlineColorAndroid='transparent'/>
-            
-             <Input style = {styles.input} 
-                            onChangeText={(val) => this.setState({password: val})}  
-                            placeholder='Password' 
-                            color={materialTheme.COLORS.MAIN}
-                        placeholderTextColor={materialTheme.COLORS.MAIN}
-                            underlineColorAndroid='transparent'
-                            secureTextEntry/>
-
 
                 <TouchableOpacity style={styles.buttonContainer} 
                                     onPress={this.onLoginButtonPress.bind(this)}>
-                            <Text  style={styles.buttonText}>LOGIN</Text>
+                            <Text  style={styles.buttonText}>RESET</Text>
                 </TouchableOpacity> 
            
           </Block>
@@ -192,10 +137,6 @@ export default class LoginScreen extends React.Component {
             <Text style={styles.helpLinkText}>Don't have an account yet!</Text>
             <TouchableOpacity onPress={()=> this.props.navigation.navigate('Register')} style={styles.helpLink}>
               <Text style={styles.helpLinkText}>Sign Up</Text>
-            </TouchableOpacity>
-
-          <TouchableOpacity onPress={()=> this.props.navigation.navigate('ResetAccount')} style={styles.resetLink}>
-              <Text style={styles.buttonText}>Reset Account</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -243,17 +184,11 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
 
-  helpLinkText:{
-    fontSize: 14,
-    color: '#2e78b7',
-  },
+
  
-  resetLink: {
+  helpLinkText: {
     fontSize: 14,
     color: '#2e78b7',
-    backgroundColor: materialTheme.COLORS.ERROR,
-    borderRadius: 25, paddingVertical: 10,
-    width: 150
   },
   input:{
     height: 40,

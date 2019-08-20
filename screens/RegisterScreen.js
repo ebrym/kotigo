@@ -68,7 +68,7 @@ export default class RegisterScreen extends React.Component {
                 Alert.alert('SignUp Successfull.');
                 
                  //console.log("response success is: " + response);
-                //this.props.navigation.navigate('Login'); 
+                this.props.navigation.navigate('Login'); 
             } else {
 
                 this.setState({loading: false});
