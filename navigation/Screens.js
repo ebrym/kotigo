@@ -1,8 +1,10 @@
 import React from 'react';
-import { Easing, Animated, Platform, AsyncStorage } from 'react-native';
+import { StyleSheet,Easing, Animated, Platform, AsyncStorage,TouchableOpacity } from 'react-native';
 import { createSwitchNavigator, createStackNavigator, createDrawerNavigator } from 'react-navigation';
 
 import { Block, Text, theme } from "galio-framework";
+import Icon from '../components/Icon';
+import materialTheme from '../constants/Theme';
 
 import ComponentsScreen from '../screens/Components';
 import LoginScreen from '../screens/LoginScreen';
@@ -13,6 +15,7 @@ import OnboardingScreen from '../screens/Onboarding';
 import ProfileScreen from '../screens/Profile';
 import ProScreen from '../screens/Pro';
 import SettingsScreen from '../screens/Settings';
+import SupportScreen from '../screens/Support';
 import BookListDetails from '../screens/BookListView';
 import PaymentScreen from '../screens/PaymentScreen';
 import PaystackPaymentScreen from '../screens/PaystackPaymentScreen';
@@ -23,6 +26,9 @@ import SearchScreen from '../screens/SearchScreen';
 import AccountScreen from '../screens/AccountScreen';
 import CategoryScreen from '../screens/BookCategoryScreen';
 import GenreScreen from '../screens/BookGenreScreen';
+import TermsScreen from '../screens/TermsScreen';
+import PolicyScreen from '../screens/PolicyScreen';
+import AboutScreen from '../screens/About';
 
 
 import Menu from './Menu';
@@ -98,16 +104,78 @@ const SettingStack = createStackNavigator({
       headerTransparent: true,
     })
   },
+  Terms: {
+    screen: TermsScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="Terms of use" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+  Policy: {
+    screen: PolicyScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="Privacy policy" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+  About: {
+    screen: AboutScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="About" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
 }, {
   cardStyle: { backgroundColor: '#EEEEEE', },
   transitionConfig,
 })
 
-const BookShelfStach = createStackNavigator({
+const SupportStack = createStackNavigator({
+  Support: {
+    screen: SupportScreen,
+    navigationOptions: ({ navigation }) => ({
+      header: <Header transparent title="Help and Support" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+}, {
+  cardStyle: { backgroundColor: '#EEEEEE', },
+  transitionConfig,
+})
+
+const AboutStack = createStackNavigator({
+  Profile: {
+    screen: AboutScreen,
+    navigationOptions: ({ navigation }) => ({
+      header: <Header transparent title="About" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+  Terms: {
+    screen: TermsScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="Terms of use" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+  Policy: {
+    screen: PolicyScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="Privacy policy" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+}, {
+  cardStyle: { backgroundColor: '#EEEEEE', },
+  transitionConfig,
+})
+
+
+const BookShelfStack = createStackNavigator({
   BookShelf: {
     screen: BookShelfScreen,
     navigationOptions: ({ navigation }) => ({
-      header: <Header  transparent title="My Book Shelf" navigation={navigation} />,
+      header: <Header  transparent title="My Audiobooks" navigation={navigation} />,
       headerTransparent: true,
     })
   },
@@ -170,7 +238,20 @@ const HomeStack = createStackNavigator({
       headerTransparent: true,
     })
   },
-
+  Terms: {
+    screen: TermsScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="Terms of use" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+  Policy: {
+    screen: PolicyScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="Privacy policy" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
 },
 {
   cardStyle: { 
@@ -229,6 +310,20 @@ const CategoryStack = createStackNavigator({
       headerTransparent: true,
     })
   },
+  Terms: {
+    screen: TermsScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="Terms of use" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
+  Policy: {
+    screen: PolicyScreen,
+    navigationOptions: ({navigation}) => ({
+      header: <Header back black transparent title="Privacy policy" navigation={navigation} />,
+      headerTransparent: true,
+    })
+  },
 
 },
 {
@@ -259,15 +354,15 @@ const AppStack = createDrawerNavigator(
       screen: CategoryStack,
       navigationOptions: (navOpt) => ({
         drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="BookCaategoryScreen" title="Browse Category" />
+          <Drawer focused={focused} screen="BookCaategoryScreen" title="Browse" />
         ),
       }),
     },
     BookShelf: {
-      screen: BookShelfStach,
+      screen: BookShelfStack,
       navigationOptions: (navOpt) => ({
         drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="BookShelfScreen" title="My Book Shelf" />
+          <Drawer focused={focused} screen="BookShelfScreen" title="My Audiobooks" />
         ),
       }),
     },
@@ -280,43 +375,31 @@ const AppStack = createDrawerNavigator(
         ),
       }),
     },
-    Settings: {
-      screen: SettingStack,
-      navigationOptions: (navOpt) => ({
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Settings" title="Settings" />
-        ),
-      }),
-    },
+    // Settings: {
+    //   screen: SettingStack,
+    //   navigationOptions: (navOpt) => ({
+    //     drawerLabel: ({focused}) => (
+    //       <Drawer focused={focused} screen="Settings" title="Settings" />
+    //     ),
+    //   }),
+    //},
 
-    MenuDivider: {
-      screen: HomeStack,
-      navigationOptions: {
-        drawerLabel: () => <Block style={{marginVertical: 8}}><Text>{` `}</Text></Block>,
-      },
-    },
-    SignOut: {
-      screen: LoginScreen,
-      navigationOptions: (navOpt) => ({
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused}  title="Sign Out" onPress={() => {
-            AsyncStorage.clear(); // to clear the token 
-            this.props.navigation.navigate('Auth');
-          }}/>
-        ),
-       
-      }),
-      
-    },
+    // MenuDivider: {
+    //   screen: HomeStack,
+    //   navigationOptions: {
+    //     drawerLabel: () => <Block style={{marginVertical: 8}}><Text>{` `}</Text></Block>,
+    //   },
+    // },
+    
 
-    MenuDivider: {
-      screen: HomeStack,
-      navigationOptions: {
-        drawerLabel: () => <Block style={{marginVertical: 8}}><Text>{` `}</Text></Block>,
-      },
-    },
+    // MenuDivider: {
+    //   screen: HomeStack,
+    //   navigationOptions: {
+    //     drawerLabel: () => <Block style={{marginVertical: 8}}><Text>{` `}</Text></Block>,
+    //   },
+    // },
     Help: {
-      screen: RegisterScreen,
+      screen: SupportStack,
       navigationOptions: (navOpt) => ({
         drawerLabel: ({focused}) => (
           <Drawer focused={focused} screen="" title="Help and Support" />
@@ -324,12 +407,21 @@ const AppStack = createDrawerNavigator(
       }),
     },
     About: {
-      screen: RegisterScreen,
+      screen: AboutStack,
       navigationOptions: (navOpt) => ({
         drawerLabel: ({focused}) => (
           <Drawer focused={focused} screen="" title="About" />
         ),
       }),
+    },
+    SignOut: {
+      screen:LoginScreen,
+      navigationOptions: (navOpt) => ({
+        drawerLabel: ({focused}) => (
+            <Drawer focused={focused}  title="Sign Out"  />
+        ),
+      }),
+      
     },
   },
   Menu
@@ -343,6 +435,14 @@ const AuthStack = createStackNavigator({
     },
     ResetAccount: {
       screen: ResetAccountScreen,
+    },
+    Terms:
+    {
+      screen: TermsScreen,
+    },
+    Policy:
+    {
+      screen: PolicyScreen,
     },
   // Login: LoginScreen, 
   // Register : RegisterScreen, ResetAccount : ResetAccountScreen

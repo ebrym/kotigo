@@ -1,5 +1,11 @@
 export default [
   {
+    title: 'Banner',
+    image: 'http://admin.gosmarticle.com/upload/mobilebanner.gif',
+    price: 180,
+    horizontal: true,
+  },
+  {
     title: 'Hardly Anything Takes More Coura...',
     image: 'https://source.unsplash.com/dS2hi__ZZMk/840x840',
     price: 180,

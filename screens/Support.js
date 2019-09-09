@@ -4,7 +4,7 @@ import { Block, Text, theme, Icon } from "galio-framework";
 
 import materialTheme from '../constants/Theme';
 
-export default class Settings extends React.Component {
+export default class Support extends React.Component {
   state = {};
 
   toggleSwitch = switchNumber => this.setState({ [switchNumber]: !this.state[switchNumber] });
@@ -33,7 +33,7 @@ export default class Settings extends React.Component {
       case 'button': 
         return (
           <Block style={styles.rows}>
-            <TouchableOpacity onPress={() => navigate(item.display)}>
+            <TouchableOpacity onPress={() => navigate('Pro')}>
               <Block row middle space="between" style={{paddingTop:7}}>
                 <Text size={14}>{item.title}</Text>
                 <Icon name="stre-right" family="Galio" style={{ paddingRight: 5 }} />
@@ -58,9 +58,9 @@ export default class Settings extends React.Component {
     ];
     
     const privacy = [
-      { title: "Terms and Condition of use", id: "Agreement", type: "button", display: "Terms" },
-      { title: "Privacy", id: "Privacy", type: "button", display: "Policy"  },
-      { title: "About", id: "About", type: "button", display: "About"  },
+      { title: "User Agreement", id: "Agreement", type: "button" },
+      { title: "Privacy", id: "Privacy", type: "button" },
+      { title: "About", id: "About", type: "button" },
     ];
 
     return (
@@ -71,21 +71,37 @@ export default class Settings extends React.Component {
    
         <Block style={styles.title}>
           <Text bold center size={theme.SIZES.BASE} style={{ paddingBottom: 5 }}>
-          Payment Settings
+          Help and Support
           </Text>
-          <Text center muted size={12}>
-          These are also important settings
-          </Text>
+          {/* <Text center muted size={12}>
+          
+          </Text> */}
         </Block>
-        <FlatList
-          data={payment}
-          keyExtractor={(item, index) => item.id}
-          renderItem={this.renderItem}
-        />
-       
-
-      
-
+        <Block style={styles.rows}>
+              <Block left space="between" style={{paddingTop:7}}>
+                <Text size={12} >Have a question? Please contact Kotigo Team</Text>
+                <Text size={12} >Call Us: (234) 0 909 0123 512</Text>
+                <Text size={12} >Email Us: support@MyKotigo.com</Text>
+              </Block>
+        </Block>
+        <Block style={styles.title}>
+          <Text bold center size={theme.SIZES.BASE} style={{ paddingBottom: 5 }}>
+          Contact
+          </Text>
+          {/* <Text center muted size={12}>
+          Third most important settings
+          </Text> */}
+        </Block>
+        {/* <Block></Block>*/}
+        <Block style={styles.rows}>
+              <Block left space="between" style={{paddingTop:7}}>
+                <Text size={14} bold underline >More Contact Information</Text>
+                <Text size={12} >For More Information, please visit www.mykotigo.com</Text>
+                <Text size={12} >Email Us: info@mykotigo.com</Text>
+                <Text size={12} >Connect with us on Social Media Channels</Text>
+                <Text size={12}>(Facebook, Instagram, Twitter):  @MyKotigo</Text>
+              </Block>
+        </Block> 
       </ScrollView>
       </Block>
     );

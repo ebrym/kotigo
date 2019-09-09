@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "GoSmarticle",
-    "description": "audio book anywhere you need.",
-    "slug": "GoSmarticle",
+    "name": "Kotigo",
+    "description": "Knowledge on the go.",
+    "slug": "Kotigo",
     "privacy": "unlisted",
     "sdkVersion": "32.0.0",
     "platforms": ["ios", "android"],
@@ -10,8 +10,9 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
-      "image": "./assets/images/logo.png",
-      "resizeMode": "cover"
+      "image": "./assets/images/kotigo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -21,10 +22,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.bridge57.gosmarticle"
+      "bundleIdentifier": "com.bridge57.kotigo"
     },
     "android": {
-      "package": "com.bridge57.gosmarticle"
+      "package": "com.bridge57.kotigo"
     }
   }
 }

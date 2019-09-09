@@ -289,6 +289,7 @@ export default class PlayerScreen extends React.Component {
              {/* {!this.state.playing && !this.state.played && (<Text style={{fontSize:10,justifyContent:'space-evenly'}}>{this.state.name}</Text>)} */}
              <Block flex center>
                 <Text style={{fontSize:10,justifyContent:'space-evenly'}}>{this.state.name || this.AudioPlayer.getSongName()}</Text>
+           {/* <Text>{this.state.currMin}</Text> */}
              </Block>
                 <View style={styles.container}>
                  <TouchableOpacity style={styles.clickbutton} onPress={this.fastBackward}>
@@ -394,7 +395,7 @@ const styles = StyleSheet.create({
         padding: theme.SIZES.BASE,
         marginHorizontal: theme.SIZES.BASE,
         marginTop: Platform.OS === 'android' ? theme.SIZES.BASE / 2 : theme.SIZES.BASE * 7,
-        marginBottom: Platform.OS === 'android' ? theme.SIZES.BASE / 2 : theme.SIZES.BASE * 7,
+        marginBottom: Platform.OS === 'android' ? theme.SIZES.BASE  : theme.SIZES.BASE * 7,
         borderTopLeftRadius: 13,
         borderTopRightRadius: 13,
         borderBottomRightRadius: 13,

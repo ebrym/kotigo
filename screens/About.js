@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, Switch, FlatList, Platform, TouchableOpacity, ScrollView } from "react-native";
+import { StyleSheet, Switch, FlatList, Platform, TouchableOpacity, ScrollView, Image } from "react-native";
 import { Block, Text, theme, Icon } from "galio-framework";
 
 import materialTheme from '../constants/Theme';
 
-export default class Settings extends React.Component {
+export default class About extends React.Component {
   state = {};
 
   toggleSwitch = switchNumber => this.setState({ [switchNumber]: !this.state[switchNumber] });
@@ -34,7 +34,7 @@ export default class Settings extends React.Component {
         return (
           <Block style={styles.rows}>
             <TouchableOpacity onPress={() => navigate(item.display)}>
-              <Block row middle space="between" style={{paddingTop:7}}>
+              <Block row left space="between" style={{paddingTop:7}}>
                 <Text size={14}>{item.title}</Text>
                 <Icon name="stre-right" family="Galio" style={{ paddingRight: 5 }} />
               </Block>
@@ -51,41 +51,58 @@ export default class Settings extends React.Component {
     //   { title: "Auto-Lock security", id: "autolock", type: "switch" },
     //   { title: "Notifications", id: "Notifications", type: "button" },
     // ];
-
+    const privacy = [
+      { title: "Terms of use", id: "Agreement", type: "button", display: "Terms" },
+      { title: "Privacy Policy", id: "Privacy", type: "button", display: "Policy"  },
+      // { title: "About", id: "About", type: "button", display: "About"  },
+    ];
     const payment = [
       { title: "Manage Payment Options", id: "Payment", type: "button" },
       { title: "Manage Gift Cards", id: "gift", type: "button" },
     ];
     
-    const privacy = [
-      { title: "Terms and Condition of use", id: "Agreement", type: "button", display: "Terms" },
-      { title: "Privacy", id: "Privacy", type: "button", display: "Policy"  },
-      { title: "About", id: "About", type: "button", display: "About"  },
-    ];
 
     return (
       <Block flex style={styles.options}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.settings}>
-   
+          <Block flex center><Image
+              source={require('../assets/images/kotigo.png')}
+              style={styles.welcomeImage}
+            />
+            </Block>
         <Block style={styles.title}>
-          <Text bold center size={theme.SIZES.BASE} style={{ paddingBottom: 5 }}>
-          Payment Settings
-          </Text>
+          {/* <Text bold center size={theme.SIZES.BASE} style={{ paddingBottom: 5 }}>
+         About
+          </Text> */}
           <Text center muted size={12}>
-          These are also important settings
+          Knowledge on the go.
           </Text>
+        
+        </Block>
+        <Block style={styles.rows}>
+              <Block center space="between" style={{paddingTop:7}}>
+                <Text size={14} bold center size={theme.SIZES.BASE} >About Kotigo</Text>
+                <Text size={12} center >KOTIGO the preeminent audiobook platform for Africa's independent authors and publishers</Text>
+                <Text size={12} center>Version 1.2.5 (Build 34578)</Text>
+                <Text size={12} center>©2019</Text>
+              </Block>
+        </Block>
+       
+      <Block style={styles.title}>
+          <Text bold center size={theme.SIZES.BASE} style={{ paddingTop:70 }}>
+          Policies
+          </Text>
+          {/* <Text center muted size={12}>
+          Terms of use and privacy policy
+          </Text> */}
         </Block>
         <FlatList
-          data={payment}
+          data={privacy}
           keyExtractor={(item, index) => item.id}
           renderItem={this.renderItem}
         />
-       
-
-      
-
       </ScrollView>
       </Block>
     );
@@ -104,6 +121,13 @@ const styles = StyleSheet.create({
     height: theme.SIZES.BASE * 2,
     paddingHorizontal: theme.SIZES.BASE,
     marginBottom: theme.SIZES.BASE / 2,
+  }, 
+  welcomeImage: {
+    width: 100,
+    height: 80,
+    resizeMode: 'contain',
+    marginTop: 3,
+    marginLeft: -10,
   },
   options: {
     position: 'relative',

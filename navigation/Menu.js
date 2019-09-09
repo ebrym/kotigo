@@ -8,7 +8,7 @@ import { Images, materialTheme } from "../constants/";
 
 
 const { width } = Dimensions.get('screen');
-//const userDetails = JSON.parse(global.userDetails);
+// const userDetails = JSON.parse(global.userDetails);
 const Drawer = (props) => (
   <Block style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
     <Block flex={0.2} style={styles.header}>
@@ -17,6 +17,7 @@ const Drawer = (props) => (
           {/* <Image source={{ uri: props.profile.avatar}} style={styles.avatar} /> 
         onPress={() => props.navigation.navigate('Profile')}*/}
           <Text h5 color="white">Welcome {props.profile.FirstName}!</Text>
+          {/* <Text h5 color="white">Welcome {userDetails.FirstName}!</Text> */}
         </Block>
       </TouchableWithoutFeedback>
       <Block row>

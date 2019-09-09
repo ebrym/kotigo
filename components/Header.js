@@ -174,7 +174,7 @@ class Header extends React.Component {
       <Block row style={styles.tabs}>
          <Image
                           alignSelf="center"
-                          source={{uri:"http://admin.gosmarticle.com/upload/mobilebanner.jpg"}}
+                          source={{uri:"http://admin.gosmarticle.com/upload/mobilebanner.gif"}}
                           style={[styles.imageBlock, { width: width - (theme.SIZES.BASE * 2), height: 100 }]}
                           resizeMode="stretch"
                           // imageStyle={{ width: width - (theme.SIZES.BASE * 2), height: 344 }}
@@ -200,6 +200,7 @@ class Header extends React.Component {
       return (
         <Block center>
           {search ? this.renderSearch() : null}
+          {this.renderBanner()}
            {/* {tabs ? this.renderTabs() : null}  */}
            {this.renderTabs()}
         </Block>

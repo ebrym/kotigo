@@ -112,7 +112,7 @@ class LibraryCarousel extends React.Component {
 
   async _downloadBook (audioURL) {
     this.setState({ downloading: true,
-      currentDownload: audioURL.Title,
+      currentDownload: audioURL.Title,indeterminate: true,
     });
     // fileURL = audioURL.AudioURL;
     let filePath = audioURL.ShortAudioURL;
@@ -246,13 +246,10 @@ _renderProgress = () => {
                   {/* {this.state.downloaded && (<TouchableOpacity onPress={()=> this._downloadBook(item)} >
             <Ionicons name="md-download" size={30} color="#2e78b7" />
         </TouchableOpacity>)} */}
+        {/* {global.connectionState && ()} */}
          {!this.state.downloading && (<TouchableOpacity onPress={()=> this._downloadBook(item)} >
                       <Ionicons name="md-download" size={30} color="#fb8c00" />
                   </TouchableOpacity>)}
-               
-                  
-                 
-                 
         </Block>
         
         </Block>
@@ -291,7 +288,7 @@ downloadComplete()
                          direction="clockwise"
                          showsText={true}
                          color='#fb8c00'
-                         size={50}
+                         size={40}
                        />)} 
                    {/* {this.state.downloading && (<Text>...please wait.</Text>)}    */}
                    {this.state.progress == 1 && (this.downloadComplete())}

@@ -104,7 +104,6 @@ export default class LoginScreen extends React.Component {
 
                 //store user details
                 AsyncStorage.setItem('UserDetails', JSON.stringify(res));
-
                 global.userDetails = JSON.stringify(res);
                 let tokenValidity = res.access_token;
                 this.storeToken(accessToken);          
@@ -114,30 +113,16 @@ export default class LoginScreen extends React.Component {
 
                 this.props.navigation.navigate('App');
             } else {
-                let error = res;
-
-                this.setState({loading: false});
+                //let error = res;
                 Alert.alert('Invalid credentials!!');
-                throw error;
+                this.setState({loading: false});
+                //throw error;
             }
 
         this.setState({loading: false});
         } catch(error){
-            console.log("catch error: " + error);
-           
-            let formError = JSON.parse(error);
-            let errorArray = [];
-            for(let key in formError) {
-                if(formError[key].length > 1){
-                    formError[key].map(error => errorArray.push(`${key} ${error}`))
-                } else {
-                    errorArray.push(`${key} ${formError[key]}`)
-                }
-            }
-            this.setState({loading: false, error: errorArray});
-
             Alert.alert('Can not login at this time!');
-
+            this.setState({loading: false});
         }
     }
 
@@ -156,7 +141,7 @@ export default class LoginScreen extends React.Component {
         
           <Block flex center>
             <Image
-              source={require('../assets/images/gosmarticlelogo.png')
+              source={require('../assets/images/kotigo.png')
               }
               style={styles.welcomeImage}
             />

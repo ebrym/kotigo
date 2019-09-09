@@ -11,9 +11,11 @@ import {
   View,
   Alert,
   Dimensions,
+  Switch,
 } from 'react-native';
 import { Block, Button, Text, theme,Input } from 'galio-framework';
 
+// import { CheckBox } from 'react-native-elements';
 import API  from '../constants/globalURL';
 const { height, width } = Dimensions.get('screen');
 import materialTheme from '../constants/Theme';
@@ -32,8 +34,14 @@ export default class RegisterScreen extends React.Component {
             phoneno: "",
             password: "",
             loading: false,
-            errors: ""
+            errors: "",
+            validEmail: false,
+            validPassword: false,
+            checked:false,
         }
+
+        // this.handleEmailChange = this.handleEmailChange.bind(this);
+        // this.handlePasswordChange = this.handlePasswordChange.bind(this);
     }
     componentDidMount(){
         //this._loadInitialState().done();
@@ -72,29 +80,53 @@ export default class RegisterScreen extends React.Component {
             } else {
 
                 this.setState({loading: false});
-                let error = res;
+                //let error = res;
                 Alert.alert('Error completing signup process!!');
-                throw error;
+                //throw error;
             }
             //this.setState({loading: false});
         } catch(errors) {
             this.setState({loading: false});
-            console.log("catch errors: " + errors);
+            //console.log("catch errors: " + errors);
 
             Alert.alert('Error completing signup process. \n please try again later!');
-            //let formErrors = JSON.parse(errors);
-            // let errorsArray = [];
-            // for(let key in formErrors) {
-            //     if(formErrors[key].length > 1){
-            //         formErrors[key].map(error => errorsArray.push(`${key} ${error}`))
-            //     } else {
-            //         errorsArray.push(`${key} ${formErrors[key]}`)
-            //     }
-            // }
-            // this.setState({errors: errorsArray});
+       
         } 
         //this.setState({loading: false});
     }
+
+    toggleSwitch = checked => this.setState({ checked: !this.state.checked });
+
+    handleEmailChange(email) {
+        // eslint-disable-next-line
+        const emailCheckRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const { validEmail } = this.state;
+        this.setState({ email: email });
+    
+        if (!validEmail) {
+          if (emailCheckRegex.test(email)) {
+            this.setState({ validEmail: true });
+          }
+        } else if (!emailCheckRegex.test(email)) {
+          this.setState({ validEmail: false });
+        }
+      }
+    
+      handlePasswordChange(password) {
+        const { validPassword } = this.state;
+    
+        this.setState({ password });
+    
+        if (!validPassword) {
+          if (password.length > 4) {
+            // Password has to be at least 4 characters long
+            this.setState({ validPassword: true });
+          }
+        } else if (password <= 4) {
+          this.setState({ validPassword: false });
+        }
+      }
+    
 
     render(){
         // if (this.state.isLoading) {
@@ -104,6 +136,9 @@ export default class RegisterScreen extends React.Component {
         //       </View>
         //     );
         //   } else {
+            // const {
+            //      validEmail, validPassword,
+            //   } = this.state;
             if(this.state.loading){
                 return( 
                   <View style={styles.loader}> 
@@ -112,15 +147,9 @@ export default class RegisterScreen extends React.Component {
               )}
         return(
             <View style = {styles.container}>
-               
-             
-               {/* <Loader
-          loading={this.state.loading} /> */}
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-            
             <Image
-              source={require('../assets/images/gosmarticlelogo.png')
-              }
+              source={require('../assets/images/kotigo.png')}
               style={styles.welcomeImage}
             />
             <Text style={styles.helpLinkText}>SignUp</Text>
@@ -153,6 +182,9 @@ export default class RegisterScreen extends React.Component {
                     returnKeyType="next" 
                     placeholder='Email Address' 
                     placeholderTextColor={materialTheme.COLORS.MAIN}
+                    // onChangeText={this.handleEmailChange}
+                    // showCheckmark={validEmail}
+                    // inputType="email"
                     underlineColorAndroid='transparent'/>   
                 <Input style = {styles.input} 
                     onChangeText={(val) => this.setState({username: val})}
@@ -173,10 +205,28 @@ export default class RegisterScreen extends React.Component {
                     color={materialTheme.COLORS.MAIN}
                     placeholderTextColor={materialTheme.COLORS.MAIN}
                     underlineColorAndroid='transparent'
+                    // onChangeText={this.handlePasswordChange}
+                    // showCheckmark={validPassword}
+                    // inputType="password"
                     secureTextEntry/>
-                <TouchableOpacity style={styles.buttonContainer} onPress={this.onRegistrationButtonPress.bind(this)}>
+                     <TouchableOpacity onPress={()=> this.props.navigation.navigate('Terms')} style={styles.helpLink}>
+                        <Text style={styles.helpLinkText}>Terms and condition of use.</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=> this.props.navigation.navigate('Policy')} style={styles.helpLink}>
+                        <Text style={styles.helpLinkText}>Privacy policy</Text>
+                    </TouchableOpacity>
+                   <Block flex row>
+                   <Switch
+                    onValueChange={() => this.setState({ checked: !this.state.checked })}
+                    ios_backgroundColor={materialTheme.COLORS.SWITCH_OFF}
+                    thumbColor={Platform.OS === 'android' ? materialTheme.COLORS.SWITCH_OFF : null}
+                    trackColor={{ false: materialTheme.COLORS.SWITCH_OFF, true: materialTheme.COLORS.SWITCH_ON }}
+                    value={this.state.checked}/> 
+                    <Text>Accept terms and conditions</Text>
+                    </Block>
+                 {this.state.checked &&(<TouchableOpacity style={styles.buttonContainer} onPress={this.onRegistrationButtonPress.bind(this)}>
                     <Text  style={styles.buttonText}>Register</Text>
-                </TouchableOpacity>
+                </TouchableOpacity>)}
             </ScrollView> 
          </View>
         );
@@ -199,6 +249,10 @@ const styles = StyleSheet.create({
       padding: 20,
     },
   
+    helpLinkText:{
+        fontSize: 14,
+        color: '#2e78b7',
+      },
     contentContainer: {
       paddingTop: 30,
       justifyContent: 'center',

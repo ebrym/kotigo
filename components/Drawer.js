@@ -1,19 +1,21 @@
 import React from 'react';
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform,AsyncStorage,TouchableOpacity } from 'react-native';
 import { Block, Text, theme } from "galio-framework";
 
+import { withNavigation } from 'react-navigation';
 import { Ionicons } from '@expo/vector-icons';
 import Icon from './Icon';
 import materialTheme from '../constants/Theme';
 
 const proScreens = ['Woman', 'Man', 'Kids', 'New Collection', 'Sign In', 'Sign Up'];
 
-class DrawerItem extends React.Component {
+class DrawerItem extends React.Component  {
+  constructor(props){
+    super(props);
+  }
   renderIcon = () => {
     const { title, focused, signOut } = this.props;
-    if (signOut) {
-      onLogutPress();
-    }
+
     switch (title) {
       case 'Home':
         return (
@@ -24,7 +26,7 @@ class DrawerItem extends React.Component {
             color={focused ? 'white' : materialTheme.COLORS.MUTED} />
         );
       
-      case 'Browse Category':
+      case 'Browse':
         return (
           <Icon
             size={16}
@@ -48,7 +50,7 @@ class DrawerItem extends React.Component {
       //       family="GalioExtra"
       //       color={focused ? 'white' : materialTheme.COLORS.MUTED} />
       //   );
-      case 'My Book Shelf':
+      case 'My Audiobooks':
         return (
           <Ionicons
             size={16}
@@ -79,14 +81,29 @@ class DrawerItem extends React.Component {
             name="ui-04"
             family="Galio"
             color={focused ? 'white' : materialTheme.COLORS.MUTED} />
+
+           
         );
       case 'Sign Out':
         return (
-          <Icon
-            size={16}
-            name="log-in"
-            family="Galio"
-            color={focused ? 'white' : materialTheme.COLORS.MUTED} />
+          // <Icon
+          //   size={16}
+          //   name="log-in"
+          //   family="Galio"
+          //   color={focused ? 'white' : materialTheme.COLORS.MUTED} />
+
+            // <TouchableOpacity style={[styles.button]} onPress={() => {
+            //   console.log("logout");
+            //   AsyncStorage.clear();
+            //   this.setState({loggedIn:false});
+            //   this.navigation.navigate('App');}
+            //   }>
+            <Icon
+               size={16}
+               name="log-in"
+               family="Galio"
+               color={focused ? 'white' : materialTheme.COLORS.MUTED} signOut />   
+        
         );
       case 'About':
         return (
@@ -101,48 +118,83 @@ class DrawerItem extends React.Component {
     }
   }
 
-  // renderLabel = () => {
-  //   const { title } = this.props;
-
-  //   // if (proScreens.includes(title)) {
-  //   //   return (
-  //   //     <Block middle style={styles.pro}>
-  //   //       <Text size={12} color="white">PRO</Text>
-  //   //     </Block>
-  //   //   )
-  //   // }
+  renderLabel = () => {
+    //const { title } = this.props;
+    const { focused, title,navigation } = this.props;
+    const proScreen = proScreens.includes(title);
+    if (title =='Sign Out') {
+      return (
+        <TouchableOpacity onPress={() => {
+          AsyncStorage.clear();
+         // this.setState({loggedIn:false});
+          //navigation.navigate('App');
+        }
+          }> 
+        <Text size={18} color={focused ? 'white' : proScreen ? materialTheme.COLORS.MUTED : 'black'}>
+        {title}
+      </Text>
+      </TouchableOpacity>
+      )
+    }else{
+      return (  <Text size={18} color={focused ? 'white' : proScreen ? materialTheme.COLORS.MUTED : 'black'}>
+      {title}
+    </Text>
+      )
+      }
+    }
 
   //   return null;
   // }
-  async onLogutPress() {
-    AsyncStorage.clear(); // to clear the token 
-    this.setState({loggedIn:false});
-    this.props.navigation.navigate('Auth')
-    }
+  // async onLogutPress() {
+  //   AsyncStorage.clear(); // to clear the token 
+  //   this.setState({loggedIn:false});
+  //   this.props.navigation.navigate('Auth')
+  //   }
   render() {
-    const { focused, title, signOut } = this.props;
+    const { focused, title } = this.props;
 
     const proScreen = proScreens.includes(title);
-    if (signOut) {
-      onLogutPress();
-    }
+    // if (title==='Sign Out') {
+    //   return(  <TouchableOpacity style={[styles.button]} onPress={() => {
+    //               // console.log("logout");
+    //               AsyncStorage.clear();
+    //               this.setState({loggedIn:false});
+    //               this.navigation.navigate('App');}
+    //               }> 
+    //           <Block flex row style={[styles.defaultStyle, focused ? [styles.activeStyle, styles.shadow] : null]}>
+    //             <Block middle flex={0.1} style={{ marginRight: 28 }}>
+    //               {this.renderIcon()}
+    //             </Block>
+    //             <Block row center flex={0.9}>
+    //               <Text size={18} color={focused ? 'white' : proScreen ? materialTheme.COLORS.MUTED : 'black'}>
+    //             {title} 
+                 
+    //               </Text>
+    //             </Block>
+    //         </Block> 
+    //         </TouchableOpacity>
+    //       );
+    // }else{
+
+    
     return (
       <Block flex row style={[styles.defaultStyle, focused ? [styles.activeStyle, styles.shadow] : null]}>
         <Block middle flex={0.1} style={{ marginRight: 28 }}>
           {this.renderIcon()}
         </Block>
         <Block row center flex={0.9}>
-          <Text size={18} color={focused ? 'white' : proScreen ? materialTheme.COLORS.MUTED : 'black'}>
+          {/* <Text size={18} color={focused ? 'white' : proScreen ? materialTheme.COLORS.MUTED : 'black'}>
             {title}
-          </Text>
-          {/* {this.renderLabel()} */}
+          </Text> */}
+          {this.renderLabel()}
         </Block>
       </Block>
     );
+   // }
   }
 }
 
-export default DrawerItem;
+export default withNavigation(DrawerItem);
 
 const styles = StyleSheet.create({
   defaultStyle: {

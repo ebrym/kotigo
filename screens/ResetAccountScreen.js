@@ -110,7 +110,7 @@ export default class ResetAccountScreen extends React.Component {
         
           <Block flex center>
             <Image
-              source={require('../assets/images/gosmarticlelogo.png')
+              source={require('../assets/images/kotigo.png')
               }
               style={styles.welcomeImage}
             />
