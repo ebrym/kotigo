@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet,Easing, Animated, Platform, AsyncStorage,TouchableOpacity } from 'react-native';
-import { createSwitchNavigator, createStackNavigator, createDrawerNavigator } from 'react-navigation';
+import { createSwitchNavigator, createStackNavigator, createDrawerNavigator, createAppContainer } from 'react-navigation';
 
 import { Block, Text, theme } from "galio-framework";
 import Icon from '../components/Icon';
@@ -134,8 +134,7 @@ const SupportStack = createStackNavigator({
   Support: {
     screen: SupportScreen,
     navigationOptions: ({ navigation }) => ({
-      header: <Header transparent title="Help and Support" navigation={navigation} />,
-      headerTransparent: true,
+      header: <Header banner title="Help and Support" navigation={navigation} />
     })
   },
 }, {
@@ -144,25 +143,22 @@ const SupportStack = createStackNavigator({
 })
 
 const AboutStack = createStackNavigator({
-  Profile: {
+  About: {
     screen: AboutScreen,
     navigationOptions: ({ navigation }) => ({
-      header: <Header transparent title="About" navigation={navigation} />,
-      headerTransparent: true,
+      header: <Header banner title="About" navigation={navigation} />,
     })
   },
   Terms: {
     screen: TermsScreen,
     navigationOptions: ({navigation}) => ({
-      header: <Header back black transparent title="Terms of use" navigation={navigation} />,
-      headerTransparent: true,
+      header: <Header back   title="Terms of use" navigation={navigation} />,
     })
   },
   Policy: {
     screen: PolicyScreen,
     navigationOptions: ({navigation}) => ({
-      header: <Header back black transparent title="Privacy policy" navigation={navigation} />,
-      headerTransparent: true,
+      header: <Header back   title="Privacy policy" navigation={navigation} />,
     })
   },
 }, {
@@ -205,8 +201,8 @@ const HomeStack = createStackNavigator({
   Search: {
     screen: SearchScreen,
     navigationOptions: ({navigation}) => ({
-      header: <Header back black title="Search" navigation={navigation} />,
-      headerTransparent: true,
+      header: <Header back title="Search" navigation={navigation} />,
+      headerTransparent: false,
     })
   },
 
@@ -277,8 +273,7 @@ const CategoryStack = createStackNavigator({
   Search: {
     screen: SearchScreen,
     navigationOptions: ({navigation}) => ({
-      header: <Header back black title="Search" navigation={navigation} />,
-      headerTransparent: true,
+      header: <Header back title="Search" navigation={navigation} />,
     })
   },
 
@@ -447,6 +442,18 @@ const AuthStack = createStackNavigator({
   // Login: LoginScreen, 
   // Register : RegisterScreen, ResetAccount : ResetAccountScreen
 });
+// const AppNavigator =createSwitchNavigator(
+//   {
+//     Auth:AuthStack,
+//     App: AppStack,
+//     Home: HomeStack,
+//   },
+//   {x
+//     initialRouteName: 'Auth',
+//   }
+// );
+// const App = createAppContainer(AppNavigator);
+// export default App;
 
 export default createSwitchNavigator(
   {

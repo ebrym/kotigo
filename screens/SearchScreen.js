@@ -8,12 +8,14 @@ import { Icon, Product } from '../components/';
 import API from '../constants/globalURL';
 const { width } = Dimensions.get('screen');
 
+import products from '../constants/products';
 const ACCESS_TOKEN = 'access_token';
 export default class Home extends React.Component {
   constructor(props){
     super(props);
     
     this.state = {
+      dataLenght: false,
       dataSource: null,
       isLoading: true,
     };
@@ -109,6 +111,7 @@ export default class Home extends React.Component {
           },
         
         );
+        
       })
       .catch(error => {
         console.error(error);
@@ -129,47 +132,55 @@ export default class Home extends React.Component {
     }else{
       this._fetchData();
     }
-
+    
    
   }
 
 
 
   renderProducts = () => {
-    
-    return (
-      <Block flex style={styles.options}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.products}>
-        <Block flex>
-          {/* <Product product={products[0]} horizontal /> */}
-          <Block flex row>
-          <FlatList  
-          data={this.state.dataSource}
-          numColumns='2'
-    
-          renderItem={({ item }) => (
-              
-                <Product product={item} style={{ margin: 5 }}/>
-               
-               
-                )}
-                enableEmptySections={true}
-                style={{ marginTop: 5 }}
-                keyExtractor={(item, index) => index.toString()}
-              />
+      var lend = this.state.dataSource.length;
+      if(lend % 2 > 0){
+        this.state.dataSource.push(products[0]);
+      }
+      return (
+        <Block flex >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.products}>
+          <Block flex>
+            {/* <Product product={products[0]} horizontal /> */}
+            <Block flex>
+            <FlatList 
+            columnWrapperStyle={{alignItems:'flex-start' }} 
+            data={this.state.dataSource}
+            numColumns='2'
+            renderItem={({ item }) => (
+                  <Product product={item} style={{ margin: 5 }}/>
+                  )}
+                  enableEmptySections={true}
+                  style={{ marginTop: 5 }}
+                  keyExtractor={(item, index) => index.toString()}
+                />
+         
+              </Block>
             </Block>
-          </Block>
-          {/* <Product product={products[3]} horizontal />
-          <Product product={products[4]} full /> */}
-        
-      </ScrollView>
-      </Block>
-    )
+            {/* <Product product={products[3]} horizontal />
+            <Product product={products[4]} full /> */}
+          
+        </ScrollView>
+        </Block>
+      )
+   
+   
   }
 
   render() {
+    // var lend = this.state.dataSource.length;
+    // if(lend % 2 > 0){
+    //   this.state.dataSource.push(products[0]);
+    // }
+   
     if (this.state.isLoading) {
       return (
         <View style={styles.container}>
@@ -177,6 +188,14 @@ export default class Home extends React.Component {
         </View>
       );
     } else {
+     // var lend = this.state.dataSource.length;
+    // if(lend/2 > 0)
+    // {
+    //   this.setState({dataLenght: true});
+    // }else{
+    //   this.setState({dataLenght: false});
+    // }
+    // console.log("search type : " + this.state.dataLenght);
     return (
       <Block flex center style={styles.home}>
         {this.renderProducts()}
@@ -235,7 +254,5 @@ const styles = StyleSheet.create({
     width: width - theme.SIZES.BASE * 2,
     paddingVertical: theme.SIZES.BASE * 2,
   },
-  options: {
-    marginTop: theme.SIZES.BASE * 7,
-  },
+
 });

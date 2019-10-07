@@ -1,7 +1,8 @@
 import React from 'react';
-import { View,ScrollView, StyleSheet,WebView,
+import { View,ScrollView, StyleSheet,//WebView,
     AsyncStorage,
     Platform } from 'react-native';
+    import {WebView} from 'react-native-webview';
 
     import { Button, Block, Text, Input, theme } from 'galio-framework';
     import API  from '../constants/globalURL';
@@ -27,6 +28,12 @@ export default class TermsScreen extends React.Component {
         <Block flex style={styles.container}>
             <WebView
             originWhitelist={['*']}
+            injectedJavaScript={`const meta = document.createElement('meta'); 
+                          meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'); 
+                          meta.setAttribute('name', 'viewport'); 
+                          document.getElementsByTagName('head')[0].appendChild(meta); 
+                          true;`}
+            javaScriptEnabled={true}
             source={terms}
             //max-width='90%'
             scalesPageToFit={Platform.OS === 'ios' ? false : true}
@@ -44,6 +51,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 5,
     backgroundColor: '#fff',
-    marginTop: Platform.OS === 'android' ? theme.SIZES.BASE / 2 : theme.SIZES.BASE * 7,
+    marginTop: theme.SIZES.BASE,
   },
 });

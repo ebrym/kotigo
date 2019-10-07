@@ -20,7 +20,7 @@ export default class Support extends React.Component {
       case 'switch': 
         return (
           <Block row middle space="between" style={styles.rows}>
-            <Text size={14}>{item.title}</Text>
+            <Text size={15}>{item.title}</Text>
             <Switch
               onValueChange={() => this.toggleSwitch(item.id)}
               ios_backgroundColor={materialTheme.COLORS.SWITCH_OFF}
@@ -35,7 +35,7 @@ export default class Support extends React.Component {
           <Block style={styles.rows}>
             <TouchableOpacity onPress={() => navigate('Pro')}>
               <Block row middle space="between" style={{paddingTop:7}}>
-                <Text size={14}>{item.title}</Text>
+                <Text size={15}>{item.title}</Text>
                 <Icon name="stre-right" family="Galio" style={{ paddingRight: 5 }} />
               </Block>
             </TouchableOpacity>
@@ -79,9 +79,9 @@ export default class Support extends React.Component {
         </Block>
         <Block style={styles.rows}>
               <Block left space="between" style={{paddingTop:7}}>
-                <Text size={12} >Have a question? Please contact Kotigo Team</Text>
-                <Text size={12} >Call Us: (234) 0 909 0123 512</Text>
-                <Text size={12} >Email Us: support@MyKotigo.com</Text>
+                <Text size={13} >Have a question? Please contact Kotigo Team</Text>
+                <Text size={13} >Call Us: (234) 0 909 0123 512</Text>
+                <Text size={13} >Email Us: support@MyKotigo.com</Text>
               </Block>
         </Block>
         <Block style={styles.title}>
@@ -90,18 +90,15 @@ export default class Support extends React.Component {
           </Text>
           {/* <Text center muted size={12}>
           Third most important settings
-          </Text> */}
-        </Block>
-        {/* <Block></Block>*/}
-        <Block style={styles.rows}>
-              <Block left space="between" style={{paddingTop:7}}>
-                <Text size={14} bold underline >More Contact Information</Text>
-                <Text size={12} >For More Information, please visit www.mykotigo.com</Text>
-                <Text size={12} >Email Us: info@mykotigo.com</Text>
-                <Text size={12} >Connect with us on Social Media Channels</Text>
-                <Text size={12}>(Facebook, Instagram, Twitter):  @MyKotigo</Text>
+          </Text> */}<Block left >
+                <Text size={15} bold underline >More Contact Information</Text>
+                <Text size={13} style={{flex: 1, flexWrap: 'wrap'}} >For More Information, please visit www.mykotigo.com</Text>
+                <Text size={13}  style={{flex: 1, flexWrap: 'wrap'}}  >Email Us: info@mykotigo.com</Text>
+                <Text size={13} style={{flex: 1, flexWrap: 'wrap'}} >Connect with us on Social Media Channels</Text>
+                <Text size={13} style={{flex: 1, flexWrap: 'wrap'}}>(Facebook, Instagram, Twitter):  @MyKotigo</Text>
               </Block>
-        </Block> 
+        </Block>
+    
       </ScrollView>
       </Block>
     );
@@ -125,7 +122,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     padding: theme.SIZES.BASE,
     marginHorizontal: theme.SIZES.BASE,
-    marginTop: theme.SIZES.BASE * 7,
+    marginTop: theme.SIZES.BASE * 2,
     marginBottom: theme.SIZES.BASE,
     borderTopLeftRadius: 13,
     borderTopRightRadius: 13,

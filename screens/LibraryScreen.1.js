@@ -6,7 +6,8 @@ import { FileSystem, Constants, Notifications,SQLite } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import LibraryCarousel from '../components/LibraryCarousel';
 
-import Library from '../components/Library';
+//import { sliderWidth, itemWidth } from '../constants/SliderEntry.Style';
+//import RNFetchBlob from 'react-native-fetch-blob'
 import { Button, Block, Text, Input, theme } from 'galio-framework';
 import { Images, materialTheme } from '../constants';
 
@@ -81,6 +82,7 @@ componentWillMount() {
   _fetchOfflineData(){
    db.transaction((tx) => {
     tx.executeSql('select * from Library', [], (_, { rows: { _array } }) =>
+    //console.log('offline data 1 : ' + JSON.stringify(rows))
     this.setState(
         {
           isLoading: false,
@@ -110,7 +112,6 @@ componentWillMount() {
       return (
         <Block flex style={styles.options}>
                 <LibraryCarousel book={this.state.data} />
-                {/* <Library book={this.state.data} /> */}
        </Block>
       );
     }

@@ -1,6 +1,7 @@
 import React from "react";
 import { View,StyleSheet,ScrollView,Dimensions,TextInput,
     TouchableOpacity,ImageBackground, Platform,ActivityIndicator,
+  Animated,Keyboard,UIManager,
      Icon, Image, Slider,Alert,AsyncStorage} from 'react-native';
 import { Button, Block, Text, Input, theme } from 'galio-framework';
  
@@ -12,6 +13,7 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
 
 
 
+  const { State: TextInputState } = TextInput;
   const { width, height } = Dimensions.get('screen');
   const thumbMeasure = (width - 48 - 32) / 3;
 
@@ -32,10 +34,13 @@ const ACCESS_TOKEN = 'access_token';
           validEmail: false,
           validPassword: false,
           checked:false,
+          shift: new Animated.Value(0),
       }
       }
 componentDidMount(){
   // const userDetails = JSON.parse(global.userDetails);
+        this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.handleKeyboardDidShow);
+        this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.handleKeyboardDidHide);
    console.log(global.userDetails);
   const userDet = JSON.parse(global.userDetails);
 
@@ -116,9 +121,44 @@ componentDidMount(){
           } 
           //this.setState({loading: false});
       }
-  
-      
+      componentWillUnmount() {
+        this.keyboardDidShowSub.remove();
+        this.keyboardDidHideSub.remove();
+      }
+      handleKeyboardDidShow = (event) => {
+        const { height: windowHeight } = Dimensions.get('window');
+        const keyboardHeight = event.endCoordinates.height;
+        const currentlyFocusedField = TextInputState.currentlyFocusedField();
+        UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
+          const fieldHeight = height;
+          const fieldTop = pageY;
+          const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
+          if (gap >= 0) {
+            return;
+          }
+          Animated.timing(
+            this.state.shift,
+            {
+              toValue: gap,
+              duration: 1000,
+              useNativeDriver: true,
+            }
+          ).start();
+        });
+      }
+      handleKeyboardDidHide = () => {
+        Animated.timing(
+          this.state.shift,
+          {
+            toValue: 0,
+            duration: 1000,
+            useNativeDriver: true,
+          }
+        ).start();
+      }
+    
     render() {
+      const { shift } = this.state;
       //const userDetails = JSON.parse(global.userDetails);
         if(this.state.loading){
           return( 
@@ -136,7 +176,7 @@ componentDidMount(){
       // });
 
         return (
-       
+          <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
         <Block flex style={styles.options}>
         <ScrollView showsVerticalScrollIndicator={false}>
         <Text bold size={16} style={styles.title}>Profile Details</Text>
@@ -193,6 +233,9 @@ componentDidMount(){
                 <TouchableOpacity style={styles.buttonContainer} onPress={this.onUpdateProfilePress.bind(this)}>
                             <Text  style={styles.buttonText}>Update Profile</Text>
                 </TouchableOpacity> 
+                <TouchableOpacity style={styles.buttonLogout} onPress={this.onLogutPress.bind(this)}>
+                    <Text  style={styles.buttonText}>Logout</Text>
+                </TouchableOpacity>
               {/* </Block>
               <Block right> */}
                 
@@ -203,11 +246,9 @@ componentDidMount(){
 
               </Block>
 
-            <Block flex row center> 
-                <TouchableOpacity style={styles.buttonLogout} onPress={this.onLogutPress.bind(this)}>
-                    <Text  style={styles.buttonText}>Logout</Text>
-                </TouchableOpacity>
-              </Block>
+            {/* <Block flex row center> 
+                
+              </Block> */}
 
 
         </Block>
@@ -216,6 +257,7 @@ componentDidMount(){
           
 
       </Block>
+      </Animated.View>
         );
     }
 }
@@ -373,7 +415,7 @@ const styles = StyleSheet.create({
     fontSize:16,
 },
 buttonLogout:{
-  backgroundColor: materialTheme.COLORS.ERROR,
+  backgroundColor: materialTheme.COLORS.MAIN,
   paddingVertical: 15,
   borderRadius: 25,
   width:80,

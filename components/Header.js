@@ -39,7 +39,7 @@ const SearchButton = ({isWhite, style, navigation}) => (
   <TouchableOpacity style={[styles.button, style]} >
     <Icon
       size={16}
-      family="Galio"
+      family="GalioExtra"
       name="zoom-split"
       color={theme.COLORS[isWhite ? 'WHITE' : 'ICON']}
       // onPress={() => navigation.navigate('Pro')}
@@ -141,7 +141,7 @@ class Header extends React.Component {
           <TouchableOpacity 
           // onPress={() => this._navigateSearch()}
           onPress={() => navigation.navigate('Search', { search : this.state.searchText , searchtype:"search"})}>
-          <Icon size={16} color={theme.COLORS.MAIN} name="zoom-split" family="Galio" />
+          <Icon size={16} color={theme.COLORS.MAIN} name="zoom-split" family="GalioExtra" />
         </TouchableOpacity>
         
       }
@@ -184,7 +184,7 @@ class Header extends React.Component {
   }
 
   renderHeader = () => {
-    const { search, tabs } = this.props;
+    const { search, tabs, banner } = this.props;
     
     if (search) {
       return (
@@ -206,7 +206,13 @@ class Header extends React.Component {
         </Block>
       )
     }
-    
+    if (banner) {
+      return (
+        <Block center>
+           {this.renderBanner()}
+        </Block>
+      )
+    }
     return null;
   }
 

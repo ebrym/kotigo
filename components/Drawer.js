@@ -31,7 +31,7 @@ class DrawerItem extends React.Component  {
           <Icon
             size={16}
             name="zoom-split"
-            family="Galio"
+            family="GalioExtra"
             color={focused ? 'white' : materialTheme.COLORS.MUTED} />
         );
       // case 'Man':
@@ -71,15 +71,16 @@ class DrawerItem extends React.Component  {
           <Icon
             size={16}
             name="flower-06"
-            family="Galio"
+            family="GalioExtra"
             color={focused ? 'white' : materialTheme.COLORS.MUTED} />
         );
       case 'Help and Support':
         return (
-          <Icon
+          <Ionicons
             size={16}
-            name="ui-04"
-            family="Galio"
+            //name="ui-04"
+            name={Platform.OS === 'ios' ? 'ios-settings' : 'md-settings'}
+            family="GalioExtra"
             color={focused ? 'white' : materialTheme.COLORS.MUTED} />
 
            
@@ -98,18 +99,19 @@ class DrawerItem extends React.Component  {
             //   this.setState({loggedIn:false});
             //   this.navigation.navigate('App');}
             //   }>
-            <Icon
+            <Ionicons
                size={16}
-               name="log-in"
-               family="Galio"
+               //name="login"
+               name={Platform.OS === 'ios' ? 'ios-log-out' : 'md-log-out'}
+               family="GalioExtra"
                color={focused ? 'white' : materialTheme.COLORS.MUTED} signOut />   
         
         );
       case 'About':
         return (
-          <Icon
+          <Ionicons
             size={16}
-            name="add-27"
+            name={Platform.OS === 'ios' ? 'ios-person-add' : 'md-person-add'}
             family="Galio"
             color={focused ? 'white' : materialTheme.COLORS.MUTED} />
         );

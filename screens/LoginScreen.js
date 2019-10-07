@@ -111,11 +111,12 @@ export default class LoginScreen extends React.Component {
                 //console.log("Response success is: " + accessToken); 
                 //console.log("tokenValidity is: " + tokenValidity); 
 
-                this.props.navigation.navigate('App');
+                this.props.navigation.navigate('Home');
             } else {
                 //let error = res;
                 Alert.alert('Invalid credentials!!');
                 this.setState({loading: false});
+                console.log("Response success is: " ); 
                 //throw error;
             }
 

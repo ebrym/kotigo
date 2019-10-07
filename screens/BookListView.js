@@ -8,18 +8,18 @@ import { Button, Block, Text, Input, theme } from 'galio-framework';
   import API from '../constants/globalURL';
   import { Images, materialTheme } from '../constants';
   import { HeaderHeight } from "../constants/utils";
-  import {Recorder, Player} from 'react-native-audio-player-recorder-no-linking';
 
+  import { MaterialIcons } from '@expo/vector-icons';
 
   const { width, height } = Dimensions.get('screen');
   const thumbMeasure = (width - 48 - 32) / 3;
-
+  const ICON_COLOR=materialTheme.COLORS.MAIN;
 const ACCESS_TOKEN = 'access_token';
   export default class BooKListDetails extends React.Component {
    
       constructor(props) {
         super(props);
-        this.soundObject = new Audio.Sound();
+        this.soundObject = new Audio.Sound();  
         this.state = { isPlaying: false, isLoading: false };
         // this.loadAudio = this.loadAudio.bind(this);
         // this.toggleAudioPlayback = this.toggleAudioPlayback.bind(this);
@@ -27,6 +27,7 @@ const ACCESS_TOKEN = 'access_token';
 
 
     componentWillUnmount(){
+      
      this.soundObject.stopAsync();
      //this.Player.stopAsync();
 
@@ -52,7 +53,7 @@ const ACCESS_TOKEN = 'access_token';
       Status: "success"
   });
   console.log('payload :    '+payload);
-try{
+      try{
       let response = await fetch(API.URL+'/Payment/PaymentUpdate',{
                   method: 'POST',
                   headers: {
@@ -105,7 +106,26 @@ try{
         Alert.alert('Can not load books at this time!');
 
     }
-    }
+  }
+
+  PlayPause = async (bookDetails) => {
+    console.log('Details view props: ', bookDetails);
+
+      if(this.state.isPlaying) {
+          await this.soundObject.pauseAsync();
+      } else {
+          if(this.soundObject._loaded) {
+            await this.soundObject.playAsync();
+          } else {
+                  await this.soundObject.loadAsync({uri: bookDetails});
+                  await this.soundObject.playAsync();
+          }
+      }
+        this.setState({
+          isPlaying: !this.state.isPlaying,
+        })
+    };
+
 
     render() {
         const { navigation } = this.props;
@@ -136,20 +156,26 @@ try{
                   </Image>
                   <Block style={styles.categoryTitle}>
                       <Text size={18} bold color={theme.COLORS.MAIN}>Details</Text>
-                      <Text bold >Title: {bookDetails.Title}</Text>
-                      <Text  >Gerne: {bookDetails.Gernes}</Text>
-                      <Text bold >Author: {bookDetails.Author}</Text>
-                      <Text bold >Narrator: {bookDetails.Narrator}</Text>
-                      <Text  >Category: {bookDetails.Category}</Text>
-                      <Text  >Summary: {bookDetails.Summary}</Text>
-                      <Text  >Year Published: {bookDetails.YearPublished}</Text>
-                      <Text  >Duration: {bookDetails.Duration}</Text>
+                      <Text><Text bold >Title: </Text>{bookDetails.Title}</Text>
+                      <Text><Text  bold >Genre: </Text>{bookDetails.Gernes}</Text>
+                      <Text><Text  bold >Author:</Text> {bookDetails.Author}</Text>
+                      <Text><Text bold >Narrator: </Text>{bookDetails.Narrator}</Text>
+                      <Text><Text  bold >Category:</Text> {bookDetails.Category}</Text>
+                      <Text><Text  bold>Summary:</Text> {bookDetails.Summary}</Text>
+                      <Text><Text  bold>Year Published: </Text>{bookDetails.YearPublished}</Text>
+                      <Text><Text  bold>Duration: </Text>{bookDetails.Duration}</Text>
                       <Text bold color="green">Price : {bookDetails.Price >0 ? "N"+bookDetails.Price : "Free"}</Text>
                     </Block>
                
                     <Block flex  center space="between">
-                    <Text>Play Review</Text>
-                    <Player
+                    <TouchableOpacity style={styles.playerbutton} onPress={()=> this.PlayPause(bookDetails.ShortAudioURL)}>
+                        <Text style={styles.buttonText}>
+                        {this.state.isPlaying && (<MaterialIcons name="pause" size={40} color={ICON_COLOR} style={styles.iconStyle} />)}
+                        {!this.state.isPlaying && (<MaterialIcons name="play-arrow" size={40} color={ICON_COLOR} style={styles.iconStyle} />)}
+                        </Text>
+                      </TouchableOpacity>
+                    <Text>Play Preview</Text>
+                    {/* <Player
                             style={{ flex: 1 }}
                             //onComplete={this.playerComplete.bind(this)}
                             //completeButtonText={'Return Home'}
@@ -169,9 +195,12 @@ try{
                                 />
                                 );
                             }}
-                        /> 
+                        />  */}
                   
             
+            </Block>
+            <Block flex center space="between">
+            <Text> </Text>
             </Block>
            <Block flex center space="between">
                 {bookDetails.Price >0 ? 
@@ -329,6 +358,17 @@ const styles = StyleSheet.create({
     textAlign: 'center', 
     marginTop: 50    
   
+  },
+  iconStyle:{
+    position:'absolute',
+  },
+  playerbutton: {
+    width: 50,
+    height: 100/1.618,
+    margin: 5,
+    borderRadius: 50,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
   },
   button: {
     width: width - theme.SIZES.BASE * 4,

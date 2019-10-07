@@ -6,12 +6,14 @@ import {  View, TouchableOpacity,
 
 import { MaterialIcons } from '@expo/vector-icons';
 import AudioPlayer from '../components/AudioPlayer';
-// import MarqueeText from 'react-native-marquee';
 
+import { Images, materialTheme } from '../constants';
+import { Audio } from 'expo-av'
 import { Button, Block, Text, theme } from 'galio-framework';
-
 import { FileSystem, Constants, Notifications,SQLite } from 'expo';
-const ICON_COLOR='#000000';
+//const ICON_COLOR='#000000';
+
+const ICON_COLOR=materialTheme.COLORS.MAIN;
 const {height,width}=Dimensions.get("window");
 
 
@@ -39,7 +41,20 @@ export default class PlayerScreen extends React.Component {
         this.timer=0;
     }
 
-    componentWillMount() { 
+    async componentWillMount() { 
+        try {
+			await Audio.setAudioModeAsync({
+				allowsRecordingIOS: false,
+				interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+				playsInSilentModeIOS: true,
+				interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+				shouldDuckAndroid: true,
+				staysActiveInBackground: true,
+				playThroughEarpieceAndroid: true
+			})
+
+		
+
         const { navigation } = this.props;
         const playlist=navigation.getParam('book');
         console.log('mount list from libray ' + JSON.stringify(playlist));
@@ -59,16 +74,15 @@ export default class PlayerScreen extends React.Component {
                   var len = results.rows.length;
                   console.log('len', len);
                   if (len > 0) {
-                      
                         tx.executeSql('select * from BookChapter where BookID = ?', [bookID], (_, { rows: { _array } }) =>
-                        {
-                            this.AudioPlayer = new AudioPlayer(_array);
-                        }
+                            {
+                                this.AudioPlayer = new AudioPlayer(_array);
+                            }
                         );
                     }else{
                         this.AudioPlayer = new AudioPlayer(playlist.Chapters);
                     }
-                    
+                   
                 }
                 );
                 //console.log('offline data 1 : ' + this.state.data);
@@ -80,7 +94,11 @@ export default class PlayerScreen extends React.Component {
            
 
         this.timer=setInterval(this.empty,1000);
+       
+    } catch (e) {
+        console.log(e)
     }
+}
 
     empty = () => {
 
@@ -127,7 +145,6 @@ export default class PlayerScreen extends React.Component {
     };
 
     PlayPause = () => {
-     
         this.AudioPlayer.PlayPause(this.state.playing).then((r) => {
             this.setState({
                 name:this.AudioPlayer.getSongName(),
@@ -265,30 +282,27 @@ export default class PlayerScreen extends React.Component {
 
 
     render() {
-
         const { navigation } = this.props;
         const displaylist=navigation.getParam('book');
-
-
         return (
             <Block flex style={styles.options}>
             <View style={styles.marquee}>
            
             {/* {!this.state.playing && !this.state.played && (<Text style={{fontSize:24,justifyContent:'space-evenly'}}>{playlist.ChapterName}</Text>)} */}
-            <Text style={{fontSize:20,justifyContent:'space-evenly'}}>{displaylist.Title}</Text>
+            <Text style={{fontSize:20,justifyContent:'space-evenly'}} color={ICON_COLOR} >{displaylist.Title}</Text>
              </View>
             
-             <ImageBackground source={{ uri: displaylist.ImageURL}} 
+             {/* <ImageBackground source={{ uri: displaylist.ImageURL}} 
                 style={{width: 300, height:300, alignSelf:'center',
                 resizeMode:"stretch", alignItems:'center' ,justifyContent:'center'}}
-                blurRadius={90}>
+                blurRadius={90}> */}
                     <Image  source={{ uri: displaylist.ImageURL}} 
                             style={{width:200, height:200, marginBottom:15, alignSelf:'center',resizeMode:"stretch"}}
                             />
-                </ImageBackground>
+                {/* </ImageBackground> */}
              {/* {!this.state.playing && !this.state.played && (<Text style={{fontSize:10,justifyContent:'space-evenly'}}>{this.state.name}</Text>)} */}
              <Block flex center>
-                <Text style={{fontSize:10,justifyContent:'space-evenly'}}>{this.state.name || this.AudioPlayer.getSongName()}</Text>
+                <Text style={{fontSize:10,justifyContent:'space-evenly'}} color={ICON_COLOR}>{this.state.name || this.AudioPlayer.getSongName()}</Text>
            {/* <Text>{this.state.currMin}</Text> */}
              </Block>
                 <View style={styles.container}>
@@ -325,21 +339,26 @@ export default class PlayerScreen extends React.Component {
                 </View>
                
                 <View style={{alignItems:'center',flexDirection:'row',justifyContent:'center'}}>
-                <View style={{flex:1,alignItems:'flex-start'}}>
-                {(this.state.timer === 0)&&(<Text>0.00</Text>)}
-                {(this.state.timer !== 0)&&(<Text>{this.state.currMin}</Text>)}
+                    {/* <Block flex row style={{alignItems:'center',flexDirection:'row',justifyContent:'center'}}> */}
+                        <View style={{flex:1,alignItems:'flex-start'}}>
+                        {this.state.timer === 0 &&(<Text color={ICON_COLOR}>0.00</Text>)}
+                        {this.state.timer !== 0 &&(<Text color={ICON_COLOR}>{this.state.currMin}</Text>)}
+                        </View>
+                        
+                        <View style={{flex:1,alignItems:'flex-end'}}>
+                        {(this.state.endMin===0)&&(<Text color={ICON_COLOR}>0.00</Text>)}
+                        {(this.state.endMin!==0)&&(<Text color={ICON_COLOR}>{this.state.endMin}</Text>)}
+                        </View>
+               
                 </View>
                 <ProgressBarAndroid
                       styleAttr="Horizontal"
                       indeterminate={false}
                       width={width-60}
                       progress={this.state.point}
+                      color={ICON_COLOR}
                     />
-                <View style={{flex:1,alignItems:'flex-end'}}>
-                {(this.state.endMin===0)&&(<Text>0.00</Text>)}
-                {(this.state.endMin!==0)&&(<Text>{this.state.endMin}</Text>)}
-                </View>
-                </View>
+                {/* </Block> */}
             </Block>
         );
     }

@@ -1,8 +1,8 @@
 import React from 'react';
-import { View,ScrollView, StyleSheet,WebView,
+import { View,ScrollView, StyleSheet,
     AsyncStorage,
     Platform } from 'react-native';
-//import {WebView} from 'react-native-webview';
+import {WebView} from 'react-native-webview';
 
 
     import { Button, Block, Text, Input, theme } from 'galio-framework';
@@ -21,7 +21,7 @@ export default class PaystackPaymentScreen extends React.Component {
     render() {
         //let token = Storage.(ACCESS_TOKEN);
             
-            console.log('payment ' + global.token);  
+           // console.log('payment ' + global.token);  
             const { navigation } = this.props;
             const bookDetails=navigation.getParam('paymentDetails');
             //console.log("book details " + bookDetails);  
@@ -31,7 +31,8 @@ export default class PaystackPaymentScreen extends React.Component {
             const Title=bookDetails.Title;
             const Price= parseFloat(bookDetails.Price) * 100 ;
             const userDetails = JSON.parse(global.userDetails);
-            console.log(userDetails.Email);  
+            const transactionNo = 'PS' + Math.floor((Math.random() * 10000000000) + 1);
+          //  console.log(userDetails.Email);  
 
             let htmlContent = '<html><head>';
             htmlContent += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>';
@@ -44,12 +45,12 @@ export default class PaystackPaymentScreen extends React.Component {
             htmlContent += '<script>                                ';
             htmlContent += 'function payWithPaystack(){';    
                 htmlContent += 'var handler = PaystackPop.setup({      ';
-                    htmlContent += 'key: \'pk_test_6021bef74aeb2e8276bf85e3744f5c20a9af29af\',  '; 
+                    htmlContent += 'key: \'' + API.PAYSTACK_LIVE_PUBLIC_KEY + '\',  '; 
                     htmlContent += 'email: \'' + userDetails.Email +'\',    ';      
                     htmlContent += 'amount: ' + Price + ',       ';
                     htmlContent += 'currency: "NGN",       ';
-                    //htmlContent += 'ref: \'\'+Math.floor((Math.random() * 10000000000) + 1),  ';
-                    //htmlContent += 'ref: 6776843523845181,  ';
+                    htmlContent += 'ref: \'PS\'+Math.floor((Math.random() * 10000000000) + 1),  ';
+                    //htmlContent += 'ref: '+ transactionNo +',  ';
                     htmlContent += 'metadata: {                    ';                  
                         htmlContent += 'custom_fields: [              ';            
                             htmlContent += '{                          '; 
@@ -93,16 +94,22 @@ export default class PaystackPaymentScreen extends React.Component {
                                                             
          
 
-
-                                                            console.log(htmlContent);  
+                                                                                                            
+                                                           console.log(htmlContent);  
         return (  
         <Block flex style={styles.container}>
             <WebView
             originWhitelist={['*']}
             source={{html: htmlContent}}
-            //max-width='90%'
+            injectedJavaScript={`const meta = document.createElement('meta'); 
+                                meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'); 
+                                meta.setAttribute('name', 'viewport'); 
+                                document.getElementsByTagName('head')[0].appendChild(meta); 
+                                true;`}
+            style={{ flex: 1 }}
             scalesPageToFit={Platform.OS === 'ios' ? false : true}
             //style={{marginTop: 20,padding:20, width:Platform.OS === 'ios' ? 90 : 350, borderColor:'#f234de', borderWidth:1}}
+      
           />
        </Block>  
        

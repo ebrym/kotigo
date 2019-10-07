@@ -3,6 +3,8 @@ import { StyleSheet, Switch, FlatList, Platform, TouchableOpacity, ScrollView, I
 import { Block, Text, theme, Icon } from "galio-framework";
 
 import materialTheme from '../constants/Theme';
+import { HeaderHeight } from "../constants/utils";
+import { Ionicons } from '@expo/vector-icons';
 
 export default class About extends React.Component {
   state = {};
@@ -36,7 +38,10 @@ export default class About extends React.Component {
             <TouchableOpacity onPress={() => navigate(item.display)}>
               <Block row left space="between" style={{paddingTop:7}}>
                 <Text size={14}>{item.title}</Text>
-                <Icon name="stre-right" family="Galio" style={{ paddingRight: 5 }} />
+            <Ionicons 
+            //name="ios-arrow-forward" 
+            name={Platform.OS === 'ios' ? 'ios-arrow-forward' : 'md-arrow-dropright'}
+            family="Galio" style={{ paddingRight: 5 }} />
               </Block>
             </TouchableOpacity>
           </Block>);
@@ -76,17 +81,17 @@ export default class About extends React.Component {
           {/* <Text bold center size={theme.SIZES.BASE} style={{ paddingBottom: 5 }}>
          About
           </Text> */}
-          <Text center muted size={12}>
+          <Text center muted size={13}>
           Knowledge on the go.
           </Text>
         
         </Block>
         <Block style={styles.rows}>
               <Block center space="between" style={{paddingTop:7}}>
-                <Text size={14} bold center size={theme.SIZES.BASE} >About Kotigo</Text>
-                <Text size={12} center >KOTIGO the preeminent audiobook platform for Africa's independent authors and publishers</Text>
-                <Text size={12} center>Version 1.2.5 (Build 34578)</Text>
-                <Text size={12} center>©2019</Text>
+                <Text size={15} bold center size={theme.SIZES.BASE} >About Kotigo</Text>
+                <Text size={13} style={{flex: 1, flexWrap: 'wrap'}} center >KOTIGO the preeminent audiobook platform for Africa's independent authors and publishers</Text>
+                <Text size={13} center>Version 1.2.5 (Build 34578)</Text>
+                <Text size={13} center>©2019</Text>
               </Block>
         </Block>
        
@@ -103,6 +108,13 @@ export default class About extends React.Component {
           keyExtractor={(item, index) => item.id}
           renderItem={this.renderItem}
         />
+        {/* <Text size={12} center> </Text>
+        <Text size={12} center> </Text>
+        <Text size={12} center> </Text>
+        <Text size={12} center> </Text>
+        <Text size={12} center> </Text>
+        <Text size={12} center> </Text>
+        <Text size={12} center> </Text> */}
       </ScrollView>
       </Block>
     );
@@ -133,7 +145,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     padding: theme.SIZES.BASE,
     marginHorizontal: theme.SIZES.BASE,
-    marginTop: theme.SIZES.BASE * 7,
+    marginTop: theme.SIZES.BASE * 2,
     marginBottom: theme.SIZES.BASE,
     borderTopLeftRadius: 13,
     borderTopRightRadius: 13,

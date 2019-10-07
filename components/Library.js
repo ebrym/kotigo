@@ -2,13 +2,17 @@ import React, { Component } from 'react';
 import { View, ScrollView, Image, StyleSheet, 
           Dimensions, 
           TouchableOpacity, 
-          Alert,
+          Alert,FlatList,
           Slider,NetInfo } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FileSystem, Constants, Notifications,SQLite } from 'expo';
 import { Button, Block, Text, Input, theme } from 'galio-framework';
 import Carousel , { Pagination } from 'react-native-snap-carousel';
 import * as Progress from 'react-native-progress';
+// import styles, { colors } from '../styles/corosel.styles';
+// import { AnimatedCircularProgress } from 'react-native-circular-progress';
+// import { Card } from 'react-native-elements';
+// import { Player } from 'react-native-audio-player-recorder-no-linking';
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
 import { withNavigation } from 'react-navigation';
 export const colors = {
@@ -21,7 +25,7 @@ const { width } = Dimensions.get('window');
 const height = width * 0.8
 
 const db = SQLite.openDatabase('gosmarticle.db');
-class LibraryCarousel extends React.Component {
+class Library extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -158,9 +162,18 @@ class LibraryCarousel extends React.Component {
                                 await FileSystem.downloadAsync(chapterPath, chapterUri)
                                 .then(({ uri }) => {
                                   
+                                  console.log("download progress chapterCount. : " + chapterCount);
                                   downloadCount = downloadCount + 1;
+                                  console.log("download progress downloadCount. : " + downloadCount);
                                   
                                   this.setState({progress: ((downloadCount / chapterCount)) / 1});
+                                  console.log("download progress. : " + this.state.progress);
+                                  //console.error("download progress fill. : " + this.state.fill);
+                                  //console.error("download progress progress. : " + this.state.progress)
+                                  // if(this.state.progress == 100)
+                                  // {
+                                  //   this.setState({progress: 0, downloading:false,});
+                                  // }
                                   if(this.state.progress != 0){
                                     this.setState({ indeterminate: false });
                                   }
@@ -206,9 +219,11 @@ _renderProgress = () => {
 
    _renderItem =  ({item, index})  =>{
     this.renderDownload(item);
+     console.log("download status . : " + this.state.downloadstatus);
      this.setState({ downloaded: false,
       downloadstatus: false,
     });
+    console.log("download status . after : " + this.state.downloadstatus);
     return (
         <Block flex center style={styles.slide} key={index} >
           <Image
@@ -245,26 +260,74 @@ downloadComplete()
   this.setState({progress: 0, downloading:false,});
   Alert.alert(this.state.currentDownload + ' download complete')
 }
+renderLibrary = (book) => {
+  //console.log(this.state.dataSource);
+  return (
+    <Block flex>
+ 
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.products}>
+
+        <Block flex row>
+        <FlatList  
+        data={book}
+        numColumns='1'
+        renderItem={({ item }) => (
+          <Block flex style={styles.slide} >
+              <Image
+                  resizeMode="stretch"
+                  style={{ width: 100, height: 100, 
+                    paddingLeft: 20, paddingRight:20,
+                    borderWidth:10,
+                    borderColor:'#fff' }}
+                  source={{uri: item.ImageURL}}
+                />
+
+                <Block style={{ flexDirection: 'row', alignSelf: 'center', justifyContent: 'center' }}>
+              
+                  <TouchableOpacity onPress={()=> {
+                    this.props.navigation.navigate('Player', {book:item});
+                  }}>
+                      <Ionicons name="md-play-circle" size={30} color="#fb8c00" />
+                  </TouchableOpacity>
+                          <Text>   </Text>
+                
+                {!this.state.downloading && (<TouchableOpacity onPress={()=> this._downloadBook(item)} >
+                              <Ionicons name="md-download" size={30} color="#fb8c00" />
+                          </TouchableOpacity>)}
+                </Block>
+        </Block>
+         )}
+         enableEmptySections={true}
+         style={{ marginTop: 5 }}
+         keyExtractor={(item, index) => index.toString()}
+       />
+         </Block>
+    </ScrollView>
+    </Block>
+  )
+}
 
   render =() => {
       const { book } = this.props;
     if (book && book.length) {
-      
           const { slider1ActiveSlide } = this.state;
         return (
           <Block flex style={styles.exampleContainer}>
-            <Carousel
+            {/* <Carousel
             // ref={(c) => { this._carousel = c; }}
             data={book}
             renderItem={this._renderItem}
-            sliderWidth={width - (theme.SIZES.BASE)}
-            itemWidth={275}
-            inactiveSlideScale={0.95}
-            inactiveSlideOpacity={0.5} 
-            contentContainerCustomStyle={styles.sliderContentContainer}
+            sliderWidth={width - (theme.SIZES.BASE * 2)}
+            itemWidth={300}
+            inactiveSlideScale={0.94}
+            inactiveSlideOpacity={0.7}
             
-          />
+          /> */}
+           {this.renderLibrary(book)}
            <Block center> 
+         
                    {this.state.downloading && (
                          <Progress.Circle
                          style={styles.progress}
@@ -278,7 +341,7 @@ downloadComplete()
                    {/* {this.state.downloading && (<Text>...please wait.</Text>)}    */}
                    {this.state.progress == 1 && (this.downloadComplete())}
              </Block>
-          <Pagination
+          {/* <Pagination
           dotsLength={book.length}
           activeDotIndex={slider1ActiveSlide}
           containerStyle={styles.paginationContainer}
@@ -289,9 +352,10 @@ downloadComplete()
           inactiveDotScale={0.6}
           carouselRef={this._slider1Ref}
           tappableDots={!!this._slider1Ref}
-        />
+        /> */}
         </Block>
-        );
+        );s
+      
     }
     Alert.alert('You have no books in your library!!');
     console.log('Please provide images');
@@ -377,13 +441,6 @@ paginationDot: {
   progress: {
     margin: 10,
   },
-  slider: {
-    marginTop: 15,
-    overflow: 'visible' // for custom animations
-},
-sliderContentContainer: {
-    paddingVertical: 10 // for custom animation
-},
   });
 
-  export default withNavigation(LibraryCarousel);
+  export default withNavigation(Library);

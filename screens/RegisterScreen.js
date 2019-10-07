@@ -12,9 +12,11 @@ import {
   Alert,
   Dimensions,
   Switch,
+  KeyboardAvoidingView,
+  Animated,Keyboard,UIManager,
 } from 'react-native';
 import { Block, Button, Text, theme,Input } from 'galio-framework';
-
+const { State: TextInputState } = TextInput;
 // import { CheckBox } from 'react-native-elements';
 import API  from '../constants/globalURL';
 const { height, width } = Dimensions.get('screen');
@@ -38,15 +40,26 @@ export default class RegisterScreen extends React.Component {
             validEmail: false,
             validPassword: false,
             checked:false,
+            shift: new Animated.Value(0),
         }
-
+       
         // this.handleEmailChange = this.handleEmailChange.bind(this);
         // this.handlePasswordChange = this.handlePasswordChange.bind(this);
     }
+    // state = {
+    //     shift: new Animated.Value(0),
+    //   };
     componentDidMount(){
         //this._loadInitialState().done();
         //this.setState({loading: false});
+        this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.handleKeyboardDidShow);
+        this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.handleKeyboardDidHide);
+      
     }
+    componentWillUnmount() {
+        this.keyboardDidShowSub.remove();
+        this.keyboardDidHideSub.remove();
+      }
     async onRegistrationButtonPress() {
         this.setState({
             loading: true
@@ -126,9 +139,42 @@ export default class RegisterScreen extends React.Component {
           this.setState({ validPassword: false });
         }
       }
+      handleKeyboardDidShow = (event) => {
+        const { height: windowHeight } = Dimensions.get('window');
+        const keyboardHeight = event.endCoordinates.height;
+        const currentlyFocusedField = TextInputState.currentlyFocusedField();
+        UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
+          const fieldHeight = height;
+          const fieldTop = pageY;
+          const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
+          if (gap >= 0) {
+            return;
+          }
+          Animated.timing(
+            this.state.shift,
+            {
+              toValue: gap,
+              duration: 1000,
+              useNativeDriver: true,
+            }
+          ).start();
+        });
+      }
+
+      handleKeyboardDidHide = () => {
+        Animated.timing(
+          this.state.shift,
+          {
+            toValue: 0,
+            duration: 1000,
+            useNativeDriver: true,
+          }
+        ).start();
+      }
     
 
     render(){
+        const { shift } = this.state;
         // if (this.state.isLoading) {
         //     return (
         //       <View style={styles.container}>
@@ -146,13 +192,21 @@ export default class RegisterScreen extends React.Component {
                   </View>
               )}
         return(
-            <View style = {styles.container}>
+            <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
+       
+            {/* <View style = {styles.container}> */}
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+
+     <Block flex center>
             <Image
-              source={require('../assets/images/kotigo.png')}
+              source={require('../assets/images/kotigo.png')
+              }
               style={styles.welcomeImage}
             />
-            <Text style={styles.helpLinkText}>SignUp</Text>
+           
+            <Text style={styles.helpLinkText}>Sign Up</Text>
+          </Block>
+           
            
                 <Input style = {styles.input}  
                     onChangeText={(val) => this.setState({firstname: val})}
@@ -227,8 +281,10 @@ export default class RegisterScreen extends React.Component {
                  {this.state.checked &&(<TouchableOpacity style={styles.buttonContainer} onPress={this.onRegistrationButtonPress.bind(this)}>
                     <Text  style={styles.buttonText}>Register</Text>
                 </TouchableOpacity>)}
+
+                <View style={{ height: 60 }} />
             </ScrollView> 
-         </View>
+         </Animated.View>
         );
     }
     //}
@@ -268,6 +324,7 @@ const styles = StyleSheet.create({
       width: 100,
       height: 80,
       resizeMode: 'contain',
+      alignItems: 'center',
       marginTop: 3,
       marginLeft: -10,
     },

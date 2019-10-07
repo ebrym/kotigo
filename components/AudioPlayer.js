@@ -1,4 +1,4 @@
-import React from 'react';
+import React , { Component, useState, useEffect } from 'react';
 import { Alert } from "react-native";
 import { Audio } from "expo";
 
@@ -10,14 +10,29 @@ export default class AudioPlayer {
     
 
     constructor(list, initialState = {speed: 1, autoPlay: true }) {
-  
-        this.soundObject = new Audio.Sound();
+        //const soundObject = new Audio.Sound(); 
+        //this.soundObject = null;
+        this.soundObject = new Audio.Sound();  
+        //soundObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate); 
         // Set speed value
         this.speed = initialState.speed;
         this.list = list;
     }
 
-
+    componentDidMount() {
+        Audio.setAudioModeAsync({
+             allowsRecordingIOS: false,
+             interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+             playsInSilentModeIOS: true,
+             shouldDuckAndroid: true,
+             staysActiveInBackground: true,
+             interruptionModeAndroid:Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+             playThroughEarpieceAndroid: true,
+         });
+      //  This function will be called
+       //  this._loadNewPlaybackInstance(true);
+      }
+   
     getSongName = () => {
         //console.log("The list is index : ",this.list);
         //console.log("The list is index : ",this.list[index].ChapterName);
@@ -47,7 +62,7 @@ export default class AudioPlayer {
         let p = Mill.positionMillis;
         return {curr:p};
   };
- 
+
 
     PlayPause = async (playing) => {
         //const index=this.index;
@@ -63,10 +78,12 @@ export default class AudioPlayer {
        const index=this.index;
        const path = this.list[index].AudioURL;
         if(playing) {
+            
             //console.log("path : " + path);
             //await this.soundObject.setStatusAsync({ shouldPlay: true });
             await this.soundObject.pauseAsync();
-            //await this.soundObject.stopAsync();
+            //await this.soundObject.unloadAsync();
+           //await this.soundObject.stopAsync();
             const milliseconds= await this.soundObject.getStatusAsync();
             console.log(milliseconds.durationMillis);
             return milliseconds.durationMillis;
@@ -76,6 +93,7 @@ export default class AudioPlayer {
             if(this.soundObject._loaded) {
                 await this.soundObject.playAsync();
             } else {
+                    await this.soundObject.unloadAsync()
                     await this.soundObject.loadAsync({uri: path});
              
                 
@@ -92,7 +110,7 @@ export default class AudioPlayer {
     NextSong = async () => {
         console.log("index : " + this.index);
         if(!this.list[this.index + 1]) {
-            Alert.alert('No More Songs...');
+            Alert.alert('You are on the last Chapter of this book');
         } else {
           
             const path = this.list[this.index + 1].AudioURL;

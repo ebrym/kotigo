@@ -92,7 +92,7 @@ export default class App extends React.Component {
   }
 
   handleConnectionChange = isConnected => {
-    console.log('Connection state : ' + isConnected); // gives undefined in log
+    //console.log('Connection state : ' + isConnected); // gives undefined in log
     if(!isConnected){
       this.refs.toast.show('No Internet Connection!');
     }else{

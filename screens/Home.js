@@ -5,10 +5,9 @@ import { StyleSheet, Dimensions, ScrollView,Image,
 import { Button, Block, Text, Input, theme } from 'galio-framework';
 
 import { Icon, Product } from '../components/';
-
-import { Images, materialTheme } from '../constants';
 import  API  from '../constants/globalURL';
-import Toast, {DURATION} from 'react-native-easy-toast'
+
+import products from '../constants/products';
 const { width } = Dimensions.get('screen');
 
 const ACCESS_TOKEN = 'access_token';
@@ -19,6 +18,7 @@ export default class Home extends React.Component {
     this.state = {
       dataSource: null,
       isLoading: true,
+      dataLength:0,
     };
   }
   async _fetchData() {
@@ -42,6 +42,10 @@ export default class Home extends React.Component {
           },
         
         );
+            var lend = this.state.dataSource.length;
+            if(lend % 2 > 0){
+              this.state.dataSource.push(products[0]);
+            }
       })
       .catch(error => {
         this.setState({isLoading: false});
@@ -55,10 +59,9 @@ export default class Home extends React.Component {
     this._fetchData();
   }
   renderProducts = () => {
+   
     return (
       <Block flex>
-      {/* <Product product={products[0]} horizontal /> */}
-      
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.products}>
@@ -68,12 +71,14 @@ export default class Home extends React.Component {
           data={this.state.dataSource}
           numColumns='2'
           renderItem={({ item }) => (
+         
                 <Product product={item} style={{ margin: 5 }}/>
                 )}
                 enableEmptySections={true}
                 style={{ marginTop: 5 }}
                 keyExtractor={(item, index) => index.toString()}
               />
+              
             </Block>
          
           {/* <Product product={products[3]} horizontal />
@@ -85,6 +90,8 @@ export default class Home extends React.Component {
   }
 
   render() {
+
+   
     if (this.state.isLoading) {
       return (
         <View style={styles.container}>

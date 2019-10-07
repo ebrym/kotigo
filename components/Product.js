@@ -18,24 +18,40 @@ const { book } = this.props;
       //book.map((bookDetails, i) => ( 
       <Block row={horizontal} card flex style={[styles.product, styles.shadow, style]}>
      
+      {(product.Title !=='Banner')&& 
+      (
+        <Block>
         <TouchableWithoutFeedback onPress={() => navigation.navigate('BookDetails', { book: product })}>
-          <Block flex style={[styles.imageContainer, styles.shadow]}>
-            {/* <Image source={{ uri: product.image }} style={imageStyles} /> */}
-            <Image source={{ uri: product.ImageURL }} style={imageStyles}/>
-          </Block>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('BookDetails', { book: product })}>
-          <Block flex space="between" style={styles.productDescription}>
-            <Text size={14} style={styles.productTitle}>{product.Title}</Text>
-            <Block flex  row space="between">
-              <Text size={12} muted={!priceColor} color={priceColor} >{product.Author}</Text>
-             
-              {product.Price >0 ? <Text size={10} muted={!priceColor} color="green"> N{product.Price}</Text> :  <TouchableOpacity style={styles.pro}>
-                <Text  style={styles.buttonText} color={theme.COLORS.WHITE} size={10}>Free</Text>
-            </TouchableOpacity>}
+            <Block flex style={[styles.imageContainer, styles.shadow]}>
+              {/* <Image source={{ uri: product.image }} style={imageStyles} /> */}
+              <Image source={{ uri: product.ImageURL }} style={imageStyles}/>
             </Block>
-          </Block>
-        </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigation.navigate('BookDetails', { book: product })}>
+            <Block flex space="between" style={styles.productDescription}>
+              <Text size={14} style={styles.productTitle}>{product.Title}</Text>
+              <Block flex  row space="between">
+                <Text size={12} muted={!priceColor} color={priceColor} >{product.Author}</Text>
+                {product.Price >0 ? <Text size={10} muted={!priceColor} color="green"> N{product.Price}</Text> :  <TouchableOpacity style={styles.pro}>
+                  <Text  style={styles.buttonText} color={theme.COLORS.WHITE} size={10}>Free</Text>
+              </TouchableOpacity>}
+              </Block>
+            </Block>
+          </TouchableWithoutFeedback>
+         </Block>
+      )
+      }
+      {(product.Title ==='Banner')&& 
+      (
+        <Block>
+            <Block flex style={[styles.imageContainer, styles.shadow]}>
+              {/* <Image source={{ uri: product.image }} style={imageStyles} /> */}
+              <Image source={require('../assets/images/icon.png')} style={imageStyles}/>
+            </Block>
+           
+         </Block>
+      )}
+        
         
       </Block>
      //  ))
