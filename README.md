@@ -1,2 +1,4 @@
 ## Description
-GoSmarticle is an audio book player which integrates with the admin back end for it's resources.
+KOTIGO is an audiobook platform with primary focus on African authors and publishers. The audiobooks comprises rich audio formats of printed books written by great authors and others. The Kotigo catalogue consists of wide collection of book genre ranging from business, personal development, finance, religious, biographies, children, marriage, relationships and many others.
+The audio narrators are carefully selected to suit the genre, the content as well the character of the authors so our listeners can have amazing listening experience. The app is free to download, audiobooks can be purchased in-app; some audiobooks can be downloaded at no cost periodically.
+The KOTIGO platform is integrated with top-notch payment processors to ensure seamless and transparent payment processing.
